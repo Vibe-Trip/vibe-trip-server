@@ -1,7 +1,7 @@
 package com.vibetrip.vibetripserver.common.advice
 
-import com.didim.common.exception.AppException
-import com.didim.common.exception.ErrorType
+import com.vibetrip.vibetripserver.common.exception.AppException
+import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.log.logger
 import com.vibetrip.vibetripserver.support.response.ApiResponse
 import org.springframework.boot.logging.LogLevel.ERROR

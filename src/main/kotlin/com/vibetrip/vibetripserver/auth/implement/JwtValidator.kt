@@ -1,7 +1,7 @@
 package com.vibetrip.vibetripserver.auth.implement
 
-import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.auth.domain.TokenType
+import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.SecurityException
@@ -15,7 +15,6 @@ class JwtValidator(
 ) {
     companion object {
         private const val BEARER = "Bearer "
-        private const val TOKEN_TYPE_CLAIM = "type"
     }
 
     fun getSubjectIfValidWithType(token: String, expectedType: TokenType): String {

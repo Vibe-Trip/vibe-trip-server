@@ -6,8 +6,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 
 data class AuthMember(
     val member: Member,
-    val attributes: Map<String?, Any?>,
-    val authorities: Collection<GrantedAuthority?>,
+    private val attributes: Map<String?, Any?>,
+    private val authorities: Collection<GrantedAuthority?>,
 ) : OAuth2User {
 
     override fun getAttributes(): Map<String?, Any?> = attributes

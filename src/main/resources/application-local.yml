@@ -46,4 +46,4 @@ springdoc:
   default-consumes-media-type: application/json
 
 jwt:
-  secret-key: testtesttesttesttesttesttesttesttesttest
+  secret-key: dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdA==

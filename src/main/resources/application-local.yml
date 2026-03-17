@@ -44,3 +44,6 @@ springdoc:
     enabled: true
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
+
+jwt:
+  secret-key: testtesttesttesttesttesttesttesttesttest

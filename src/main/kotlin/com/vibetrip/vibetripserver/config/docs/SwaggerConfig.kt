@@ -14,23 +14,24 @@ class SwaggerConfig {
     @Bean
     fun customOpenApi(): OpenAPI {
         val securitySchemeName = "bearerAuth"
-        val scheme = SecurityScheme()
-            .type(SecurityScheme.Type.HTTP)
-            .scheme("bearer")
-            .bearerFormat("JWT")
 
-        val requirement = SecurityRequirement().addList(securitySchemeName)
-
-        return OpenAPI()
-            .info(openApiInfo())
-            .components(Components().addSecuritySchemes(securitySchemeName, scheme))
-            .addSecurityItem(requirement)
+        return OpenAPI().apply {
+            info = openApiInfo()
+            components = Components().addSecuritySchemes(
+                securitySchemeName,
+                SecurityScheme().apply {
+                    type = SecurityScheme.Type.HTTP
+                    scheme = "bearer"
+                    bearerFormat = "JWT"
+                }
+            )
+            addSecurityItem(SecurityRequirement().addList(securitySchemeName))
+        }
     }
 
-    private fun openApiInfo(): Info {
-        return Info()
-            .title("Vibe Trip Server API")
-            .description("Vibe Trip Server API 명세서")
-            .version("1.0")
+    private fun openApiInfo() = Info().apply {
+        title = "ReTrip Server API"
+        description = "ReTrip Server API 명세서"
+        version = "1.0"
     }
 }

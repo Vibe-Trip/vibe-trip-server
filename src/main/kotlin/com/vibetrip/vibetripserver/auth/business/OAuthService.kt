@@ -38,8 +38,9 @@ class OAuthService(
         val savedRefreshToken = refreshTokenManager.findByMemberKey(memberKey)
 
         savedRefreshToken.validateReuse(refreshToken) {
-            logger.warn("[Token Reuse Detected]: memberKey=$memberKey | 토큰 탈취 가능성으로 세션 무효화")
+            logger.warn { "[Token Reuse Detected]: memberKey=$memberKey | 토큰 탈취 가능성으로 세션 무효화" }
             refreshTokenManager.delete(id)
+            throw AppException(ErrorType.FAILED_AUTH)
         }
 
         return jwtGenerator.generateJwt(memberKey).also {

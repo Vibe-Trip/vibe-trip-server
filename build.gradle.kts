@@ -49,6 +49,10 @@ dependencies {
     implementation("io.github.openfeign.querydsl:querydsl-jpa:$queryDslVersion")
     kapt("io.github.openfeign.querydsl:querydsl-apt:$queryDslVersion:jpa")
 
+    // Cache
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
+
     // Metric
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")

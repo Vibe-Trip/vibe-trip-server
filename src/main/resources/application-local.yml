@@ -47,3 +47,10 @@ springdoc:
 
 jwt:
   secret-key: dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdA==
+
+app:
+  cache:
+    configs:
+      appleKeys:
+        ttl: 24h
+        max-size: 10

@@ -17,17 +17,18 @@ class JwtValidator(
         private const val BEARER = "Bearer "
     }
 
-    fun getSubjectIfValidWithType(token: String, expectedType: TokenType): String {
+    fun getSubjectIfValidWithType(token: String, expectedType: TokenType) = validate(token)
+        .payload
+        .takeIf { it.get<String>(TOKEN_TYPE_CLAIM) == expectedType.name }
+        ?.subject
+        ?: throw AppException(ErrorType.INVALID_TOKEN_TYPE)
+
+    fun getBearerTokenBody(token: String): String {
         if (!isBearerToken(token)) {
             throw AppException(ErrorType.INVALID_TOKEN_METHOD)
         }
 
-        val tokenBody = token.removePrefix(BEARER)
-
-        return validate(tokenBody).payload
-            .takeIf { it.get<String>(TOKEN_TYPE_CLAIM) == expectedType.name }
-            ?.subject
-            ?: throw AppException(ErrorType.INVALID_TOKEN_TYPE)
+        return token.removePrefix(BEARER)
     }
 
     fun validate(token: String): Jws<Claims> =

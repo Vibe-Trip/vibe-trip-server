@@ -29,22 +29,25 @@ class OAuthService(
         val memberKey =
             oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, newOAuthLogin.fcmToken, newOAuthLogin.deviceId)
 
-        return jwtGenerator.generateJwt(memberKey)
+        return jwtGenerator.generateJwt(memberKey).also {
+            refreshTokenManager.update(it.refreshToken, memberKey)
+        }
     }
 
     fun refresh(refreshToken: String): Jwt {
-        val memberKey = jwtValidator.getSubjectIfValidWithType(refreshToken, TokenType.REFRESH)
+        val tokenBody = jwtValidator.getBearerTokenBody(refreshToken)
+        val memberKey = jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH)
+
 
         val savedRefreshToken = refreshTokenManager.findByMemberKey(memberKey)
 
-        savedRefreshToken.validateReuse(refreshToken) {
+        savedRefreshToken.validateReuse(tokenBody) {
             logger.warn { "[Token Reuse Detected]: memberKey=$memberKey | 토큰 탈취 가능성으로 세션 무효화" }
             refreshTokenManager.delete(id)
-            throw AppException(ErrorType.FAILED_AUTH)
         }
 
         return jwtGenerator.generateJwt(memberKey).also {
-            refreshTokenManager.update(savedRefreshToken.id, it.refreshToken)
+            refreshTokenManager.update(it.refreshToken, memberKey)
         }
     }
 }

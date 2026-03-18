@@ -43,7 +43,9 @@ class JwtAuthenticationFilter(
         request.getHeader(HttpHeaders.AUTHORIZATION)
 
     private fun authenticate(token: String) {
-        val subject = jwtValidator.getSubjectIfValidWithType(token, TokenType.ACCESS)
+        val subject = jwtValidator.getBearerTokenBody(token).let {
+            jwtValidator.getSubjectIfValidWithType(it, TokenType.ACCESS)
+        }
 
         memberFinder.find(subject).run {
             val authMember = AuthMember(this, emptyMap(), authorities)

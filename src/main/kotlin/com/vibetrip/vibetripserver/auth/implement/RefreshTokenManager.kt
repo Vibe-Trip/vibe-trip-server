@@ -1,9 +1,9 @@
 package com.vibetrip.vibetripserver.auth.implement
 
+import com.vibetrip.vibetripserver.auth.dataaccess.entity.RefreshTokenEntity
 import com.vibetrip.vibetripserver.auth.dataaccess.repository.RefreshTokenRepository
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,8 +17,13 @@ class RefreshTokenManager(
     fun findByMemberKey(memberKey: String) =
         refreshTokenRepository.findByMemberKey(memberKey)?.toDomain() ?: throw AppException(ErrorType.NOT_FOUND_DATA)
 
-    fun update(id: Long, refreshToken: String) =
-        refreshTokenRepository.findByIdOrNull(id)?.update(refreshToken) ?: throw AppException(ErrorType.NOT_FOUND_DATA)
+    fun update(refreshToken: String, memberKey: String) =
+        refreshTokenRepository.findByMemberKey(memberKey)?.update(refreshToken) ?: refreshTokenRepository.save(
+            RefreshTokenEntity(
+                refreshToken,
+                memberKey
+            )
+        )
 
 
     fun delete(id: Long) =

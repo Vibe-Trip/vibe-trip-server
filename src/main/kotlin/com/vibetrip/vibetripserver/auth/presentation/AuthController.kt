@@ -1,6 +1,7 @@
 package com.vibetrip.vibetripserver.auth.presentation
 
 import com.vibetrip.vibetripserver.auth.business.OAuthService
+import com.vibetrip.vibetripserver.auth.presentation.dto.request.AppleLoginRequest
 import com.vibetrip.vibetripserver.auth.presentation.dto.request.KakaoLoginRequest
 import com.vibetrip.vibetripserver.auth.presentation.dto.response.JwtResponse
 import com.vibetrip.vibetripserver.common.util.getClientIp
@@ -20,9 +21,18 @@ class AuthController(
     @PostMapping("/login/kakao")
     fun kakaoLogin(
         @Valid @RequestBody kakaoLoginRequest: KakaoLoginRequest,
-        httpRequest: HttpServletRequest
+        httpRequest: HttpServletRequest,
     ): ResponseEntity<ApiResponse<JwtResponse>> {
         val jwt = oAuthService.login(kakaoLoginRequest.toNewOAuthLogin(getClientIp(httpRequest)))
+        return ResponseEntity.ok(ApiResponse.success(JwtResponse(jwt.accessToken, jwt.refreshToken)))
+    }
+
+    @PostMapping("/login/apple")
+    fun appleLogin(
+        @Valid @RequestBody appleLoginRequest: AppleLoginRequest,
+        httpRequest: HttpServletRequest,
+    ): ResponseEntity<ApiResponse<JwtResponse>> {
+        val jwt = oAuthService.login(appleLoginRequest.toNewOAuthLogin(getClientIp(httpRequest)))
         return ResponseEntity.ok(ApiResponse.success(JwtResponse(jwt.accessToken, jwt.refreshToken)))
     }
 

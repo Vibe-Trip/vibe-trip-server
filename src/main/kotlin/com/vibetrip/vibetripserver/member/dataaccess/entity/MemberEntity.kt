@@ -31,22 +31,20 @@ class MemberEntity(
     var id: Long? = null,
 ) : BaseEntity() {
     companion object {
-        fun from(member: NewMember) =
-            MemberEntity(
-                memberKey = UUID.randomUUID().toString(),
-                name = member.nameValue,
-                email = member.emailValue,
-                profileImageUrl = member.profileImageUrlValue,
-                roles = mutableSetOf(MemberRole.ROLE_USER)
-            )
+        fun from(member: NewMember) = MemberEntity(
+            memberKey = UUID.randomUUID().toString(),
+            name = member.nameValue,
+            email = member.emailValue,
+            profileImageUrl = member.profileImageUrlValue,
+            roles = mutableSetOf(MemberRole.ROLE_USER)
+        )
     }
 
-    fun toDomain(): Member =
-        Member.of(
-            memberKey = memberKey,
-            name = name,
-            email = email,
-            profileImageUrl = profileImageUrl,
-            roles = roles.toSet(),
-        )
+    fun toDomain() = Member.of(
+        memberKey = memberKey,
+        name = name,
+        email = email,
+        profileImageUrl = profileImageUrl,
+        roles = roles.toSet(),
+    )
 }

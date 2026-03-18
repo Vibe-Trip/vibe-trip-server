@@ -38,4 +38,7 @@ enum class ErrorType(
     INVALID_TOKEN_METHOD(HttpStatus.BAD_REQUEST, ErrorCode.E2005, "토큰 방식이 올바르지 않습니다.", LogLevel.WARN),
     INVALID_TOKEN_TYPE(HttpStatus.BAD_REQUEST, ErrorCode.E2006, "토큰 타입이 올바르지 않습니다.", LogLevel.WARN),
     INVALID_OAUTH_USER(HttpStatus.BAD_REQUEST, ErrorCode.E2007, "존재하지 않는 OAuth 유저입니다.", LogLevel.WARN),
+    FAILED_REQUEST_APPLE_KEYS(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2008, "Apple 공개키를 가져올 수 없습니다.", LogLevel.WARN),
+    INVALID_APPLE_IDENTITY_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2009, "Apple Identity Token이 유효하지 않습니다.", LogLevel.WARN),
+    INVALID_APPLE_KEY(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2010, "Apple 키에 kid가 없습니다.", LogLevel.WARN),
 }

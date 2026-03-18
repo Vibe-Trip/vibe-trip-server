@@ -2,14 +2,7 @@ package com.vibetrip.vibetripserver.auth.dataaccess.entity
 
 import com.vibetrip.vibetripserver.auth.domain.RefreshToken
 import com.vibetrip.vibetripserver.common.entity.BaseEntity
-import com.vibetrip.vibetripserver.common.exception.AppException
-import com.vibetrip.vibetripserver.common.exception.ErrorType
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 
 @Table(name = "refresh_token")
 @Entity
@@ -21,7 +14,7 @@ class RefreshTokenEntity(
     var memberKey: String,
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "oauth_id")
+    @Column(name = "refresh_token_id")
     var id: Long? = null,
 ) : BaseEntity() {
 

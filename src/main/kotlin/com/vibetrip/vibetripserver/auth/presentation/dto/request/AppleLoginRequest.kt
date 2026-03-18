@@ -5,19 +5,21 @@ import com.vibetrip.vibetripserver.auth.domain.OAuthProvider
 import com.vibetrip.vibetripserver.member.domain.vo.IpAddress
 import jakarta.validation.constraints.NotBlank
 
-data class KakaoLoginRequest(
+data class AppleLoginRequest(
     @field:NotBlank(message = "인증 토큰 값은 필수입니다.")
-    val accessToken: String,
+    val identityToken: String,
     @field:NotBlank(message = "FCM Token은 필수입니다.")
     val fcmToken: String,
     @field:NotBlank(message = "Device ID는 필수입니다.")
     val deviceId: String,
+    val name: String?,
 ) {
-    fun toNewOAuthLogin(ipAddress: String) = NewOAuthLogin.Kakao(
-        authToken = accessToken,
-        provider = OAuthProvider.KAKAO,
+    fun toNewOAuthLogin(ipAddress: String) = NewOAuthLogin.Apple(
+        authToken = identityToken,
+        provider = OAuthProvider.APPLE,
         fcmToken = fcmToken,
+        ipAddress = IpAddress(ipAddress),
         deviceId = deviceId,
-        ipAddress = IpAddress(ipAddress)
+        name = name,
     )
 }

@@ -23,10 +23,11 @@ class OAuthService(
         authenticators.associateBy { it.provider }
 
     fun login(newOAuthLogin: NewOAuthLogin): Jwt {
-        val oAuthMember = oauthAuthenticatorMap[newOAuthLogin.provider]?.authenticate(newOAuthLogin.authToken)
+        val oAuthMember = oauthAuthenticatorMap[newOAuthLogin.provider]?.authenticate(newOAuthLogin)
             ?: throw AppException(ErrorType.SERVER_ERROR)
 
-        val memberKey = oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember)
+        val memberKey =
+            oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, newOAuthLogin.fcmToken, newOAuthLogin.deviceId)
 
         return jwtGenerator.generateJwt(memberKey)
     }
@@ -41,8 +42,8 @@ class OAuthService(
             refreshTokenManager.delete(id)
         }
 
-        return jwtGenerator.generateJwt(memberKey).also { jwt ->
-            refreshTokenManager.update(savedRefreshToken.id, jwt.refreshToken)
+        return jwtGenerator.generateJwt(memberKey).also {
+            refreshTokenManager.update(savedRefreshToken.id, it.refreshToken)
         }
     }
 }

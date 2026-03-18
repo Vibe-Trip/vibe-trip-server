@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
-@Table(name = "member")
+@Table(name = "member_device")
 @Entity
 class MemberDeviceEntity(
     @Column(nullable = false)

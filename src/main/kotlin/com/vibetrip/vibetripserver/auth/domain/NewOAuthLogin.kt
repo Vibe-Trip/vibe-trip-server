@@ -14,7 +14,7 @@ sealed class NewOAuthLogin {
         override val provider: OAuthProvider,
         override val fcmToken: String,
         override val deviceId: String,
-        override val ipAddress: IpAddress
+        override val ipAddress: IpAddress,
     ) : NewOAuthLogin()
 
     data class Apple(

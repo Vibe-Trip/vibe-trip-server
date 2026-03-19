@@ -13,11 +13,12 @@ data class KakaoLoginRequest(
     @field:NotBlank(message = "Device ID는 필수입니다.")
     val deviceId: String,
 ) {
-    fun toNewOAuthLogin(ipAddress: String) = NewOAuthLogin.Kakao(
-        authToken = accessToken,
-        provider = OAuthProvider.KAKAO,
-        fcmToken = fcmToken,
-        deviceId = deviceId,
-        ipAddress = IpAddress(ipAddress)
-    )
+    fun toNewOAuthLogin(ipAddress: String) =
+        NewOAuthLogin.Kakao(
+            authToken = accessToken,
+            provider = OAuthProvider.KAKAO,
+            fcmToken = fcmToken,
+            deviceId = deviceId,
+            ipAddress = IpAddress(ipAddress),
+        )
 }

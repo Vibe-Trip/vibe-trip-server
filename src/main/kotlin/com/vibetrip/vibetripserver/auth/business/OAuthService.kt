@@ -4,7 +4,11 @@ import com.vibetrip.vibetripserver.auth.domain.Jwt
 import com.vibetrip.vibetripserver.auth.domain.NewOAuthLogin
 import com.vibetrip.vibetripserver.auth.domain.OAuthProvider
 import com.vibetrip.vibetripserver.auth.domain.TokenType
-import com.vibetrip.vibetripserver.auth.implement.*
+import com.vibetrip.vibetripserver.auth.implement.JwtGenerator
+import com.vibetrip.vibetripserver.auth.implement.JwtValidator
+import com.vibetrip.vibetripserver.auth.implement.OAuthAuthenticator
+import com.vibetrip.vibetripserver.auth.implement.OAuthRegistrar
+import com.vibetrip.vibetripserver.auth.implement.RefreshTokenManager
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.log.logger
@@ -18,13 +22,13 @@ class OAuthService(
     private val jwtValidator: JwtValidator,
     private val refreshTokenManager: RefreshTokenManager,
 ) {
-
     private val oauthAuthenticatorMap: Map<OAuthProvider, OAuthAuthenticator> =
         authenticators.associateBy { it.provider }
 
     fun login(newOAuthLogin: NewOAuthLogin): Jwt {
-        val oAuthMember = oauthAuthenticatorMap[newOAuthLogin.provider]?.authenticate(newOAuthLogin)
-            ?: throw AppException(ErrorType.SERVER_ERROR)
+        val oAuthMember =
+            oauthAuthenticatorMap[newOAuthLogin.provider]?.authenticate(newOAuthLogin)
+                ?: throw AppException(ErrorType.SERVER_ERROR)
 
         val memberKey =
             oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, newOAuthLogin.fcmToken, newOAuthLogin.deviceId)
@@ -37,7 +41,6 @@ class OAuthService(
     fun refresh(refreshToken: String): Jwt {
         val tokenBody = jwtValidator.getBearerTokenBody(refreshToken)
         val memberKey = jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH)
-
 
         val savedRefreshToken = refreshTokenManager.findByMemberKey(memberKey)
 

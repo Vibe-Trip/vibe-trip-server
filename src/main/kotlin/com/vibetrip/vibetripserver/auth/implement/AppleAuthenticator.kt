@@ -16,7 +16,6 @@ import java.security.PublicKey
 import java.security.spec.RSAPublicKeySpec
 import kotlin.io.encoding.Base64
 
-
 @Component
 class AppleAuthenticator(
     private val appleClient: AppleClient,
@@ -57,9 +56,10 @@ class AppleAuthenticator(
 
     private fun getClaims(
         publicKey: PublicKey,
-        newOAuthLogin: NewOAuthLogin.Apple
+        newOAuthLogin: NewOAuthLogin.Apple,
     ) = runCatching {
-        Jwts.parser()
+        Jwts
+            .parser()
             .verifyWith(publicKey)
             .requireIssuer(ISSUER)
             .requireAudience(AUDIENCE)
@@ -73,14 +73,15 @@ class AppleAuthenticator(
         }
     }
 
-    private fun extractKid(token: String): String = runCatching {
-        val header = base64UrlDecoder.decode(token.split(".").first())
-        val headerMap = objectMapper.readValue(header, Map::class.java)
+    private fun extractKid(token: String): String =
+        runCatching {
+            val header = base64UrlDecoder.decode(token.split(".").first())
+            val headerMap = objectMapper.readValue(header, Map::class.java)
 
-        headerMap[KID] as String
-    }.getOrElse {
-        throw AppException(ErrorType.INVALID_APPLE_IDENTITY_TOKEN)
-    }
+            headerMap[KID] as String
+        }.getOrElse {
+            throw AppException(ErrorType.INVALID_APPLE_IDENTITY_TOKEN)
+        }
 
     private fun generatePublicKey(appleKey: AppleKey): PublicKey {
         val nBytes = base64UrlDecoder.decode(appleKey.n)

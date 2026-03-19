@@ -10,13 +10,12 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class AuthenticationExceptionTranslationFilter(
-    private val exceptionHandler: AuthenticationExceptionHandler
+    private val exceptionHandler: AuthenticationExceptionHandler,
 ) : OncePerRequestFilter() {
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         try {
             filterChain.doFilter(request, response)

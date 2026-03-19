@@ -5,11 +5,12 @@ import com.vibetrip.vibetripserver.common.exception.ErrorType
 
 @JvmInline
 value class Email(
-    val value: String
+    val value: String,
 ) {
     companion object {
         private val EMAIL_PATTERN =
-            "^(?![.])(?!.*[.]{2})[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*\\.[A-Za-z]{2,}$".toRegex()
+            "^(?![.])(?!.*[.]{2})[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*\\.[A-Za-z]{2,}$"
+                .toRegex()
     }
 
     init {
@@ -17,5 +18,4 @@ value class Email(
             throw AppException(ErrorType.INVALID_EMAIL)
         }
     }
-
 }

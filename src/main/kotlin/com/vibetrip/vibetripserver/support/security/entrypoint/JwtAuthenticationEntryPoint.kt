@@ -9,13 +9,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class JwtAuthenticationEntryPoint(
-    private val exceptionHandler: AuthenticationExceptionHandler
+    private val exceptionHandler: AuthenticationExceptionHandler,
 ) : AuthenticationEntryPoint {
-
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        authException: AuthenticationException
+        authException: AuthenticationException,
     ) {
         exceptionHandler.handle(request, response, authException)
     }

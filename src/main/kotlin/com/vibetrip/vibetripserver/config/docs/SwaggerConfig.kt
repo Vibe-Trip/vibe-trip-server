@@ -10,28 +10,29 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class SwaggerConfig {
-
     @Bean
     fun customOpenApi(): OpenAPI {
         val securitySchemeName = "bearerAuth"
 
         return OpenAPI().apply {
             info = openApiInfo()
-            components = Components().addSecuritySchemes(
-                securitySchemeName,
-                SecurityScheme().apply {
-                    type = SecurityScheme.Type.HTTP
-                    scheme = "bearer"
-                    bearerFormat = "JWT"
-                }
-            )
+            components =
+                Components().addSecuritySchemes(
+                    securitySchemeName,
+                    SecurityScheme().apply {
+                        type = SecurityScheme.Type.HTTP
+                        scheme = "bearer"
+                        bearerFormat = "JWT"
+                    },
+                )
             addSecurityItem(SecurityRequirement().addList(securitySchemeName))
         }
     }
 
-    private fun openApiInfo() = Info().apply {
-        title = "ReTrip Server API"
-        description = "ReTrip Server API 명세서"
-        version = "1.0"
-    }
+    private fun openApiInfo() =
+        Info().apply {
+            title = "ReTrip Server API"
+            description = "ReTrip Server API 명세서"
+            version = "1.0"
+        }
 }

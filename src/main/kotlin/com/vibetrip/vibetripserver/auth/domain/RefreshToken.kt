@@ -8,8 +8,10 @@ data class RefreshToken(
     val refreshToken: String,
     val memberKey: String,
 ) {
-
-    fun validateReuse(refreshToken: String, onReuse: RefreshToken.() -> Unit) {
+    fun validateReuse(
+        refreshToken: String,
+        onReuse: RefreshToken.() -> Unit,
+    ) {
         if (this.refreshToken != refreshToken) {
             this.onReuse()
             throw AppException(ErrorType.FAILED_AUTH)

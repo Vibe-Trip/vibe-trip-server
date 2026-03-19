@@ -22,7 +22,8 @@ class AppleClient(
         logger.info { "[Network Request] Apple 서버에서 공개키 목록을 조회합니다." }
 
         return restClient
-            .get().uri(APPLE_JWKS_URL)
+            .get()
+            .uri(APPLE_JWKS_URL)
             .retrieve()
             .body<AppleKeys>()
             ?: throw AppException(ErrorType.FAILED_REQUEST_APPLE_KEYS)

@@ -24,12 +24,13 @@ data class NewMember(
             signUpType = signUpType,
         )
 
-        fun from(oAuthMember: OAuthMember) = NewMember(
-            name = oAuthMember.name,
-            email = oAuthMember.email,
-            profileImageUrl = oAuthMember.profileImageUrl,
-            signUpType = SignUpType.OAUTH,
-        )
+        fun from(oAuthMember: OAuthMember) =
+            NewMember(
+                name = oAuthMember.name,
+                email = oAuthMember.email,
+                profileImageUrl = oAuthMember.profileImageUrl,
+                signUpType = SignUpType.OAUTH,
+            )
     }
 
     val nameValue: String

@@ -11,7 +11,5 @@ import org.springframework.transaction.annotation.Transactional
 class MemberRegistrar(
     private val memberRepository: MemberRepository,
 ) {
-
-    fun register(newMember: NewMember) =
-        memberRepository.save(MemberEntity.from(newMember)).memberKey
+    fun register(newMember: NewMember) = memberRepository.save(MemberEntity.from(newMember)).memberKey
 }

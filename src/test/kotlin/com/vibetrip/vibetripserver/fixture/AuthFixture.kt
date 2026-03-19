@@ -1,10 +1,13 @@
 package com.vibetrip.vibetripserver.fixture
 
-import com.vibetrip.vibetripserver.auth.domain.*
+import com.vibetrip.vibetripserver.auth.domain.Jwt
+import com.vibetrip.vibetripserver.auth.domain.NewOAuthLogin
+import com.vibetrip.vibetripserver.auth.domain.OAuthMember
+import com.vibetrip.vibetripserver.auth.domain.OAuthProvider
+import com.vibetrip.vibetripserver.auth.domain.RefreshToken
 import com.vibetrip.vibetripserver.member.domain.vo.IpAddress
 
 object AuthFixture {
-
     fun kakaoLogin(
         authToken: String = "kakao-access-token",
         fcmToken: String = "fcm-token",

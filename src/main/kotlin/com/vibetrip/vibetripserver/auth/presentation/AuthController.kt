@@ -13,7 +13,11 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "Auth", description = "인증 관련 API")
 @RestController
@@ -21,7 +25,6 @@ import org.springframework.web.bind.annotation.*
 class AuthController(
     private val oAuthService: OAuthService,
 ) {
-
     @Operation(summary = "카카오 로그인", description = "카카오 OAuth 토큰으로 로그인합니다.")
     @PostMapping("/login/kakao")
     fun kakaoLogin(
@@ -46,7 +49,7 @@ class AuthController(
     @PostMapping("/refresh")
     fun refreshToken(
         @Parameter(description = "Bearer {refreshToken}", required = true)
-        @RequestHeader(AUTHORIZATION) refreshToken: String
+        @RequestHeader(AUTHORIZATION) refreshToken: String,
     ): ResponseEntity<ApiResponse<JwtResponse>> {
         val jwt = oAuthService.refresh(refreshToken)
         return ResponseEntity.ok(ApiResponse.success(JwtResponse(jwt.accessToken, jwt.refreshToken)))

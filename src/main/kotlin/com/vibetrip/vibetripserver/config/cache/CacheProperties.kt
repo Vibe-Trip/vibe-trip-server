@@ -5,7 +5,7 @@ import java.time.Duration
 
 @ConfigurationProperties(prefix = "app.cache")
 data class CacheProperties(
-    val configs: Map<String, CacheConfigDetail> = emptyMap()
+    val configs: Map<String, CacheConfigDetail> = emptyMap(),
 ) {
     data class CacheConfigDetail(
         val ttl: Duration = Duration.ofSeconds(60),

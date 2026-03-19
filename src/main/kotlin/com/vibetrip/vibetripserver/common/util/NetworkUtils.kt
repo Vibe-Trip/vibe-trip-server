@@ -7,13 +7,12 @@ private const val UNKNOWN = "unknown"
 
 fun getClientIp(request: HttpServletRequest): String =
     IpHeader.entries.firstNotNullOfOrNull { header ->
-        request.getHeader(header.value)
+        request
+            .getHeader(header.value)
             ?.takeIf { isValidIp(it) }
             ?.let { getFirstIp(it) }
     } ?: request.remoteAddr
 
-private fun getFirstIp(ip: String) =
-    ip.substringBefore(",").trim()
+private fun getFirstIp(ip: String) = ip.substringBefore(",").trim()
 
-private fun isValidIp(ip: String) =
-    ip.isNotBlank() && !ip.equals(UNKNOWN, ignoreCase = true)
+private fun isValidIp(ip: String) = ip.isNotBlank() && !ip.equals(UNKNOWN, ignoreCase = true)

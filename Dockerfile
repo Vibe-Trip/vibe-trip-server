@@ -1,14 +1,10 @@
 FROM azul/zulu-openjdk-alpine:21-latest AS builder
 WORKDIR /app
 
-# Gradle 캐시 활용
-COPY build.gradle.kts settings.gradle.kts gradlew ./
-COPY gradle ./gradle
-RUN chmod +x ./gradlew && ./gradlew dependencies --no-daemon
+COPY . .
 
-# 소스 복사 및 빌드
-COPY src ./src
-RUN ./gradlew clean build -x test --no-daemon
+RUN chmod +x ./gradlew
+RUN ./gradlew clean build -x test
 
 FROM azul/zulu-openjdk-alpine:21-latest
 WORKDIR /app

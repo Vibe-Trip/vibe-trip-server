@@ -1,4 +1,4 @@
-name: Food Keeper Dev Deploy
+name: Retrip Dev Deploy
 
 on:
   pull_request:

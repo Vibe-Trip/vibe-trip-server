@@ -1,4 +1,4 @@
-name: Kitchen Log Server CI with Gradle
+name: Retrip Server CI with Gradle
 
 on:
   pull_request:

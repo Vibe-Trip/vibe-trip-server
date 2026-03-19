@@ -3,6 +3,8 @@ package com.vibetrip.vibetripserver.common.entity
 import com.vibetrip.vibetripserver.common.enums.EntityStatus
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.MappedSuperclass
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -18,8 +20,9 @@ abstract class BaseEntity {
 
     @LastModifiedDate
     @Column(nullable = false)
-    var modifiedAt: LocalDateTime = LocalDateTime.now()
+    var lastModifiedAt: LocalDateTime = LocalDateTime.now()
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var status: EntityStatus = EntityStatus.ACTIVE
 

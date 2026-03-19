@@ -18,23 +18,22 @@ class OauthEntity(
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var provider: OAuthProvider,
-
     @Column(nullable = false)
     var account: String,
-
     @Column(nullable = false)
     var memberKey: String,
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "oauth_id")
     var id: Long? = null,
 ) : BaseEntity() {
     companion object {
-        fun of(oAuthMember: OAuthMember, memberKey: String) =
-            OauthEntity(
-                provider = oAuthMember.provider,
-                account = oAuthMember.account,
-                memberKey = memberKey,
-            )
+        fun of(
+            oAuthMember: OAuthMember,
+            memberKey: String,
+        ) = OauthEntity(
+            provider = oAuthMember.provider,
+            account = oAuthMember.account,
+            memberKey = memberKey,
+        )
     }
 }

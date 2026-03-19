@@ -15,14 +15,20 @@ import org.springframework.transaction.annotation.Transactional
 class OAuthRegistrar(
     private val oauthRepository: OauthRepository,
     private val memberRegistrar: MemberRegistrar,
-    private val memberDeviceManager: MemberDeviceManager
+    private val memberDeviceManager: MemberDeviceManager,
 ) {
+    fun registerIfNewAndGetMemberKey(
+        oauthMember: OAuthMember,
+        fcmToken: String,
+        deviceId: String,
+    ) = oauthRepository.findByAccountAndProvider(oauthMember.account, oauthMember.provider)?.memberKey
+        ?: register(oauthMember, fcmToken, deviceId)
 
-    fun registerIfNewAndGetMemberKey(oauthMember: OAuthMember, fcmToken: String, deviceId: String) =
-        oauthRepository.findByAccountAndProvider(oauthMember.account, oauthMember.provider)?.memberKey
-            ?: register(oauthMember, fcmToken, deviceId)
-
-    private fun register(oAuthMember: OAuthMember, fcmToken: String, deviceId: String): String {
+    private fun register(
+        oAuthMember: OAuthMember,
+        fcmToken: String,
+        deviceId: String,
+    ): String {
         val memberKey = memberRegistrar.register(NewMember.from(oAuthMember))
         memberDeviceManager.save(MemberDevice(deviceId, fcmToken, memberKey))
         oauthRepository.save(OauthEntity.of(oAuthMember, memberKey))

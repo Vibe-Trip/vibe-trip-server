@@ -15,7 +15,6 @@ import java.time.Duration
 class CacheConfig(
     private val cacheProperties: CacheProperties,
 ) {
-
     @Bean
     fun cacheManager(): CacheManager {
         val cacheManager = CaffeineCacheManager()
@@ -23,18 +22,20 @@ class CacheConfig(
         cacheManager.isAllowNullValues = false
 
         cacheManager.setCaffeine(
-            Caffeine.newBuilder()
+            Caffeine
+                .newBuilder()
                 .expireAfterWrite(Duration.ofHours(1))
-                .maximumSize(100)
+                .maximumSize(100),
         )
 
         cacheProperties.configs.forEach { (cacheName, spec) ->
             cacheManager.registerCustomCache(
                 cacheName,
-                Caffeine.newBuilder()
+                Caffeine
+                    .newBuilder()
                     .expireAfterWrite(spec.ttl)
                     .maximumSize(spec.maxSize)
-                    .build()
+                    .build(),
             )
         }
 

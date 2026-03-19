@@ -9,13 +9,9 @@ import kotlin.io.encoding.Base64
 
 @Configuration
 class JwtConfig {
-
     @Value($$"${jwt.secret-key}")
     private lateinit var secretKey: String
 
-
     @Bean
-    fun key(): SecretKey {
-        return Keys.hmacShaKeyFor(Base64.decode(secretKey))
-    }
+    fun key(): SecretKey = Keys.hmacShaKeyFor(Base64.decode(secretKey))
 }

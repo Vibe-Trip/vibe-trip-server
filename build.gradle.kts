@@ -5,7 +5,7 @@ plugins {
     kotlin("kapt")
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+    id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
 }
 
 val projectGroup: String by project
@@ -45,7 +45,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-h2console")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("com.mysql:mysql-connector-j")
-    implementation("io.github.openfeign.querydsl:querydsl-core:${queryDslVersion}")
+    implementation("io.github.openfeign.querydsl:querydsl-core:$queryDslVersion")
     implementation("io.github.openfeign.querydsl:querydsl-jpa:$queryDslVersion")
     kapt("io.github.openfeign.querydsl:querydsl-apt:$queryDslVersion:jpa")
 
@@ -78,9 +78,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:${kotestVersion}")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:${kotestVersion}")
-    testImplementation("io.mockk:mockk:${mockKVersion}")}
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
+    testImplementation("io.mockk:mockk:$mockKVersion")
+}
 
 kotlin {
     compilerOptions {
@@ -98,6 +99,19 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+// Ktlint Settings
+ktlint {
+    version.set("1.5.0")
+    filter {
+        exclude("**/generated/**")
+        exclude("**/build/**")
+    }
+}
+
+tasks.matching { it.name.startsWith("runKtlint") }.configureEach {
+    mustRunAfter(tasks.named("kaptKotlin"))
+}
+
 // Querydsl Settings
 val kaptGeneratedDir = "build/generated/source/kapt/main"
 
@@ -107,7 +121,6 @@ kapt {
         arg("querydsl.entityAccessors", "true")
     }
 }
-
 
 sourceSets {
     main {

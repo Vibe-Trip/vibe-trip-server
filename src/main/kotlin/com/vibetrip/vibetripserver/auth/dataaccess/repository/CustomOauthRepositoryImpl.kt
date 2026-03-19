@@ -9,12 +9,12 @@ import com.vibetrip.vibetripserver.support.querydsl.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
 @Repository
-class CustomOauthRepositoryImpl
-    : QuerydslRepositorySupport(OauthEntity::class), CustomOauthRepository {
-
+class CustomOauthRepositoryImpl :
+    QuerydslRepositorySupport(OauthEntity::class),
+    CustomOauthRepository {
     override fun findByAccountAndProvider(
         account: String,
-        provider: OAuthProvider
+        provider: OAuthProvider,
     ): OauthEntity? =
         selectFrom(oauthEntity)
             .innerJoin(memberEntity)
@@ -22,7 +22,6 @@ class CustomOauthRepositoryImpl
             .where(
                 oauthEntity.account.eq(account),
                 oauthEntity.provider.eq(provider),
-                oauthEntity.status.eq(EntityStatus.ACTIVE)
-            )
-            .fetchOne()
+                oauthEntity.status.eq(EntityStatus.ACTIVE),
+            ).fetchOne()
 }

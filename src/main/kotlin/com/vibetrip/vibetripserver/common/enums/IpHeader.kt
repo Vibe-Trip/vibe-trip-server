@@ -1,7 +1,7 @@
 package com.vibetrip.vibetripserver.common.enums
 
 enum class IpHeader(
-    val value: String
+    val value: String,
 ) {
     X_FORWARDED_FOR("X-Forwarded-For"),
     X_REAL_IP("X-Real-IP"),

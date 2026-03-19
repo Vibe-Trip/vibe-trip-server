@@ -14,12 +14,13 @@ data class AppleLoginRequest(
     val deviceId: String,
     val name: String?,
 ) {
-    fun toNewOAuthLogin(ipAddress: String) = NewOAuthLogin.Apple(
-        authToken = identityToken,
-        provider = OAuthProvider.APPLE,
-        fcmToken = fcmToken,
-        ipAddress = IpAddress(ipAddress),
-        deviceId = deviceId,
-        name = name,
-    )
+    fun toNewOAuthLogin(ipAddress: String) =
+        NewOAuthLogin.Apple(
+            authToken = identityToken,
+            provider = OAuthProvider.APPLE,
+            fcmToken = fcmToken,
+            ipAddress = IpAddress(ipAddress),
+            deviceId = deviceId,
+            name = name,
+        )
 }

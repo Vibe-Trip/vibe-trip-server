@@ -11,6 +11,5 @@ import org.springframework.transaction.annotation.Transactional
 class MemberFinder(
     private val memberRepository: MemberRepository,
 ) {
-    fun find(memberKey: String) =
-        memberRepository.findByMemberKey(memberKey)?.toDomain() ?: throw AppException(ErrorType.NOT_FOUND_DATA)
+    fun find(memberKey: String) = memberRepository.findByMemberKey(memberKey)?.toDomain() ?: throw AppException(ErrorType.NOT_FOUND_DATA)
 }

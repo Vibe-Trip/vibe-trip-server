@@ -21,12 +21,15 @@ class KakaoAuthenticator(
 
     override val provider = OAuthProvider.KAKAO
 
-    override fun authenticate(newOAuthLogin: NewOAuthLogin) = runCatching {
-        restClient.get().uri(KAKAO_USER_INFO_URL)
-            .header(HttpHeaders.AUTHORIZATION, "$BEARER${newOAuthLogin.authToken}")
-            .retrieve()
-            .body<KakaoUser>()
-    }.getOrNull()
-        ?.toOAuthUser()
-        ?: throw AppException(ErrorType.INVALID_OAUTH_USER)
+    override fun authenticate(newOAuthLogin: NewOAuthLogin) =
+        runCatching {
+            restClient
+                .get()
+                .uri(KAKAO_USER_INFO_URL)
+                .header(HttpHeaders.AUTHORIZATION, "$BEARER${newOAuthLogin.authToken}")
+                .retrieve()
+                .body<KakaoUser>()
+        }.getOrNull()
+            ?.toOAuthUser()
+            ?: throw AppException(ErrorType.INVALID_OAUTH_USER)
 }

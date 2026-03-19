@@ -6,7 +6,7 @@ import java.net.URI
 
 @JvmInline
 value class ProfileImageUrl(
-    val value: String
+    val value: String,
 ) {
     init {
         if (value.isNotEmpty() && !isValidUrl(value)) {

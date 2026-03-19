@@ -14,22 +14,20 @@ import jakarta.persistence.Table
 class MemberDeviceEntity(
     @Column(nullable = false)
     var deviceId: String,
-
     @Column(nullable = false)
     var fcmToken: String,
-
     @Column(nullable = false)
     var memberKey: String,
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_device_id")
     var id: Long? = null,
 ) : BaseEntity() {
     companion object {
-        fun from(memberDevice: MemberDevice) = MemberDeviceEntity(
-            deviceId = memberDevice.deviceId,
-            fcmToken = memberDevice.fcmToken,
-            memberKey = memberDevice.memberKey,
-        )
+        fun from(memberDevice: MemberDevice) =
+            MemberDeviceEntity(
+                deviceId = memberDevice.deviceId,
+                fcmToken = memberDevice.fcmToken,
+                memberKey = memberDevice.memberKey,
+            )
     }
 }

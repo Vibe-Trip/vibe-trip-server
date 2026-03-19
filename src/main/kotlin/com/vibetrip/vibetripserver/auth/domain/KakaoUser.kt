@@ -16,6 +16,6 @@ data class KakaoUser(
             provider = OAuthProvider.KAKAO,
             name = kakaoAccount.profile.nickname,
             email = kakaoAccount.email,
-            profileImageUrl = kakaoAccount.profile.profileImageUrl
+            profileImageUrl = kakaoAccount.profile.profileImageUrl,
         )
 }

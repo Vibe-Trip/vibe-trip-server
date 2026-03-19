@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional
 class MemberDeviceManager(
     private val memberDeviceRepository: MemberDeviceRepository,
 ) {
-
     fun save(memberDevice: MemberDevice) {
         memberDeviceRepository.save(MemberDeviceEntity.from(memberDevice))
     }

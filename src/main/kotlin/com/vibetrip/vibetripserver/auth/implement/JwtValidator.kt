@@ -3,7 +3,12 @@ package com.vibetrip.vibetripserver.auth.implement
 import com.vibetrip.vibetripserver.auth.domain.TokenType
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
-import io.jsonwebtoken.*
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.Jws
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.MalformedJwtException
+import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.security.SecurityException
 import org.springframework.stereotype.Component
 import java.security.SignatureException
@@ -11,13 +16,16 @@ import javax.crypto.SecretKey
 
 @Component
 class JwtValidator(
-    private val secretKey: SecretKey
+    private val secretKey: SecretKey,
 ) {
     companion object {
         private const val BEARER = "Bearer "
     }
 
-    fun getSubjectIfValidWithType(token: String, expectedType: TokenType) = validate(token)
+    fun getSubjectIfValidWithType(
+        token: String,
+        expectedType: TokenType,
+    ) = validate(token)
         .payload
         .takeIf { it.get<String>(TOKEN_TYPE_CLAIM) == expectedType.name }
         ?.subject
@@ -33,7 +41,8 @@ class JwtValidator(
 
     fun validate(token: String): Jws<Claims> =
         try {
-            Jwts.parser()
+            Jwts
+                .parser()
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
@@ -48,10 +57,7 @@ class JwtValidator(
             }
         }
 
-    private fun isBearerToken(token: String) =
-        token.startsWith(BEARER)
+    private fun isBearerToken(token: String) = token.startsWith(BEARER)
 
-    private inline fun <reified T> Claims.get(claimName: String): T? {
-        return this.get(claimName, T::class.java)
-    }
+    private inline fun <reified T> Claims.get(claimName: String): T? = this.get(claimName, T::class.java)
 }

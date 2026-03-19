@@ -19,18 +19,18 @@ class JwtAuthenticationFilter(
     private val memberFinder: MemberFinder,
 ) : OncePerRequestFilter() {
     companion object {
-        private val PERMIT_URLS = listOf(
-            "/api/v1/auth/"
-        )
+        private val PERMIT_URLS =
+            listOf(
+                "/api/v1/auth/",
+            )
     }
 
-    override fun shouldNotFilter(request: HttpServletRequest) =
-        PERMIT_URLS.any { request.requestURI.startsWith(it) }
+    override fun shouldNotFilter(request: HttpServletRequest) = PERMIT_URLS.any { request.requestURI.startsWith(it) }
 
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         getTokenFromHeader(request)?.let {
             authenticate(it)
@@ -39,13 +39,13 @@ class JwtAuthenticationFilter(
         doFilter(request, response, filterChain)
     }
 
-    private fun getTokenFromHeader(request: HttpServletRequest): String? =
-        request.getHeader(HttpHeaders.AUTHORIZATION)
+    private fun getTokenFromHeader(request: HttpServletRequest): String? = request.getHeader(HttpHeaders.AUTHORIZATION)
 
     private fun authenticate(token: String) {
-        val subject = jwtValidator.getBearerTokenBody(token).let {
-            jwtValidator.getSubjectIfValidWithType(it, TokenType.ACCESS)
-        }
+        val subject =
+            jwtValidator.getBearerTokenBody(token).let {
+                jwtValidator.getSubjectIfValidWithType(it, TokenType.ACCESS)
+            }
 
         memberFinder.find(subject).run {
             val authMember = AuthMember(this, emptyMap(), authorities)

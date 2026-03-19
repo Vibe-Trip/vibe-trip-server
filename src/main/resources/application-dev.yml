@@ -1,7 +1,8 @@
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: dev
+    import: aws-secretmanager:dev/retrip
 
   servlet:
     multipart:
@@ -10,18 +11,18 @@ spring:
 
   datasource:
     hikari:
-      jdbc-url: jdbc:h2:mem:retripdb;DB_CLOSE_DELAY=-1
-      username: sa
-      password:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: ${DB_URL}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+
 
   jpa:
     properties:
       hibernate:
-        format_sql: true
-        show_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
         hbm2ddl:
-          auto: create
+          auto: validate
 
   h2:
     console:
@@ -32,7 +33,7 @@ logging:
     com.vibetrip: debug
 
 jwt:
-  secret-key: dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdA==
+  secret-key: ${JWT_SECRET_KEY}
 
 app:
   cache:

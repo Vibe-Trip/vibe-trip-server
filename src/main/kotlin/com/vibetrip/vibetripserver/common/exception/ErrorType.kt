@@ -7,7 +7,7 @@ enum class ErrorType(
     val status: HttpStatus,
     val errorCode: ErrorCode,
     val message: String,
-    val logLevel: LogLevel
+    val logLevel: LogLevel,
 ) {
     INVALID_ACCESS_PATH(HttpStatus.BAD_REQUEST, ErrorCode.E400, "잘못된 접근 경로입니다.", LogLevel.WARN),
     REQUIRED_AUTH(HttpStatus.UNAUTHORIZED, ErrorCode.E401, "리소스에 접근하기 위한 인증이 필요합니다.", LogLevel.WARN),

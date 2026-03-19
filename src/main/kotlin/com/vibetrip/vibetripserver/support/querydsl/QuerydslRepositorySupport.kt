@@ -43,11 +43,13 @@ abstract class QuerydslRepositorySupport(
 
     protected fun <T : Any> update(from: EntityPath<T>): JPAUpdateClause = jpaQueryFactory.update(from)
 
-    protected fun <T> hasNext(pageable: Pageable, content: MutableList<T?>) =
-        if (content.size > pageable.pageSize) {
-            content.removeAt(pageable.pageSize)
-            true
-        } else {
-            false
-        }
+    protected fun <T> hasNext(
+        pageable: Pageable,
+        content: MutableList<T?>,
+    ) = if (content.size > pageable.pageSize) {
+        content.removeAt(pageable.pageSize)
+        true
+    } else {
+        false
+    }
 }

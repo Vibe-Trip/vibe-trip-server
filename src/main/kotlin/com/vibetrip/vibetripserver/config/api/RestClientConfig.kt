@@ -17,16 +17,15 @@ class RestClientConfig {
 
     @Bean
     fun restClient(): RestClient =
-        RestClient.builder()
+        RestClient
+            .builder()
             .requestFactory(createFactory())
             .defaultStatusHandler(
                 { status -> status.isError },
                 { request, response ->
                     throw AppException(ErrorType.SERVER_ERROR)
-                }
-            )
-            .build()
-
+                },
+            ).build()
 
     private fun createFactory() =
         SimpleClientHttpRequestFactory().apply {

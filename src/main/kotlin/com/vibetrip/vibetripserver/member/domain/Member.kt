@@ -18,7 +18,7 @@ data class Member(
             name: String,
             email: String,
             profileImageUrl: String,
-            roles: Set<MemberRole>
+            roles: Set<MemberRole>,
         ) = Member(
             memberKey = memberKey,
             name = Name(name),

@@ -4,6 +4,8 @@ import com.vibetrip.vibetripserver.auth.dataaccess.entity.OauthEntity
 import com.vibetrip.vibetripserver.auth.domain.OAuthProvider
 
 interface CustomOauthRepository {
-
-    fun findByAccountAndProvider(account: String, provider: OAuthProvider): OauthEntity?
+    fun findByAccountAndProvider(
+        account: String,
+        provider: OAuthProvider,
+    ): OauthEntity?
 }

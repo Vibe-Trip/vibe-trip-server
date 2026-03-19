@@ -12,21 +12,19 @@ import org.springframework.transaction.annotation.Transactional
 class RefreshTokenManager(
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
-
     @Transactional(readOnly = true)
     fun findByMemberKey(memberKey: String) =
         refreshTokenRepository.findByMemberKey(memberKey)?.toDomain() ?: throw AppException(ErrorType.NOT_FOUND_DATA)
 
-    fun update(refreshToken: String, memberKey: String) =
-        refreshTokenRepository.findByMemberKey(memberKey)?.update(refreshToken) ?: refreshTokenRepository.save(
-            RefreshTokenEntity(
-                refreshToken,
-                memberKey
-            )
-        )
+    fun update(
+        refreshToken: String,
+        memberKey: String,
+    ) = refreshTokenRepository.findByMemberKey(memberKey)?.update(refreshToken) ?: refreshTokenRepository.save(
+        RefreshTokenEntity(
+            refreshToken,
+            memberKey,
+        ),
+    )
 
-
-    fun delete(id: Long) =
-        refreshTokenRepository.deleteById(id)
-
+    fun delete(id: Long) = refreshTokenRepository.deleteById(id)
 }

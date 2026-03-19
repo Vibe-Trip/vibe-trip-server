@@ -6,6 +6,7 @@ import com.vibetrip.vibetripserver.auth.domain.OAuthMember
 import com.vibetrip.vibetripserver.auth.domain.OAuthProvider
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import org.springframework.stereotype.Component
 import tools.jackson.databind.ObjectMapper
@@ -43,13 +44,7 @@ class AppleAuthenticator(
         val appleKey = appleKeys.keys.find { it.kid == kid } ?: throw AppException(ErrorType.INVALID_APPLE_KEY)
         val publicKey = generatePublicKey(appleKey)
 
-        val claims = Jwts.parser()
-            .verifyWith(publicKey)
-            .requireIssuer(ISSUER)
-            .requireAudience(AUDIENCE)
-            .build()
-            .parseSignedClaims(newOAuthLogin.authToken)
-            .payload
+        val claims = getClaims(publicKey, newOAuthLogin)
 
         return OAuthMember.of(
             account = claims.subject,
@@ -58,6 +53,24 @@ class AppleAuthenticator(
             email = claims[EMAIL_CLAIM] as? String ?: "",
             profileImageUrl = "",
         )
+    }
+
+    private fun getClaims(
+        publicKey: PublicKey,
+        newOAuthLogin: NewOAuthLogin.Apple
+    ) = runCatching {
+        Jwts.parser()
+            .verifyWith(publicKey)
+            .requireIssuer(ISSUER)
+            .requireAudience(AUDIENCE)
+            .build()
+            .parseSignedClaims(newOAuthLogin.authToken)
+            .payload
+    }.getOrElse {
+        throw when (it) {
+            is ExpiredJwtException -> AppException(ErrorType.EXPIRED_JWT)
+            else -> AppException(ErrorType.INVALID_APPLE_IDENTITY_TOKEN)
+        }
     }
 
     private fun extractKid(token: String): String = runCatching {

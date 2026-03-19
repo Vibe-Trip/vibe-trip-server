@@ -96,7 +96,7 @@ services:
       "--collation-server=utf8mb4_unicode_ci"
     ]
     networks:
-      - kitchen-log
+      - retrip
 
 networks:
   retrip:

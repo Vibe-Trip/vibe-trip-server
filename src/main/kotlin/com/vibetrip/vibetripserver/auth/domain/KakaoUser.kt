@@ -10,12 +10,11 @@ data class KakaoUser(
     val connectedAt: LocalDateTime,
     val kakaoAccount: KakaoAccount,
 ) {
-    fun toOAuthUser() =
-        OAuthMember.of(
-            account = id.toString(),
-            provider = OAuthProvider.KAKAO,
-            name = kakaoAccount.profile.nickname,
-            email = kakaoAccount.email,
-            profileImageUrl = kakaoAccount.profile.profileImageUrl
-        )
+    fun toOAuthUser() = OAuthMember.of(
+        account = id.toString(),
+        provider = OAuthProvider.KAKAO,
+        name = kakaoAccount.profile.nickname,
+        email = kakaoAccount.email,
+        profileImageUrl = kakaoAccount.profile.profileImageUrl
+    )
 }

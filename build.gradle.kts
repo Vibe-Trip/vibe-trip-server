@@ -5,7 +5,7 @@ plugins {
     kotlin("kapt")
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+    id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
 }
 
 val projectGroup: String by project
@@ -96,6 +96,19 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+// Ktlint Settings
+ktlint {
+    version.set("1.5.0")
+    filter {
+        exclude("**/generated/**")
+        exclude("**/build/**")
+    }
+}
+
+tasks.matching { it.name.startsWith("runKtlint") }.configureEach {
+    mustRunAfter(tasks.named("kaptKotlin"))
 }
 
 // Querydsl Settings

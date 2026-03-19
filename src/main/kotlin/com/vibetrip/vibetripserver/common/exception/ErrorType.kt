@@ -41,4 +41,11 @@ enum class ErrorType(
     FAILED_REQUEST_APPLE_KEYS(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2008, "Apple 공개키를 가져올 수 없습니다.", LogLevel.WARN),
     INVALID_APPLE_IDENTITY_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2009, "Apple Identity Token이 유효하지 않습니다.", LogLevel.WARN),
     INVALID_APPLE_KEY(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2010, "Apple 키에 kid가 없습니다.", LogLevel.WARN),
+
+    // Album
+    INVALID_ALBUM_REGION(HttpStatus.BAD_REQUEST, ErrorCode.E3000, "여행지는 1자 이상 15자 이하여야 합니다.", LogLevel.WARN),
+    INVALID_ALBUM_COMMENT(HttpStatus.BAD_REQUEST, ErrorCode.E3001, "코멘터리는 500자 이하여야 합니다.", LogLevel.WARN),
+    NOT_FOUND_ALBUM(HttpStatus.NOT_FOUND, ErrorCode.E3002, "앨범을 찾을 수 없습니다.", LogLevel.WARN),
+    FORBIDDEN_ALBUM(HttpStatus.FORBIDDEN, ErrorCode.E3003, "해당 앨범에 대한 권한이 없습니다.", LogLevel.WARN),
+    MUSIC_GENERATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E3004, "음악 생성에 실패했습니다.", LogLevel.ERROR),
 }

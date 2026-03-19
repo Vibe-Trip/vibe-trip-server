@@ -2,7 +2,7 @@ spring:
   config:
     activate:
       on-profile: dev
-    import: aws-secretmanager:dev/retrip
+    import: aws-secretsmanager:dev/retrip
 
   servlet:
     multipart:

@@ -1,4 +1,4 @@
-package com.didim.common.exception
+package com.vibetrip.vibetripserver.common.exception
 
 class AppException(
     val errorType: ErrorType

@@ -1,4 +1,4 @@
-package com.didim.common.exception
+package com.vibetrip.vibetripserver.common.exception
 
 data class ErrorMessage(
     val errorCode: String,

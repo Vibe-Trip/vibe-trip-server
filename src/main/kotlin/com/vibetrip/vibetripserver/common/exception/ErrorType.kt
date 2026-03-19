@@ -1,4 +1,4 @@
-package com.didim.common.exception
+package com.vibetrip.vibetripserver.common.exception
 
 import org.springframework.boot.logging.LogLevel
 import org.springframework.http.HttpStatus
@@ -21,5 +21,24 @@ enum class ErrorType(
     FILE_GENERATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "새 파일을 생성할 수 없습니다.", LogLevel.ERROR),
     FILE_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "파일을 찾을 수 없습니다.", LogLevel.ERROR),
 
-    IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "이미지 업로드에 실패했습니다.", LogLevel.ERROR)
+    IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "이미지 업로드에 실패했습니다.", LogLevel.ERROR),
+
+    // Member
+    INVALID_MEMBER_KEY(HttpStatus.BAD_REQUEST, ErrorCode.E1000, "멤버 key가 유효하지 않습니다.", LogLevel.WARN),
+    INVALID_NAME_LENGTH(HttpStatus.BAD_REQUEST, ErrorCode.E1001, "이름이 너무 깁니다.", LogLevel.WARN),
+    INVALID_EMAIL(HttpStatus.BAD_REQUEST, ErrorCode.E1002, "이메일이 유효하지 않습니다.", LogLevel.WARN),
+    INVALID_IMAGE_URL(HttpStatus.BAD_REQUEST, ErrorCode.E1003, "이미지 URL이 유효하지 않습니다.", LogLevel.WARN),
+
+    // Security
+    MALFORMED_JWT(HttpStatus.BAD_REQUEST, ErrorCode.E2000, "JWT가 손상되었습니다.", LogLevel.WARN),
+    UNSUPPORTED_JWT(HttpStatus.BAD_REQUEST, ErrorCode.E2001, "지원하지 않는 JWT 형식입니다.", LogLevel.WARN),
+    EXPIRED_JWT(HttpStatus.UNAUTHORIZED, ErrorCode.E2002, "JWT 기한이 만료되었습니다.", LogLevel.WARN),
+    INVALID_SIGNATURE(HttpStatus.BAD_REQUEST, ErrorCode.E2003, "JWT Signature 검증에 실패했습니다.", LogLevel.WARN),
+    INVALID_JWT(HttpStatus.BAD_REQUEST, ErrorCode.E2004, "JWT가 유효하지 않습니다.", LogLevel.WARN),
+    INVALID_TOKEN_METHOD(HttpStatus.BAD_REQUEST, ErrorCode.E2005, "토큰 방식이 올바르지 않습니다.", LogLevel.WARN),
+    INVALID_TOKEN_TYPE(HttpStatus.BAD_REQUEST, ErrorCode.E2006, "토큰 타입이 올바르지 않습니다.", LogLevel.WARN),
+    INVALID_OAUTH_USER(HttpStatus.BAD_REQUEST, ErrorCode.E2007, "존재하지 않는 OAuth 유저입니다.", LogLevel.WARN),
+    FAILED_REQUEST_APPLE_KEYS(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2008, "Apple 공개키를 가져올 수 없습니다.", LogLevel.WARN),
+    INVALID_APPLE_IDENTITY_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2009, "Apple Identity Token이 유효하지 않습니다.", LogLevel.WARN),
+    INVALID_APPLE_KEY(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2010, "Apple 키에 kid가 없습니다.", LogLevel.WARN),
 }

@@ -44,3 +44,13 @@ springdoc:
     enabled: true
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
+
+jwt:
+  secret-key: dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdA==
+
+app:
+  cache:
+    configs:
+      appleKeys:
+        ttl: 24h
+        max-size: 10

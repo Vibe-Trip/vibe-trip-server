@@ -1,5 +1,6 @@
 package com.vibetrip.vibetripserver.common.entity
 
+import com.vibetrip.vibetripserver.common.enums.EntityStatus
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.MappedSuperclass
@@ -21,8 +22,13 @@ abstract class BaseEntity {
     var modifiedAt: LocalDateTime = LocalDateTime.now()
 
     @Column(nullable = false)
-    var deleted: Boolean = false
+    var status: EntityStatus = EntityStatus.ACTIVE
 
     @Column
     var deletedAt: LocalDateTime? = null
+
+    fun delete() {
+        status = EntityStatus.DELETED
+        deletedAt = LocalDateTime.now()
+    }
 }

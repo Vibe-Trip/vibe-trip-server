@@ -1,8 +1,7 @@
 package com.vibetrip.vibetripserver.album.dataaccess.entity
 
 import com.vibetrip.vibetripserver.album.domain.Album
-import com.vibetrip.vibetripserver.album.domain.vo.Comment
-import com.vibetrip.vibetripserver.album.domain.vo.Region
+import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.common.entity.BaseEntity
 import jakarta.persistence.*
 import java.time.LocalDate
@@ -13,16 +12,16 @@ class AlbumEntity(
     @Column(nullable = false)
     var memberKey: String,
 
-    @Column(nullable = false, length = 15)
-    var title: String,
+    @Column(length = 15)
+    var title: String? = null,
 
     @Column(length = 255)
-    var coverImageUrl: String,
+    var coverImageUrl: String? = null,
 
     @Column(nullable = false, length = 15)
     var region: String,
 
-    @Column(columnDefinition = "TEXT", length = 500)
+    @Column(columnDefinition = "TEXT")
     var comment: String?,
 
     @Column(nullable = false)
@@ -36,34 +35,26 @@ class AlbumEntity(
     @Column(name = "album_id")
     var id: Long? = null
 ) : BaseEntity(){
-    companion object{
-        fun from(
-            memberKey: String,
-            title: String,
-            coverImageUrl: String,
-            region: String,
-            comment: String,
-            travelStartDate: LocalDate,
-            travelEndDate: LocalDate,
-        ) = AlbumEntity(
-            memberKey = memberKey,
-            title = title,
-            coverImageUrl = coverImageUrl,
-            region = region,
-            comment = comment,
-            travelStartDate = travelStartDate,
-            travelEndDate = travelEndDate,
+    companion object {
+        fun from(newAlbum: NewAlbum) = AlbumEntity(
+            memberKey = newAlbum.memberKey,
+            region = newAlbum.region.value,
+            comment = newAlbum.comment?.value,
+            travelStartDate = newAlbum.travelStartDate,
+            travelEndDate = newAlbum.travelEndDate,
         )
     }
-
-    fun toDomain() = Album(
-        id = id,
+    fun toDomain() = Album.of(
         memberKey = memberKey,
         title = title,
         coverImageUrl = coverImageUrl,
-        region = Region(region),
-        comment = comment?.let { Comment(it) },
+        region = region,
+        comment = comment,
         travelStartDate = travelStartDate,
         travelEndDate = travelEndDate,
     )
+
+    fun updateTitle(newTitle: String) {
+        title = newTitle
+    }
 }

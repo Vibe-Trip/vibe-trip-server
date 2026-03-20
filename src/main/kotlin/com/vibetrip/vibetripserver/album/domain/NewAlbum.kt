@@ -4,32 +4,37 @@ import com.vibetrip.vibetripserver.album.domain.vo.Comment
 import com.vibetrip.vibetripserver.album.domain.vo.Region
 import java.time.LocalDate
 
-data class Album(
+data class NewAlbum(
     val memberKey: String,
-    val title: String?,
-    val coverImageUrl: String?,
     val region: Region,
     val comment: Comment?,
     val travelStartDate: LocalDate,
     val travelEndDate: LocalDate,
+    val withLyrics: Boolean,
+    val vocalGender: String,
+    val genre: String,
 ){
-    companion object {
+    companion object{
         fun of(
             memberKey: String,
-            title: String?,
-            coverImageUrl: String?,
             region: String,
             comment: String?,
             travelStartDate: LocalDate,
             travelEndDate: LocalDate,
-        ) = Album(
+            withLyrics: Boolean,
+            vocalGender: String,
+            genre: String,
+        ) = NewAlbum(
             memberKey = memberKey,
-            title = title,
-            coverImageUrl = coverImageUrl,
             region = Region(region),
             comment = comment?.let { Comment(it) },
             travelStartDate = travelStartDate,
             travelEndDate = travelEndDate,
+            withLyrics = withLyrics,
+            vocalGender = vocalGender,
+            genre = genre,
         )
     }
+    val regionValue: String get() = region.value
+    val commentValue: String? get() = comment?.value
 }

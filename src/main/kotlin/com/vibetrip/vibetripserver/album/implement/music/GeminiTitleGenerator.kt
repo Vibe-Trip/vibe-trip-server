@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class GeminiTitleGenerator : TitleGenerator {
-    override fun generate(newAlbumMusic: NewAlbumMusic): String {
+    override fun generateTitle(newAlbumMusic: NewAlbumMusic): String {
         // TODO: Gemini API 연동
         // 프롬프트 구성 재료:
         // - newAlbumMusic.region   (여행지)

@@ -1,6 +1,6 @@
 package com.vibetrip.vibetripserver.album.dataaccess.entity
 
-import com.vibetrip.vibetripserver.album.domain.GenerateMusic
+import com.vibetrip.vibetripserver.album.domain.GeneratedMusic
 import com.vibetrip.vibetripserver.album.domain.NewAlbumMusic
 import com.vibetrip.vibetripserver.common.entity.BaseEntity
 import jakarta.persistence.Column
@@ -33,7 +33,7 @@ class AlbumMusicEntity(
     companion object {
         fun from(
             newAlbumMusic: NewAlbumMusic,
-            music: GenerateMusic,
+            music: GeneratedMusic,
         ) = AlbumMusicEntity(
             title = music.title,
             resourceUrl = music.resourceUrl,

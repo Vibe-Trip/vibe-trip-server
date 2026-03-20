@@ -18,11 +18,11 @@ class AlbumMusicService(
     private val titleGenerator: TitleGenerator,
 ) {
     @Async
-    fun generate(newAlbumMusic: NewAlbumMusic) {
+    fun processAlbumMusic(newAlbumMusic: NewAlbumMusic) {
         try {
-            val title = titleGenerator.generate(newAlbumMusic)
+            val title = titleGenerator.generateTitle(newAlbumMusic)
             albumManager.updateTitle(newAlbumMusic.albumId, title)
-            val music = musicGenerator.generate(newAlbumMusic)
+            val music = musicGenerator.generateMusic(newAlbumMusic)
             albumMusicManager.save(newAlbumMusic, music)
         } catch (e: AppException) {
             logger.error { "[음악 생성 실패] albumId=${newAlbumMusic.albumId} | ${e.message}" }

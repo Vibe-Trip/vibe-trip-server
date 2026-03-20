@@ -29,14 +29,14 @@ class AlbumServiceTest :
 
             When("정상적으로 앨범을 생성하면") {
                 every { albumManager.create(newAlbum) } returns albumId
-                every { albumMusicService.generate(any<NewAlbumMusic>()) } returns Unit
+                every { albumMusicService.processAlbumMusic(any<NewAlbumMusic>()) } returns Unit
 
                 Then("albumId가 담긴 AlbumCreateResponse를 반환한다") {
                     val result = albumService.create(newAlbum, null)
 
                     result shouldBe AlbumCreateResponse(albumId = albumId)
                     verify { albumManager.create(newAlbum) }
-                    verify { albumMusicService.generate(any()) }
+                    verify { albumMusicService.processAlbumMusic(any()) }
                 }
             }
         }

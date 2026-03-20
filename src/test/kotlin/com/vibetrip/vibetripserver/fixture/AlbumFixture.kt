@@ -1,6 +1,6 @@
 package com.vibetrip.vibetripserver.fixture
 
-import com.vibetrip.vibetripserver.album.domain.GenerateMusic
+import com.vibetrip.vibetripserver.album.domain.GeneratedMusic
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.NewAlbumMusic
 import java.time.LocalDate
@@ -34,5 +34,5 @@ object AlbumFixture {
     fun generatedMusic(
         title: String = "도쿄의 밤",
         resourceUrl: String = "https://mock-music-url.mp3",
-    ) = GenerateMusic(title = title, resourceUrl = resourceUrl)
+    ) = GeneratedMusic(title = title, resourceUrl = resourceUrl)
 }

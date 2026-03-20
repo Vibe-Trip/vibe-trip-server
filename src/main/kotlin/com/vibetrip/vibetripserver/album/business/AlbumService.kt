@@ -17,7 +17,7 @@ class AlbumService(
         image: MultipartFile?,
     ): AlbumCreateResponse {
         val albumId = albumManager.create(newAlbum)
-        albumMusicService.generate(NewAlbumMusic.of(albumId, newAlbum))
+        albumMusicService.processAlbumMusic(NewAlbumMusic.of(albumId, newAlbum))
         return AlbumCreateResponse(albumId = albumId)
     }
 }

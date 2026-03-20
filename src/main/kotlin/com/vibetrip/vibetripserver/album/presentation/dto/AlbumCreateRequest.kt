@@ -2,6 +2,7 @@ package com.vibetrip.vibetripserver.album.presentation.dto
 
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
@@ -10,11 +11,13 @@ data class AlbumCreateRequest(
     @field:Size(max = 15)
     val region: String,
 
+    @field:NotNull
     val travelStartDate: LocalDate,
+    @field:NotNull
     val travelEndDate: LocalDate,
 
     val withLyrics: Boolean = false,
-    val vocalGender: String,
+    val vocalGender: String? = null,
 
     @field:NotBlank
     val genre: String,

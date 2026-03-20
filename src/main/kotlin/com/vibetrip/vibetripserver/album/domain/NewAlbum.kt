@@ -11,7 +11,7 @@ data class NewAlbum(
     val travelStartDate: LocalDate,
     val travelEndDate: LocalDate,
     val withLyrics: Boolean,
-    val vocalGender: String,
+    val vocalGender: String?,
     val genre: String,
 ){
     companion object{
@@ -22,7 +22,7 @@ data class NewAlbum(
             travelStartDate: LocalDate,
             travelEndDate: LocalDate,
             withLyrics: Boolean,
-            vocalGender: String,
+            vocalGender: String?,
             genre: String,
         ) = NewAlbum(
             memberKey = memberKey,

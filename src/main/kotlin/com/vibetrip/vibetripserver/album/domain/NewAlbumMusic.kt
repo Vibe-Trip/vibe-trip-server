@@ -5,7 +5,7 @@ data class NewAlbumMusic(
     val region: String,
     val genre: String,
     val withLyrics: Boolean,
-    val vocalGender: String,
+    val vocalGender: String?,
     val comment: String?,
 ) {
     companion object {

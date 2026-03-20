@@ -21,8 +21,8 @@ class AlbumMusicEntity(
     @Column(nullable = false)
     val withLyrics: Boolean,
 
-    @Column(nullable = false)
-    val vocalGender: String,
+    @Column(nullable = true)
+    val vocalGender: String?,
 
     @Column(nullable = false)
     val albumId: Long,

@@ -20,5 +20,4 @@ class SunoMusicGenerator : MusicGenerator {
             resourceUrl = "임시 노래 url",
         )
     }
-
 }

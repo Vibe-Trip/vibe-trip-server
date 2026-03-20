@@ -15,7 +15,7 @@ class AlbumMusicService(
     private val albumManager: AlbumManager,
     private val albumMusicManager: AlbumMusicManager,
     private val musicGenerator: MusicGenerator,
-    private val titleGenerator: TitleGenerator
+    private val titleGenerator: TitleGenerator,
 ) {
     @Async
     fun generate(newAlbumMusic: NewAlbumMusic) {

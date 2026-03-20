@@ -13,12 +13,15 @@ import org.springframework.stereotype.Component
 class AlbumManager(
     private val albumRepository: AlbumRepository,
 ) {
-    fun create(newAlbum: NewAlbum): Long =
-        albumRepository.save(AlbumEntity.from(newAlbum)).id!!
+    fun create(newAlbum: NewAlbum): Long = albumRepository.save(AlbumEntity.from(newAlbum)).id!!
 
-    fun updateTitle(albumId: Long, title: String) {
-        albumRepository.findById(albumId)
-            .orElseThrow { AppException(ErrorType.NOT_FOUND_ALBUM)}
+    fun updateTitle(
+        albumId: Long,
+        title: String,
+    ) {
+        albumRepository
+            .findById(albumId)
+            .orElseThrow { AppException(ErrorType.NOT_FOUND_ALBUM) }
             .updateTitle(title)
     }
 }

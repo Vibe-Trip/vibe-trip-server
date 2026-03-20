@@ -12,31 +12,32 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 
+class AlbumServiceTest :
+    BehaviorSpec({
+        val albumManager = mockk<AlbumManager>()
+        val albumMusicService = mockk<AlbumMusicService>()
 
-class AlbumServiceTest : BehaviorSpec({
-    val albumManager = mockk<AlbumManager>()
-    val albumMusicService = mockk<AlbumMusicService>()
+        val albumService =
+            AlbumService(
+                albumManager = albumManager,
+                albumMusicService = albumMusicService,
+            )
 
-    val albumService = AlbumService(
-        albumManager = albumManager,
-        albumMusicService = albumMusicService
-    )
+        Given("앨범 생성을 요청하는 상황에서") {
+            val newAlbum = AlbumFixture.newAlbum()
+            val albumId = 1L
 
-    Given("앨범 생성을 요청하는 상황에서") {
-        val newAlbum = AlbumFixture.newAlbum()
-        val albumId = 1L
+            When("정상적으로 앨범을 생성하면") {
+                every { albumManager.create(newAlbum) } returns albumId
+                every { albumMusicService.generate(any<NewAlbumMusic>()) } returns Unit
 
-        When("정상적으로 앨범을 생성하면") {
-            every { albumManager.create(newAlbum) } returns albumId
-            every {albumMusicService.generate(any< NewAlbumMusic >())} returns Unit
+                Then("albumId가 담긴 AlbumCreateResponse를 반환한다") {
+                    val result = albumService.create(newAlbum, null)
 
-            Then("albumId가 담긴 AlbumCreateResponse를 반환한다") {
-                val result = albumService.create(newAlbum, null)
-
-                result shouldBe AlbumCreateResponse(albumId = albumId)
-                verify { albumManager.create(newAlbum) }
-                verify { albumMusicService.generate(any()) }
+                    result shouldBe AlbumCreateResponse(albumId = albumId)
+                    verify { albumManager.create(newAlbum) }
+                    verify { albumMusicService.generate(any()) }
+                }
             }
         }
-    }
-})
+    })

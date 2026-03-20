@@ -1,6 +1,5 @@
 package com.vibetrip.vibetripserver.album.implement.music
 
-import com.vibetrip.vibetripserver.album.domain.GenerateMusic
 import com.vibetrip.vibetripserver.album.domain.NewAlbumMusic
 import org.springframework.stereotype.Component
 

@@ -10,29 +10,26 @@ data class AlbumCreateRequest(
     @field:NotBlank
     @field:Size(max = 15)
     val region: String,
-
     @field:NotNull
     val travelStartDate: LocalDate,
     @field:NotNull
     val travelEndDate: LocalDate,
-
     val withLyrics: Boolean = false,
     val vocalGender: String? = null,
-
     @field:NotBlank
     val genre: String,
-
     @field:Size(max = 500)
     val comment: String? = null,
 ) {
-    fun toNewAlbum(memberKey: String) = NewAlbum.of(
-        memberKey = memberKey,
-        region = region,
-        comment = comment,
-        travelStartDate = travelStartDate,
-        travelEndDate = travelEndDate,
-        withLyrics = withLyrics,
-        vocalGender = vocalGender,
-        genre = genre,
-    )
+    fun toNewAlbum(memberKey: String) =
+        NewAlbum.of(
+            memberKey = memberKey,
+            region = region,
+            comment = comment,
+            travelStartDate = travelStartDate,
+            travelEndDate = travelEndDate,
+            withLyrics = withLyrics,
+            vocalGender = vocalGender,
+            genre = genre,
+        )
 }

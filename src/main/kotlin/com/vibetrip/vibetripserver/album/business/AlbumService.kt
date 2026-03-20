@@ -12,7 +12,10 @@ class AlbumService(
     private val albumManager: AlbumManager,
     private val albumMusicService: AlbumMusicService,
 ) {
-    fun  create(newAlbum: NewAlbum, image: MultipartFile?): AlbumCreateResponse {
+    fun create(
+        newAlbum: NewAlbum,
+        image: MultipartFile?,
+    ): AlbumCreateResponse {
         val albumId = albumManager.create(newAlbum)
         albumMusicService.generate(NewAlbumMusic.of(albumId, newAlbum))
         return AlbumCreateResponse(albumId = albumId)

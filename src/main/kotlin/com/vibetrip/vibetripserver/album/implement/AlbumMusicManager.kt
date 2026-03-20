@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component
 class AlbumMusicManager(
     private val albumMusicRepository: AlbumMusicRepository,
 ) {
-    fun save(newAlbumMusic: NewAlbumMusic, music: GenerateMusic) {
+    fun save(
+        newAlbumMusic: NewAlbumMusic,
+        music: GenerateMusic,
+    ) {
         albumMusicRepository.save(AlbumMusicEntity.from(newAlbumMusic, music))
     }
 }

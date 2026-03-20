@@ -13,8 +13,8 @@ data class NewAlbum(
     val withLyrics: Boolean,
     val vocalGender: String?,
     val genre: String,
-){
-    companion object{
+) {
+    companion object {
         fun of(
             memberKey: String,
             region: String,
@@ -35,6 +35,7 @@ data class NewAlbum(
             genre = genre,
         )
     }
+
     val regionValue: String get() = region.value
     val commentValue: String? get() = comment?.value
 }

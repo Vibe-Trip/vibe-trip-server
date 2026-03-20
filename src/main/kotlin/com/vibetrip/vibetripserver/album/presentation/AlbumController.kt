@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/api/v1/albums")
 class AlbumController(
     private val albumService: AlbumService,
-){
+) {
     @Operation(summary = "앨범생성", description = "새로운 앨범을 생성합니다.")
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createAlbum(

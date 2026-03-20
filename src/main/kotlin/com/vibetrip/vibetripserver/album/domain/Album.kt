@@ -12,7 +12,7 @@ data class Album(
     val comment: Comment?,
     val travelStartDate: LocalDate,
     val travelEndDate: LocalDate,
-){
+) {
     companion object {
         fun of(
             memberKey: String,

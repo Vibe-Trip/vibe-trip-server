@@ -9,14 +9,16 @@ data class NewAlbumMusic(
     val comment: String?,
 ) {
     companion object {
-        fun of(albumId: Long, newAlbum: NewAlbum) = NewAlbumMusic(
+        fun of(
+            albumId: Long,
+            newAlbum: NewAlbum,
+        ) = NewAlbumMusic(
             albumId = albumId,
             region = newAlbum.regionValue,
             genre = newAlbum.genre,
             withLyrics = newAlbum.withLyrics,
             vocalGender = newAlbum.vocalGender,
             comment = newAlbum.commentValue,
-
         )
     }
 }

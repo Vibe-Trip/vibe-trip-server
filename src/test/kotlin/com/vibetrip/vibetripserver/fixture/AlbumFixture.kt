@@ -10,11 +10,11 @@ object AlbumFixture {
         memberKey: String = "member-key-123",
         region: String = "도쿄",
         comment: String? = "행복했던 여행",
-        travelStartDate: LocalDate = LocalDate.of(2026,1,1),
-        travelEndDate: LocalDate = LocalDate.of(2026,2,1),
+        travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),
+        travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
         withLyrics: Boolean = false,
         vocalGender: String? = null,
-        genre: String = "POP"
+        genre: String = "POP",
     ) = NewAlbum.of(
         memberKey = memberKey,
         region = region,
@@ -24,7 +24,7 @@ object AlbumFixture {
         withLyrics = withLyrics,
         vocalGender = vocalGender,
         genre = genre,
-        )
+    )
 
     fun newAlbumMusic(
         albumId: Long = 1L,
@@ -35,5 +35,4 @@ object AlbumFixture {
         title: String = "도쿄의 밤",
         resourceUrl: String = "https://mock-music-url.mp3",
     ) = GenerateMusic(title = title, resourceUrl = resourceUrl)
-
 }

@@ -1,3 +1,5 @@
 package com.vibetrip.vibetripserver.album.presentation.dto
 
-data class AlbumCreateResponse()
+data class AlbumCreateResponse(
+    val id: Long,
+)

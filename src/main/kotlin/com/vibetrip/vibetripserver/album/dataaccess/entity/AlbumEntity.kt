@@ -46,6 +46,7 @@ class AlbumEntity(
 
     fun toDomain() =
         Album.of(
+            albumId = id!!,
             memberKey = memberKey,
             title = title,
             coverImageUrl = coverImageUrl,

@@ -5,6 +5,7 @@ import com.vibetrip.vibetripserver.album.domain.vo.Region
 import java.time.LocalDate
 
 data class Album(
+    val albumId: Long,
     val memberKey: String,
     val title: String?,
     val coverImageUrl: String?,
@@ -15,6 +16,7 @@ data class Album(
 ) {
     companion object {
         fun of(
+            albumId: Long,
             memberKey: String,
             title: String?,
             coverImageUrl: String?,
@@ -23,6 +25,7 @@ data class Album(
             travelStartDate: LocalDate,
             travelEndDate: LocalDate,
         ) = Album(
+            albumId = albumId,
             memberKey = memberKey,
             title = title,
             coverImageUrl = coverImageUrl,

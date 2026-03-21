@@ -3,8 +3,8 @@ package com.vibetrip.vibetripserver.album
 import com.vibetrip.vibetripserver.album.business.AlbumMusicService
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMusicManager
-import com.vibetrip.vibetripserver.album.implement.music.MusicGenerator
-import com.vibetrip.vibetripserver.album.implement.music.TitleGenerator
+import com.vibetrip.vibetripserver.album.implement.ai.MusicGenerator
+import com.vibetrip.vibetripserver.album.implement.ai.TitleGenerator
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.fixture.AlbumFixture

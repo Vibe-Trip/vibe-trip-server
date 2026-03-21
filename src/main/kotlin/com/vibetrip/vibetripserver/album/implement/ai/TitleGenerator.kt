@@ -1,4 +1,4 @@
-package com.vibetrip.vibetripserver.album.implement.music
+package com.vibetrip.vibetripserver.album.implement.ai
 
 import com.vibetrip.vibetripserver.album.domain.NewAlbumMusic
 

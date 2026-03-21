@@ -3,8 +3,8 @@ package com.vibetrip.vibetripserver.album.business
 import com.vibetrip.vibetripserver.album.domain.NewAlbumMusic
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMusicManager
-import com.vibetrip.vibetripserver.album.implement.music.MusicGenerator
-import com.vibetrip.vibetripserver.album.implement.music.TitleGenerator
+import com.vibetrip.vibetripserver.album.implement.ai.MusicGenerator
+import com.vibetrip.vibetripserver.album.implement.ai.TitleGenerator
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.log.logger
 import org.springframework.scheduling.annotation.Async

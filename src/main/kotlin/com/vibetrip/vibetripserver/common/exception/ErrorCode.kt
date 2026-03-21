@@ -27,4 +27,13 @@ enum class ErrorCode {
     E2008,
     E2009,
     E2010,
+
+    // AlbumLog
+    E4000,
+
+    // AlbumLogImage
+    E5000,
+
+    // AlbumMember
+    E6000,
 }

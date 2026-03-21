@@ -1,7 +1,7 @@
 package com.vibetrip.vibetripserver.album.presentation
 
 import com.vibetrip.vibetripserver.album.business.AlbumService
-import com.vibetrip.vibetripserver.album.presentation.dto.AlbumCreateRequest
+import com.vibetrip.vibetripserver.album.presentation.dto.request.AlbumCreateRequest
 import com.vibetrip.vibetripserver.member.domain.Member
 import com.vibetrip.vibetripserver.support.response.ApiResponse
 import com.vibetrip.vibetripserver.support.security.annotation.AuthMember

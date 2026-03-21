@@ -1,4 +1,4 @@
-package com.vibetrip.vibetripserver.album.presentation.dto
+package com.vibetrip.vibetripserver.album.presentation.dto.request
 
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import jakarta.validation.constraints.NotBlank

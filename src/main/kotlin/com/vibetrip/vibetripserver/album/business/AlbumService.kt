@@ -3,7 +3,7 @@ package com.vibetrip.vibetripserver.album.business
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.NewAlbumMusic
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
-import com.vibetrip.vibetripserver.album.presentation.dto.AlbumCreateResponse
+import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 

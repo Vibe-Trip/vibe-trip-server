@@ -4,7 +4,7 @@ import com.vibetrip.vibetripserver.album.business.AlbumMusicService
 import com.vibetrip.vibetripserver.album.business.AlbumService
 import com.vibetrip.vibetripserver.album.domain.NewAlbumMusic
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
-import com.vibetrip.vibetripserver.album.presentation.dto.AlbumCreateResponse
+import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
 import com.vibetrip.vibetripserver.fixture.AlbumFixture
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe

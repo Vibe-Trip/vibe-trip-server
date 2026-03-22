@@ -27,6 +27,12 @@ spring:
     console:
       enabled: true
 
+  cloud:
+    gcp:
+      storage:
+        bucket: bucket
+        project-id: project
+
 logging:
   level:
     com.vibetrip: debug

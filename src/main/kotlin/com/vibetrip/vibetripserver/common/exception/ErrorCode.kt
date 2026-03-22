@@ -31,4 +31,7 @@ enum class ErrorCode {
     // Album
     E3000,
     E3001,
+
+    // AlbumLog
+    E4000,
 }

@@ -1,6 +1,7 @@
 package com.vibetrip.vibetripserver.member.presentation
 
 import com.vibetrip.vibetripserver.album.business.AlbumService
+import com.vibetrip.vibetripserver.albumlog.business.AlbumLogService
 import com.vibetrip.vibetripserver.member.business.MemberService
 import com.vibetrip.vibetripserver.member.domain.Member
 import com.vibetrip.vibetripserver.member.presentation.dto.response.MemberResponse
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 class MemberController (
     private val memberService: MemberService,
     private val albumService: AlbumService,
+    private val albumLogService: AlbumLogService,
 ){
     @Operation(summary = "프로필 조회", description = "멤버의 프로필을 조회합니다.")
     @GetMapping("/{memberKey}")
@@ -27,7 +29,8 @@ class MemberController (
     ): ResponseEntity<ApiResponse<MemberResponse>> {
         val member = memberService.getMember(memberKey)
         val albumCount = albumService.getAlbumCount(memberKey)
+        val albumLogCount = albumLogService.getAlbumLogCount(memberKey)
 
-        return ResponseEntity.ok(ApiResponse.success(MemberResponse(member.nameValue,member.emailValue,member.profileImageUrlValue,albumCount,0)))
+        return ResponseEntity.ok(ApiResponse.success(MemberResponse(member.nameValue,member.emailValue,member.profileImageUrlValue,albumCount,albumLogCount)))
     }
 }

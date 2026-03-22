@@ -42,6 +42,9 @@ enum class ErrorType(
     INVALID_APPLE_IDENTITY_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2009, "Apple Identity Token이 유효하지 않습니다.", LogLevel.WARN),
     INVALID_APPLE_KEY(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2010, "Apple 키에 kid가 없습니다.", LogLevel.WARN),
 
+    // AlbumLog
+    INVALID_DESCRIPTION_LENGTH(HttpStatus.BAD_REQUEST, ErrorCode.E4000, "설명이 너무 깁니다.", LogLevel.WARN),
+
     // Album
     INVALID_ALBUM_REGION(HttpStatus.BAD_REQUEST, ErrorCode.E3000, "여행지는 1자 이상 15자 이하여야 합니다.", LogLevel.WARN),
     INVALID_ALBUM_COMMENT(HttpStatus.BAD_REQUEST, ErrorCode.E3001, "코멘터리는 500자 이하여야 합니다.", LogLevel.WARN),

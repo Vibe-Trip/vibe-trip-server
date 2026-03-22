@@ -20,9 +20,9 @@ class AlbumMemberEntity(
     @Column(name = "album_log_id")
     var id: Long? = null,
 ) : BaseEntity() {
-
-    fun toDomain() = AlbumMember(
-        albumId = albumId,
-        memberKey = memberKey,
-    )
+    fun toDomain() =
+        AlbumMember(
+            albumId = albumId,
+            memberKey = memberKey,
+        )
 }

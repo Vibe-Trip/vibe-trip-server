@@ -7,8 +7,9 @@ data class AlbumLogRegisterRequest(
     @field:NotBlank(message = "설명은 필수입니다.")
     val description: String,
 ) {
-    fun toNewAlbumLog(albumId: Long) = NewAlbumLog.of(
-        description = description,
-        albumId = albumId,
-    )
+    fun toNewAlbumLog(albumId: Long) =
+        NewAlbumLog.of(
+            description = description,
+            albumId = albumId,
+        )
 }

@@ -11,11 +11,15 @@ import org.springframework.transaction.annotation.Transactional
 class AlbumMemberManager(
     private val albumMemberRepository: AlbumMemberRepository,
 ) {
+    fun exists(
+        albumId: Long,
+        memberKey: String,
+    ) = albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey)
 
-    fun exists(albumId: Long, memberKey: String) =
-        albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey)
-
-    fun validateMember(albumId: Long, memberKey: String) {
+    fun validateMember(
+        albumId: Long,
+        memberKey: String,
+    ) {
         if (!exists(albumId, memberKey)) {
             throw AppException(ErrorType.NOT_ALBUM_MEMBER)
         }

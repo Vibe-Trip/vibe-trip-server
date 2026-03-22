@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class GCPConfig {
-
     @Bean
     fun storage(): Storage = StorageOptions.getDefaultInstance().service
 }

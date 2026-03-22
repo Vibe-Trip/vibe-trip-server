@@ -23,6 +23,7 @@ enum class ErrorType(
     FILE_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "파일을 찾을 수 없습니다.", LogLevel.ERROR),
 
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "이미지 업로드에 실패했습니다.", LogLevel.ERROR),
+    INVALID_IMAGE_TYPE(HttpStatus.BAD_REQUEST, ErrorCode.E400, "지원하지 않는 이미지 형식입니다.", LogLevel.WARN),
 
     // Member
     INVALID_MEMBER_KEY(HttpStatus.BAD_REQUEST, ErrorCode.E1000, "멤버 key가 유효하지 않습니다.", LogLevel.WARN),

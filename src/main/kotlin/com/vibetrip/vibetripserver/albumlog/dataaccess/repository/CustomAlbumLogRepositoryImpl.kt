@@ -5,13 +5,13 @@ import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.QAlbumLogEntity.al
 import com.vibetrip.vibetripserver.common.enums.EntityStatus
 import com.vibetrip.vibetripserver.support.querydsl.QuerydslRepositorySupport
 
-class CustomAlbumLogRepositoryImpl : QuerydslRepositorySupport(AlbumLogEntity::class), CustomAlbumLogRepository {
-
+class CustomAlbumLogRepositoryImpl :
+    QuerydslRepositorySupport(AlbumLogEntity::class),
+    CustomAlbumLogRepository {
     override fun find(id: Long) =
         selectFrom(albumLogEntity)
             .where(
                 albumLogEntity.id.eq(id),
                 albumLogEntity.status.eq(EntityStatus.ACTIVE),
-            )
-            .fetchOne()
+            ).fetchOne()
 }

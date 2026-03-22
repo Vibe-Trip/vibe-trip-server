@@ -18,5 +18,4 @@ class AlbumLogImageEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_log_image_id")
     var id: Long? = null,
-) : BaseEntity() {
-}
+) : BaseEntity()

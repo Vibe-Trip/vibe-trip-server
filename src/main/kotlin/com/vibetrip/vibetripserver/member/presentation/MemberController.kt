@@ -1,0 +1,30 @@
+package com.vibetrip.vibetripserver.member.presentation
+
+import com.vibetrip.vibetripserver.member.business.MemberService
+import com.vibetrip.vibetripserver.member.domain.Member
+import com.vibetrip.vibetripserver.member.presentation.dto.response.MemberResponse
+import com.vibetrip.vibetripserver.support.response.ApiResponse
+import com.vibetrip.vibetripserver.support.security.annotation.AuthMember
+import io.swagger.v3.oas.annotations.Operation
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+@RequestMapping("/api/v1/members")
+class MemberController (
+    private val memberService: MemberService
+){
+    @Operation(summary = "프로필 조회", description = "멤버의 프로필을 조회합니다.")
+    @GetMapping("/{memberKey}")
+    fun getMemberProfile (
+        @PathVariable memberKey: String,
+        @AuthMember member: Member
+    ): ResponseEntity<ApiResponse<MemberResponse>> {
+        val member = memberService.getMember(memberKey)
+
+        return ResponseEntity.ok(ApiResponse.success(MemberResponse(member.nameValue,member.emailValue,member.profileImageUrlValue,0,0)))
+    }
+}

@@ -27,4 +27,8 @@ enum class ErrorCode {
     E2008,
     E2009,
     E2010,
+
+    // Album
+    E3000,
+    E3001,
 }

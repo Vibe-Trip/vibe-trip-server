@@ -4,6 +4,6 @@ data class MemberResponse (
     val name: String,
     val email: String,
     val profilImage : String,
-    val albumCount: Int,
-    val albumLogCount: Int,
+    val albumCount: Long,
+    val albumLogCount: Long,
 )

@@ -44,20 +44,4 @@ class AlbumEntity(
                 coverImageUrl = newAlbum.coverImageUrl,
             )
     }
-
-    fun toDomain() =
-        Album.of(
-            albumId = id!!,
-            memberKey = memberKey,
-            title = title,
-            coverImageUrl = coverImageUrl,
-            region = region,
-            comment = comment,
-            travelStartDate = travelStartDate,
-            travelEndDate = travelEndDate,
-        )
-
-    fun updateTitle(newTitle: String) {
-        title = newTitle
-    }
 }

@@ -35,11 +35,4 @@ class AlbumLogEntity(
                 albumId = newAlbumLog.albumId,
             )
     }
-
-    fun toDomain() =
-        AlbumLog.of(
-            id = id!!,
-            description = description,
-            albumId = albumId,
-        )
 }

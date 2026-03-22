@@ -8,6 +8,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class AlbumLogCounter(
     private val albumLogRepository: AlbumLogRepository,
-){
+) {
     fun count(memberKey: String) = albumLogRepository.countByMemberKey(memberKey)
 }

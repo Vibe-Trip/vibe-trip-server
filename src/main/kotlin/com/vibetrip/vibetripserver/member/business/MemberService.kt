@@ -8,7 +8,5 @@ import org.springframework.stereotype.Service
 class MemberService(
     private val memberFinder: MemberFinder,
 ) {
-    fun getMember(memberKey: String): Member {
-        return memberFinder.find(memberKey)
-    }
+    fun getMember(memberKey: String): Member = memberFinder.find(memberKey)
 }

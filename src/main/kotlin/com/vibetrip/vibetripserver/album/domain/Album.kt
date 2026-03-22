@@ -1,7 +1,7 @@
 package com.vibetrip.vibetripserver.album.domain
 
-import com.vibetrip.vibetripserver.album.domain.vo.Region
 import com.vibetrip.vibetripserver.album.domain.vo.Comment
+import com.vibetrip.vibetripserver.album.domain.vo.Region
 import java.time.LocalDate
 
 data class Album(
@@ -12,7 +12,7 @@ data class Album(
     val comment: Comment?,
     val travelStartDate: LocalDate,
     val travelEndDate: LocalDate,
-    val memberKey: String
+    val memberKey: String,
 ) {
     companion object {
         fun of(

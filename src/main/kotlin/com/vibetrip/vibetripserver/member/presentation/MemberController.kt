@@ -22,17 +22,27 @@ class MemberController(
     private val memberService: MemberService,
     private val albumService: AlbumService,
     private val albumLogService: AlbumLogService,
-){
+) {
     @Operation(summary = "프로필 조회", description = "멤버의 프로필을 조회합니다.")
     @GetMapping("/{memberKey}")
     fun getMemberProfile(
         @PathVariable memberKey: String,
-        @AuthMember member: Member
+        @AuthMember member: Member,
     ): ResponseEntity<ApiResponse<MemberResponse>> {
         val member = memberService.getMember(memberKey)
         val albumCount = albumService.getAlbumCount(memberKey)
         val albumLogCount = albumLogService.getAlbumLogCount(memberKey)
 
-        return ResponseEntity.ok(ApiResponse.success(MemberResponse(member.nameValue,member.emailValue,member.profileImageUrlValue,albumCount,albumLogCount)))
+        return ResponseEntity.ok(
+            ApiResponse.success(
+                MemberResponse(
+                    name = member.nameValue,
+                    email = member.emailValue,
+                    profileImage = member.profileImageUrlValue,
+                    albumCount = albumCount,
+                    albumLogCount = albumLogCount,
+                ),
+            ),
+        )
     }
 }

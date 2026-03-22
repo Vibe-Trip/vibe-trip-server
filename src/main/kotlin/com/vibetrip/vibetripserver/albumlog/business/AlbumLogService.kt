@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service
 @Service
 class AlbumLogService(
     private val albumLogCounter: AlbumLogCounter,
-){
-    fun getAlbumLogCount(memberKey: String): Long {
-        return albumLogCounter.count(memberKey)
-    }
+) {
+    fun getAlbumLogCount(memberKey: String): Long = albumLogCounter.count(memberKey)
 }

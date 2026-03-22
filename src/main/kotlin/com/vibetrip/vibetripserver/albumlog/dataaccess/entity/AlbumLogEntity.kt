@@ -13,8 +13,8 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
-@Entity
 @Table(name = "album_log")
+@Entity
 class AlbumLogEntity(
     @Column(nullable = false)
     var description: String,
@@ -27,17 +27,19 @@ class AlbumLogEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_log_id")
     var id: Long? = null,
-): BaseEntity() {
+) : BaseEntity() {
     companion object {
-        fun from(newAlbumLog: NewAlbumLog) = AlbumLogEntity(
-            description = newAlbumLog.descriptionValue,
-            albumId = newAlbumLog.albumId,
-        )
+        fun from(newAlbumLog: NewAlbumLog) =
+            AlbumLogEntity(
+                description = newAlbumLog.descriptionValue,
+                albumId = newAlbumLog.albumId,
+            )
     }
 
-    fun toDomain() = AlbumLog.of(
-        id = id!!,
-        description = description,
-        albumId = albumId,
-    )
+    fun toDomain() =
+        AlbumLog.of(
+            id = id!!,
+            description = description,
+            albumId = albumId,
+        )
 }

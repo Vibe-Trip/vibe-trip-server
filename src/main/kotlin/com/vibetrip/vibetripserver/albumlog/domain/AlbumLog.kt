@@ -20,5 +20,5 @@ data class AlbumLog(
     }
 
     val descriptionValue: String
-    get() = description.value
+        get() = description.value
 }

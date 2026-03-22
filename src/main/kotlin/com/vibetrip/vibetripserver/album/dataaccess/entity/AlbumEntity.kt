@@ -11,8 +11,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.LocalDate
 
-@Entity
 @Table(name = "album")
+@Entity
 class AlbumEntity(
     @Column(nullable = false)
     var memberKey: String,
@@ -32,7 +32,7 @@ class AlbumEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_id")
     var id: Long? = null,
-): BaseEntity() {
+) : BaseEntity() {
     companion object {
         fun from(newAlbum: NewAlbum) =
             AlbumEntity(

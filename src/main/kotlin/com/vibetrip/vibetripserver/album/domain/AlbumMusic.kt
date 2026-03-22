@@ -1,6 +1,7 @@
 package com.vibetrip.vibetripserver.album.domain
 
-data class GeneratedMusic(
+data class AlbumMusic(
     val title: String,
     val resourceUrl: String,
+    val lyricsUrl: String = "",
 )

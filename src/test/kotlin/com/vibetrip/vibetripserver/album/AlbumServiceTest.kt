@@ -1,6 +1,5 @@
 package com.vibetrip.vibetripserver.album
 
-import com.vibetrip.vibetripserver.album.business.AlbumMusicService
 import com.vibetrip.vibetripserver.album.business.AlbumService
 import com.vibetrip.vibetripserver.album.domain.NewAlbumMusic
 import com.vibetrip.vibetripserver.album.implement.AlbumManager

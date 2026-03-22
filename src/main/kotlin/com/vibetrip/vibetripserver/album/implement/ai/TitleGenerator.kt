@@ -1,7 +1,16 @@
 package com.vibetrip.vibetripserver.album.implement.ai
 
-import com.vibetrip.vibetripserver.album.domain.NewAlbumMusic
+import org.springframework.stereotype.Component
 
-interface TitleGenerator {
-    fun generateTitle(newAlbumMusic: NewAlbumMusic): String
+@Component
+class TitleGenerator {
+    fun generateTitle(
+        region: String,
+        comment: String,
+        genre: String,
+        imageKeywords: String,
+    ): String {
+        // TODO: Gemini API 연동 (region + comment + genre + imageKeywords → 제목 생성)
+        return ""
+    }
 }

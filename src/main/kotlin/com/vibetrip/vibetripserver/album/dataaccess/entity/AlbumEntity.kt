@@ -16,14 +16,14 @@ import java.time.LocalDate
 class AlbumEntity(
     @Column(nullable = false)
     var memberKey: String,
-    @Column(length = 15)
-    var title: String? = null,
-    @Column(length = 255)
-    var coverImageUrl: String? = null,
+    @Column(nullable = false, length = 15)
+    var title: String = "",
+    @Column(nullable = false, columnDefinition = "TEXT")
+    var coverImageUrl: String = "",
     @Column(nullable = false, length = 15)
     var region: String,
-    @Column(columnDefinition = "TEXT")
-    var comment: String?,
+    @Column(nullable = false, columnDefinition = "TEXT")
+    var comment: String = "" ,
     @Column(nullable = false)
     var travelStartDate: LocalDate,
     @Column(nullable = false)
@@ -34,13 +34,14 @@ class AlbumEntity(
     var id: Long? = null,
 ) : BaseEntity() {
     companion object {
-        fun from(newAlbum: NewAlbum) =
+        fun from(newAlbum: NewAlbum, coverImageUrl: String) =
             AlbumEntity(
                 memberKey = newAlbum.memberKey,
+                coverImageUrl = coverImageUrl,
                 region = newAlbum.region.value,
-                comment = newAlbum.comment?.value,
-                travelStartDate = newAlbum.travelStartDate,
-                travelEndDate = newAlbum.travelEndDate,
+                comment = newAlbum.comment.value,
+                travelStartDate = newAlbum.travelDate.startDate,
+                travelEndDate = newAlbum.travelDate.endDate,
             )
     }
 

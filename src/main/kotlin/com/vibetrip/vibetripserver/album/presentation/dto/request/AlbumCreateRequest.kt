@@ -1,6 +1,7 @@
 package com.vibetrip.vibetripserver.album.presentation.dto.request
 
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
+import com.vibetrip.vibetripserver.album.domain.VocalGender
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -15,11 +16,11 @@ data class AlbumCreateRequest(
     @field:NotNull
     val travelEndDate: LocalDate,
     val withLyrics: Boolean = false,
-    val vocalGender: String? = null,
+    val vocalGender: VocalGender = VocalGender.N,
     @field:NotBlank
     val genre: String,
     @field:Size(max = 500)
-    val comment: String? = null,
+    val comment: String = "",
 ) {
     fun toNewAlbum(memberKey: String) =
         NewAlbum.of(

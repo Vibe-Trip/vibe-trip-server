@@ -48,4 +48,6 @@ enum class ErrorType(
     NOT_FOUND_ALBUM(HttpStatus.NOT_FOUND, ErrorCode.E3002, "앨범을 찾을 수 없습니다.", LogLevel.WARN),
     FORBIDDEN_ALBUM(HttpStatus.FORBIDDEN, ErrorCode.E3003, "해당 앨범에 대한 권한이 없습니다.", LogLevel.WARN),
     MUSIC_GENERATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E3004, "음악 생성에 실패했습니다.", LogLevel.ERROR),
+    INVALID_VOCAL_GENDER(HttpStatus.BAD_REQUEST, ErrorCode.E3005, "가사가 있을 경우 보컬 성별을 선택해야 합니다.", LogLevel.WARN),
+    INVALID_ALBUM_TRAVEL_DATE(HttpStatus.BAD_REQUEST, ErrorCode.E3006, "여행 종료일은 시작일 이후여야 합니다.", LogLevel.WARN),
 }

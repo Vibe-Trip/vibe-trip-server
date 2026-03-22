@@ -5,11 +5,10 @@ import com.vibetrip.vibetripserver.member.implement.MemberFinder
 import org.springframework.stereotype.Service
 
 @Service
-class MemberService (
+class MemberService(
     private val memberFinder: MemberFinder,
 ) {
     fun getMember(memberKey: String): Member {
-
         return memberFinder.find(memberKey)
     }
 }

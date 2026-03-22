@@ -8,22 +8,24 @@ import com.vibetrip.vibetripserver.member.presentation.dto.response.MemberRespon
 import com.vibetrip.vibetripserver.support.response.ApiResponse
 import com.vibetrip.vibetripserver.support.security.annotation.AuthMember
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+@Tag(name = "Member", description = "멤버 관련 API")
 @RestController
 @RequestMapping("/api/v1/members")
-class MemberController (
+class MemberController(
     private val memberService: MemberService,
     private val albumService: AlbumService,
     private val albumLogService: AlbumLogService,
 ){
     @Operation(summary = "프로필 조회", description = "멤버의 프로필을 조회합니다.")
     @GetMapping("/{memberKey}")
-    fun getMemberProfile (
+    fun getMemberProfile(
         @PathVariable memberKey: String,
         @AuthMember member: Member
     ): ResponseEntity<ApiResponse<MemberResponse>> {

@@ -4,11 +4,10 @@ import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogCounter
 import org.springframework.stereotype.Service
 
 @Service
-class AlbumLogService (
+class AlbumLogService(
     private val albumLogCounter: AlbumLogCounter,
 ){
-    fun getAlbumLogCount(memberKey : String) : Long {
-
+    fun getAlbumLogCount(memberKey: String): Long {
         return albumLogCounter.count(memberKey)
     }
 }

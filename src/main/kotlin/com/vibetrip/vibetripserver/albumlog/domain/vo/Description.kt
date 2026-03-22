@@ -5,7 +5,7 @@ import com.vibetrip.vibetripserver.common.exception.ErrorType
 
 @JvmInline
 value class Description(
-        val value: String
+    val value: String,
 ) {
     companion object {
         private const val DESCRIPTION_MAX_LENGTH = 500

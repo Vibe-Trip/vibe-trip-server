@@ -32,7 +32,7 @@ class AlbumEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_id")
     var id: Long? = null,
-) : BaseEntity() {
+): BaseEntity() {
     companion object {
         fun from(newAlbum: NewAlbum) =
             AlbumEntity(

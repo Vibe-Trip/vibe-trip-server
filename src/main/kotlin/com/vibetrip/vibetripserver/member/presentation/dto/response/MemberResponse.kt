@@ -1,9 +1,9 @@
 package com.vibetrip.vibetripserver.member.presentation.dto.response
 
-data class MemberResponse (
+data class MemberResponse(
     val name: String,
     val email: String,
-    val profilImage : String,
+    val profileImage: String,
     val albumCount: Long,
     val albumLogCount: Long,
 )

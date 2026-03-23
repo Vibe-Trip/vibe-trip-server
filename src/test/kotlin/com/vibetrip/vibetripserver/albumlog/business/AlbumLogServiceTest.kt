@@ -11,16 +11,20 @@ import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogManager
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
+import com.vibetrip.vibetripserver.common.util.TempFileStorage
 import com.vibetrip.vibetripserver.fixture.AlbumLogFixture
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.slot
+import io.mockk.unmockkObject
 import io.mockk.verify
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.web.multipart.MultipartFile
+import java.nio.file.Path
 
 class AlbumLogServiceTest :
     BehaviorSpec(
@@ -49,6 +53,14 @@ class AlbumLogServiceTest :
                     albumLogImageOutboxProcessor = albumLogImageOutboxProcessor,
                 )
 
+            beforeSpec {
+                mockkObject(TempFileStorage)
+            }
+
+            afterSpec {
+                unmockkObject(TempFileStorage)
+            }
+
             Given("앨범 로그를 등록하는 상황에서") {
                 val memberKey = "member-key-123"
                 val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L)
@@ -58,6 +70,11 @@ class AlbumLogServiceTest :
                 When("앨범 멤버이고 유효한 이미지라면") {
                     every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
                     every { albumLogRepository.save(any()) } returns savedAlbumLogEntity
+                    every { TempFileStorage.save(any()) } returnsMany
+                        listOf(
+                            Path.of("/tmp/uploads/test1.jpg"),
+                            Path.of("/tmp/uploads/test2.jpg"),
+                        )
                     every { albumLogImageOutboxRepository.save(any()) } returnsMany
                         listOf(
                             AlbumLogFixture.albumLogImageOutbox(id = 1L, albumLogId = 1L),

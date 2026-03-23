@@ -25,12 +25,12 @@ object AlbumLogFixture {
 
     fun albumLogImageOutbox(
         id: Long = 1L,
-        imageData: ByteArray = "test-image-data".toByteArray(),
+        tempFilePath: String = "/tmp/uploads/test.jpg",
         contentType: String = "image/jpeg",
         originalFileName: String = "test.jpg",
         albumLogId: Long = 1L,
     ) = AlbumLogImageOutbox(
-        imageData = imageData,
+        tempFilePath = tempFilePath,
         contentType = contentType,
         originalFileName = originalFileName,
         albumLogId = albumLogId,

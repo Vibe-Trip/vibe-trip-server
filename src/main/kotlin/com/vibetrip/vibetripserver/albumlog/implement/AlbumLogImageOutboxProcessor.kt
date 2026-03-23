@@ -11,10 +11,10 @@ import com.vibetrip.vibetripserver.common.util.TempFileStorage
 import com.vibetrip.vibetripserver.common.util.validateImageContentType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.nio.file.Path
-import kotlin.io.path.exists
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.nio.file.Path
+import kotlin.io.path.exists
 
 @Transactional
 @Component
@@ -44,20 +44,22 @@ class AlbumLogImageOutboxProcessor(
         val contentType = validateImageContentType(image.contentType)
         val path = TempFileStorage.save(image).also { savedPaths.add(it) }
 
-        return outboxRepository.save(
-            AlbumLogImageOutbox(
-                tempFilePath = path.toString(),
-                contentType = contentType,
-                originalFileName = path.fileName.toString(),
-                albumLogId = albumLogId,
-            )
-        ).id!!
+        return outboxRepository
+            .save(
+                AlbumLogImageOutbox(
+                    tempFilePath = path.toString(),
+                    contentType = contentType,
+                    originalFileName = path.fileName.toString(),
+                    albumLogId = albumLogId,
+                ),
+            ).id!!
     }
 
     fun processOutbox(outboxId: Long) {
         val item = outboxRepository.findByIdOrNull(outboxId) ?: return
-        val tempFilePath = Path.of(item.tempFilePath).takeIf { it.exists() }
-            ?: return handleFailure(item, "임시 파일 없음")
+        val tempFilePath =
+            Path.of(item.tempFilePath).takeIf { it.exists() }
+                ?: return handleFailure(item, "임시 파일 없음")
 
         runCatching {
             item.toImageData().use { googleImageUploader.uploadImage(it) }
@@ -68,7 +70,10 @@ class AlbumLogImageOutboxProcessor(
         }.onFailure { handleFailure(item, "업로드 실패: ${it.message}") }
     }
 
-    private fun handleFailure(item: AlbumLogImageOutbox, reason: String) {
+    private fun handleFailure(
+        item: AlbumLogImageOutbox,
+        reason: String,
+    ) {
         logger.error { "[AlbumLogImage] $reason: outboxId=${item.id}" }
         item.status = ImageUploadStatus.FAILED
         outboxRepository.save(item)

@@ -7,9 +7,9 @@ import java.time.LocalDate
 data class TravelDate(
     val startDate: LocalDate,
     val endDate: LocalDate,
-    ) {
+) {
     init {
-        if(startDate.isAfter(endDate)) {
+        if (startDate.isAfter(endDate)) {
             throw AppException(ErrorType.INVALID_ALBUM_TRAVEL_DATE)
         }
     }

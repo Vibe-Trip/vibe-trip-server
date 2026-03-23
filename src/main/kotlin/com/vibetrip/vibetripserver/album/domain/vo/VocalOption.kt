@@ -12,5 +12,8 @@ data class VocalOption(
         if (withLyrics && vocalGender == VocalGender.N) {
             throw AppException(ErrorType.INVALID_VOCAL_GENDER)
         }
+        if(!withLyrics && vocalGender != VocalGender.N) {
+            throw AppException(ErrorType.INVALID_VOCAL_GENDER)
+        }
     }
 }

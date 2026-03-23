@@ -43,11 +43,12 @@ enum class ErrorType(
     INVALID_APPLE_KEY(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2010, "Apple 키에 kid가 없습니다.", LogLevel.WARN),
 
     // Album
-    INVALID_ALBUM_REGION(HttpStatus.BAD_REQUEST, ErrorCode.E3000, "여행지는 1자 이상 15자 이하여야 합니다.", LogLevel.WARN),
-    INVALID_ALBUM_COMMENT(HttpStatus.BAD_REQUEST, ErrorCode.E3001, "코멘터리는 500자 이하여야 합니다.", LogLevel.WARN),
+    INVALID_ALBUM_REGION(HttpStatus.BAD_REQUEST, ErrorCode.E3000, "여행지가 너무 깁니다.", LogLevel.WARN),
+    INVALID_ALBUM_COMMENT(HttpStatus.BAD_REQUEST, ErrorCode.E3001, "코멘트가 너무 갑나다.", LogLevel.WARN),
     NOT_FOUND_ALBUM(HttpStatus.NOT_FOUND, ErrorCode.E3002, "앨범을 찾을 수 없습니다.", LogLevel.WARN),
     FORBIDDEN_ALBUM(HttpStatus.FORBIDDEN, ErrorCode.E3003, "해당 앨범에 대한 권한이 없습니다.", LogLevel.WARN),
     MUSIC_GENERATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E3004, "음악 생성에 실패했습니다.", LogLevel.ERROR),
     INVALID_VOCAL_GENDER(HttpStatus.BAD_REQUEST, ErrorCode.E3005, "가사가 있을 경우 보컬 성별을 선택해야 합니다.", LogLevel.WARN),
     INVALID_ALBUM_TRAVEL_DATE(HttpStatus.BAD_REQUEST, ErrorCode.E3006, "여행 종료일은 시작일 이후여야 합니다.", LogLevel.WARN),
+    INVALID_GENRE_LYRICS_MISMATCH(HttpStatus.BAD_REQUEST, ErrorCode.E3007, "가사 여부와 장르 조합이 맞지 않습니다.", LogLevel.WARN),
 }

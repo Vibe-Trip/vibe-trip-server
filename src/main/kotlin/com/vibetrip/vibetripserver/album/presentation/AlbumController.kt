@@ -29,7 +29,6 @@ class AlbumController(
         @AuthMember member: Member,
         @RequestPart image: MultipartFile,
         @Valid @RequestPart request: AlbumCreateRequest,
-    ): ResponseEntity<ApiResponse<AlbumCreateResponse>> {
-        return ResponseEntity.ok(ApiResponse.success(albumService.create(request.toNewAlbum(member.memberKey), image)))
-    }
+    ): ResponseEntity<ApiResponse<AlbumCreateResponse>> =
+        ResponseEntity.ok(ApiResponse.success(albumService.create(request.toNewAlbum(member.memberKey), image)))
 }

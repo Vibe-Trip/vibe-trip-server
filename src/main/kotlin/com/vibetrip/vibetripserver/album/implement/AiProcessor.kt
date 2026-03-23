@@ -24,12 +24,13 @@ class AiProcessor(
         newAlbum: NewAlbum,
         imageKeywords: String,
     ) {
-        titleGenerator.generateTitle(
-            region = newAlbum.region.value,
-            comment = newAlbum.comment.value,
-            genre = newAlbum.genre,
-            imageKeywords = imageKeywords,
-        ).also { title -> albumManager.updateTitle(albumId, title) }
+        titleGenerator
+            .generateTitle(
+                region = newAlbum.region.value,
+                comment = newAlbum.comment.value,
+                genre = newAlbum.genre.value.name,
+                imageKeywords = imageKeywords,
+            ).also { title -> albumManager.updateTitle(albumId, title) }
     }
 
     @Async
@@ -42,7 +43,8 @@ class AiProcessor(
             musicGenerator.generateMusic(
                 region = newAlbum.region.value,
                 comment = newAlbum.comment.value,
-                genre = newAlbum.genre,
+                genre = newAlbum.genre.value.name,
+                genreDescription = newAlbum.genre.value.description,
                 vocalGender = newAlbum.vocalOption.vocalGender,
                 withLyrics = newAlbum.vocalOption.withLyrics,
                 imageKeywords = imageKeywords,

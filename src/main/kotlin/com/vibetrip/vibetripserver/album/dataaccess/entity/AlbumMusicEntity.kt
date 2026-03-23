@@ -1,6 +1,7 @@
 package com.vibetrip.vibetripserver.album.dataaccess.entity
 
 import com.vibetrip.vibetripserver.album.domain.AlbumMusic
+import com.vibetrip.vibetripserver.album.domain.GenreType
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.VocalGender
 import com.vibetrip.vibetripserver.common.entity.BaseEntity
@@ -20,8 +21,9 @@ class AlbumMusicEntity(
     val title: String,
     @Column(nullable = false, columnDefinition = "TEXT")
     val resourceUrl: String,
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val genre: String,
+    val genre: GenreType,
     @Column(nullable = false)
     val withLyrics: Boolean,
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -44,7 +46,8 @@ class AlbumMusicEntity(
         ) = AlbumMusicEntity(
             title = music.title,
             resourceUrl = music.resourceUrl,
-            genre = newAlbum.genre,
+            lyrics = music.lyrics,
+            genre = newAlbum.genre.value,
             withLyrics = newAlbum.vocalOption.withLyrics,
             vocalGender = newAlbum.vocalOption.vocalGender,
             albumId = albumId,

@@ -1,6 +1,7 @@
 package com.vibetrip.vibetripserver.album.domain
 
 import com.vibetrip.vibetripserver.album.domain.vo.Comment
+import com.vibetrip.vibetripserver.album.domain.vo.Genre
 import com.vibetrip.vibetripserver.album.domain.vo.Region
 import com.vibetrip.vibetripserver.album.domain.vo.TravelDate
 import com.vibetrip.vibetripserver.album.domain.vo.VocalOption
@@ -12,7 +13,7 @@ data class NewAlbum(
     val comment: Comment,
     val travelDate: TravelDate,
     val vocalOption: VocalOption,
-    val genre: String,
+    val genre: Genre,
 ) {
     companion object {
         fun of(
@@ -23,14 +24,14 @@ data class NewAlbum(
             travelEndDate: LocalDate,
             withLyrics: Boolean,
             vocalGender: VocalGender = VocalGender.N,
-            genre: String,
+            genre: GenreType,
         ) = NewAlbum(
             memberKey = memberKey,
             region = Region(region),
             comment = Comment(comment),
             travelDate = TravelDate(travelStartDate, travelEndDate),
             vocalOption = VocalOption(withLyrics, vocalGender),
-            genre = genre,
+            genre = Genre.of(genre, withLyrics),
         )
     }
 }

@@ -10,6 +10,7 @@ class MusicGenerator {
         region: String,
         comment: String,
         genre: String,
+        genreDescription: String,
         vocalGender: VocalGender,
         withLyrics: Boolean,
         imageKeywords: String,

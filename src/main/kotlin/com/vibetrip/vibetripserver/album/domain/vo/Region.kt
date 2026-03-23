@@ -8,7 +8,7 @@ value class Region(
     val value: String,
 ) {
     companion object {
-        private const val MAX_REGION_LENGTH = 15
+        private const val MAX_REGION_LENGTH = 20
     }
 
     init {

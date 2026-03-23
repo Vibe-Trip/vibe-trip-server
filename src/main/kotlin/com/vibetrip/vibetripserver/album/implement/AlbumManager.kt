@@ -13,8 +13,10 @@ import org.springframework.stereotype.Component
 class AlbumManager(
     private val albumRepository: AlbumRepository,
 ) {
-    fun create(newAlbum: NewAlbum, coverImageUrl: String): Long =
-        albumRepository.save(AlbumEntity.from(newAlbum, coverImageUrl)).id!!
+    fun create(
+        newAlbum: NewAlbum,
+        coverImageUrl: String,
+    ): Long = albumRepository.save(AlbumEntity.from(newAlbum, coverImageUrl)).id!!
 
     fun updateTitle(
         albumId: Long,

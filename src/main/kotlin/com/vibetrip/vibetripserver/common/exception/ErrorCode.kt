@@ -36,4 +36,5 @@ enum class ErrorCode {
     E3004,
     E3005,
     E3006,
+    E3007,
 }

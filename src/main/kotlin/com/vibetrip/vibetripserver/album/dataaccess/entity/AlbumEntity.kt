@@ -20,10 +20,10 @@ class AlbumEntity(
     var title: String = "",
     @Column(nullable = false, columnDefinition = "TEXT")
     var coverImageUrl: String = "",
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 20)
     var region: String,
     @Column(nullable = false, columnDefinition = "TEXT")
-    var comment: String = "" ,
+    var comment: String = "",
     @Column(nullable = false)
     var travelStartDate: LocalDate,
     @Column(nullable = false)
@@ -34,15 +34,17 @@ class AlbumEntity(
     var id: Long? = null,
 ) : BaseEntity() {
     companion object {
-        fun from(newAlbum: NewAlbum, coverImageUrl: String) =
-            AlbumEntity(
-                memberKey = newAlbum.memberKey,
-                coverImageUrl = coverImageUrl,
-                region = newAlbum.region.value,
-                comment = newAlbum.comment.value,
-                travelStartDate = newAlbum.travelDate.startDate,
-                travelEndDate = newAlbum.travelDate.endDate,
-            )
+        fun from(
+            newAlbum: NewAlbum,
+            coverImageUrl: String,
+        ) = AlbumEntity(
+            memberKey = newAlbum.memberKey,
+            coverImageUrl = coverImageUrl,
+            region = newAlbum.region.value,
+            comment = newAlbum.comment.value,
+            travelStartDate = newAlbum.travelDate.startDate,
+            travelEndDate = newAlbum.travelDate.endDate,
+        )
     }
 
     fun toDomain() =

@@ -16,7 +16,7 @@ class ApiControllerAdvice {
     @ExceptionHandler(AppException::class)
     fun handleAppException(e: AppException): ResponseEntity<ApiResponse<Unit>> {
         logAppException(e)
-        return ResponseEntity(ApiResponse.error(e.errorType, e.message), e.errorType.status)
+        return ResponseEntity(ApiResponse.error(e.errorType, e.errorData), e.errorType.status)
     }
 
     @ExceptionHandler(Exception::class)

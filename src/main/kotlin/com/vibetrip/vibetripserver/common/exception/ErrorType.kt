@@ -18,10 +18,12 @@ enum class ErrorType(
     TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, ErrorCode.E429, "너무 많은 요청을 보냈습니다.", LogLevel.WARN),
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "알 수 없는 오류가 발생했습니다.", LogLevel.ERROR),
 
+    FILE_NAME_IS_NULL(HttpStatus.BAD_REQUEST, ErrorCode.E500, "파일명은 null일 수 없습니다.", LogLevel.ERROR),
     FILE_GENERATE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "새 파일을 생성할 수 없습니다.", LogLevel.ERROR),
     FILE_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "파일을 찾을 수 없습니다.", LogLevel.ERROR),
 
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "이미지 업로드에 실패했습니다.", LogLevel.ERROR),
+    INVALID_IMAGE_TYPE(HttpStatus.BAD_REQUEST, ErrorCode.E400, "지원하지 않는 이미지 형식입니다.", LogLevel.WARN),
 
     // Member
     INVALID_MEMBER_KEY(HttpStatus.BAD_REQUEST, ErrorCode.E1000, "멤버 key가 유효하지 않습니다.", LogLevel.WARN),
@@ -41,4 +43,13 @@ enum class ErrorType(
     FAILED_REQUEST_APPLE_KEYS(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2008, "Apple 공개키를 가져올 수 없습니다.", LogLevel.WARN),
     INVALID_APPLE_IDENTITY_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2009, "Apple Identity Token이 유효하지 않습니다.", LogLevel.WARN),
     INVALID_APPLE_KEY(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E2010, "Apple 키에 kid가 없습니다.", LogLevel.WARN),
+
+    // AlbumLog
+    INVALID_DESCRIPTION_LENGTH(HttpStatus.BAD_REQUEST, ErrorCode.E4000, "설명이 너무 깁니다.", LogLevel.WARN),
+
+    // AlbumLogImage
+    INVALID_IMAGE_NAME(HttpStatus.BAD_REQUEST, ErrorCode.E5000, "이미지 파일 이름은 null일 수 없습니다.", LogLevel.WARN),
+
+    // AlbumMember
+    NOT_ALBUM_MEMBER(HttpStatus.BAD_REQUEST, ErrorCode.E6000, "앨범 구성원이 아닙니다.", LogLevel.WARN),
 }

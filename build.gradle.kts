@@ -75,6 +75,10 @@ dependencies {
     // AWS
     implementation("io.awspring.cloud:spring-cloud-aws-starter-secrets-manager:4.0.0")
 
+    // GCP
+    runtimeOnly("com.google.cloud:spring-cloud-gcp-starter-storage:8.0.1")
+    implementation("com.google.cloud:spring-cloud-gcp-storage:8.0.1")
+
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-validation-test")

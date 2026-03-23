@@ -1,6 +1,7 @@
 package com.vibetrip.vibetripserver.fixture
 
 import com.vibetrip.vibetripserver.album.domain.AlbumMusic
+import com.vibetrip.vibetripserver.album.domain.GenreType
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.VocalGender
 import java.time.LocalDate
@@ -14,7 +15,7 @@ object AlbumFixture {
         travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
         withLyrics: Boolean = false,
         vocalGender: VocalGender = VocalGender.N,
-        genre: String = "POP",
+        genre: GenreType = GenreType.CLASSICAL,
     ) = NewAlbum.of(
         memberKey = memberKey,
         region = region,

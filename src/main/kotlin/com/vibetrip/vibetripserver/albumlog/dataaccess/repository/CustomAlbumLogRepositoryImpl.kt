@@ -1,6 +1,5 @@
 package com.vibetrip.vibetripserver.albumlog.dataaccess.repository
 
-
 import com.vibetrip.vibetripserver.album.dataaccess.entity.QAlbumEntity.albumEntity
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.AlbumLogEntity
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.QAlbumLogEntity.albumLogEntity

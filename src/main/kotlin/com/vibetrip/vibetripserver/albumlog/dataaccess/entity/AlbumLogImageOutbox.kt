@@ -9,16 +9,15 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.Lob
 import jakarta.persistence.Table
-import java.io.ByteArrayInputStream
+import java.nio.file.Files
+import java.nio.file.Path
 
 @Table(name = "album_log_image_outbox")
 @Entity
 class AlbumLogImageOutbox(
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    var imageData: ByteArray,
+    @Column(nullable = false)
+    var tempFilePath: String,
     @Column(nullable = false)
     var contentType: String,
     @Column(nullable = false)
@@ -34,7 +33,7 @@ class AlbumLogImageOutbox(
 ) {
     fun toImageData() =
         ImageData(
-            data = ByteArrayInputStream(imageData),
+            data = Files.newInputStream(Path.of(tempFilePath)),
             contentType = contentType,
             originalFilename = originalFileName,
         )

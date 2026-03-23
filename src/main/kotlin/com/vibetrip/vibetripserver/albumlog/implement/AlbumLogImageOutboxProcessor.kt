@@ -7,9 +7,12 @@ import com.vibetrip.vibetripserver.albumlog.dataaccess.repository.AlbumLogImageR
 import com.vibetrip.vibetripserver.albumlog.domain.ImageUploadStatus
 import com.vibetrip.vibetripserver.common.log.logger
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
+import com.vibetrip.vibetripserver.common.util.TempFileStorage
 import com.vibetrip.vibetripserver.common.util.validateImageContentType
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import java.nio.file.Path
+import kotlin.io.path.exists
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 
@@ -23,31 +26,51 @@ class AlbumLogImageOutboxProcessor(
     fun saveOutbox(
         images: List<MultipartFile>,
         albumLogId: Long,
-    ) = images.map {
-        val contentType = validateImageContentType(it.contentType)
-        outboxRepository
-            .save(
-                AlbumLogImageOutbox(
-                    imageData = it.bytes,
-                    contentType = contentType,
-                    originalFileName = it.originalFilename ?: "",
-                    albumLogId = albumLogId,
-                ),
-            ).id!!
+    ): List<Long> {
+        val savedPaths = mutableListOf<Path>()
+
+        return runCatching {
+            images.map { saveImage(it, albumLogId, savedPaths) }
+        }.onFailure {
+            savedPaths.forEach(TempFileStorage::delete)
+        }.getOrThrow()
+    }
+
+    private fun saveImage(
+        image: MultipartFile,
+        albumLogId: Long,
+        savedPaths: MutableList<Path>,
+    ): Long {
+        val contentType = validateImageContentType(image.contentType)
+        val path = TempFileStorage.save(image).also { savedPaths.add(it) }
+
+        return outboxRepository.save(
+            AlbumLogImageOutbox(
+                tempFilePath = path.toString(),
+                contentType = contentType,
+                originalFileName = path.fileName.toString(),
+                albumLogId = albumLogId,
+            )
+        ).id!!
     }
 
     fun processOutbox(outboxId: Long) {
         val item = outboxRepository.findByIdOrNull(outboxId) ?: return
+        val tempFilePath = Path.of(item.tempFilePath).takeIf { it.exists() }
+            ?: return handleFailure(item, "임시 파일 없음")
 
         runCatching {
-            googleImageUploader.uploadImage(item.toImageData())
-        }.onSuccess {
-            albumLogImageRepository.save(AlbumLogImageEntity(it, item.albumLogId))
+            item.toImageData().use { googleImageUploader.uploadImage(it) }
+        }.onSuccess { url ->
+            albumLogImageRepository.save(AlbumLogImageEntity(url, item.albumLogId))
             outboxRepository.delete(item)
-        }.onFailure {
-            logger.error { "[AlbumLogImage] 이미지 업로드 실패: outboxId=${item.id} | cause=${it.message}" }
-            item.status = ImageUploadStatus.FAILED
-            outboxRepository.save(item)
-        }
+            TempFileStorage.delete(tempFilePath)
+        }.onFailure { handleFailure(item, "업로드 실패: ${it.message}") }
+    }
+
+    private fun handleFailure(item: AlbumLogImageOutbox, reason: String) {
+        logger.error { "[AlbumLogImage] $reason: outboxId=${item.id}" }
+        item.status = ImageUploadStatus.FAILED
+        outboxRepository.save(item)
     }
 }

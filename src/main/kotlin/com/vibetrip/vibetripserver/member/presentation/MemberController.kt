@@ -24,14 +24,13 @@ class MemberController(
     private val albumLogService: AlbumLogService,
 ) {
     @Operation(summary = "프로필 조회", description = "멤버의 프로필을 조회합니다.")
-    @GetMapping("/{memberKey}")
+    @GetMapping("/profile")
     fun getMemberProfile(
-        @PathVariable memberKey: String,
         @AuthMember member: Member,
     ): ResponseEntity<ApiResponse<MemberResponse>> {
-        val member = memberService.getMember(memberKey)
-        val albumCount = albumService.getAlbumCount(memberKey)
-        val albumLogCount = albumLogService.getAlbumLogCount(memberKey)
+        val member = memberService.getMember(member.memberKey)
+        val albumCount = albumService.getAlbumCount(member.memberKey)
+        val albumLogCount = albumLogService.getAlbumLogCount(member.memberKey)
 
         return ResponseEntity.ok(
             ApiResponse.success(

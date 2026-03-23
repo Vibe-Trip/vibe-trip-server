@@ -44,7 +44,7 @@ enum class ErrorType(
 
     // Album
     INVALID_ALBUM_REGION(HttpStatus.BAD_REQUEST, ErrorCode.E3000, "여행지가 너무 깁니다.", LogLevel.WARN),
-    INVALID_ALBUM_COMMENT(HttpStatus.BAD_REQUEST, ErrorCode.E3001, "코멘트가 너무 갑나다.", LogLevel.WARN),
+    INVALID_ALBUM_COMMENT(HttpStatus.BAD_REQUEST, ErrorCode.E3001, "코멘트가 너무 깁나다.", LogLevel.WARN),
     NOT_FOUND_ALBUM(HttpStatus.NOT_FOUND, ErrorCode.E3002, "앨범을 찾을 수 없습니다.", LogLevel.WARN),
     FORBIDDEN_ALBUM(HttpStatus.FORBIDDEN, ErrorCode.E3003, "해당 앨범에 대한 권한이 없습니다.", LogLevel.WARN),
     MUSIC_GENERATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E3004, "음악 생성에 실패했습니다.", LogLevel.ERROR),

@@ -1,40 +1,24 @@
 package com.vibetrip.vibetripserver.common.exception
 
 enum class ErrorCode {
-    E400,
-    E401,
-    E403,
-    E404,
-    E409,
-    E429,
+    E400, E401, E403, E404, E409, E429,
     E500,
 
     // Member
-    E1000,
-    E1001,
-    E1002,
-    E1003,
+    E1000, E1001, E1002, E1003,
 
     // Security
-    E2000,
-    E2001,
-    E2002,
-    E2003,
-    E2004,
-    E2005,
-    E2006,
-    E2007,
-    E2008,
-    E2009,
-    E2010,
+    E2000, E2001, E2002, E2003, E2004, E2005, E2006, E2007, E2008, E2009, E2010,
 
     // Album
-    E3000,
-    E3001,
-    E3002,
-    E3003,
-    E3004,
-    E3005,
-    E3006,
-    E3007,
+    E3000, E3001, E3002, E3003, E3004, E3005, E3006, E3007,
+
+    // AlbumLog
+    E4000,
+
+    // AlbumLogImage
+    E5000,
+
+    // AlbumMember
+    E6000,
 }

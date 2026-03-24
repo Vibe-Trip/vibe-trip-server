@@ -4,7 +4,12 @@ import com.vibetrip.vibetripserver.albumlog.domain.AlbumLog
 import com.vibetrip.vibetripserver.albumlog.domain.AlbumLogImage
 import com.vibetrip.vibetripserver.albumlog.domain.NewAlbumLog
 import com.vibetrip.vibetripserver.common.entity.BaseEntity
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 
 @Table(name = "album_log")
 @Entity

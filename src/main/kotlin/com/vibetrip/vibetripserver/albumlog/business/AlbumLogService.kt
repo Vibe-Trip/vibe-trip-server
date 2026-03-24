@@ -1,11 +1,14 @@
 package com.vibetrip.vibetripserver.albumlog.business
 
 import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
+import com.vibetrip.vibetripserver.albumlog.domain.AlbumLog
 import com.vibetrip.vibetripserver.albumlog.domain.NewAlbumLog
 import com.vibetrip.vibetripserver.albumlog.domain.event.AlbumLogImageEvent
 import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogCounter
 import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogImageOutboxProcessor
 import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogManager
+import com.vibetrip.vibetripserver.support.paging.Cursorable
+import com.vibetrip.vibetripserver.support.paging.Slice
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -37,4 +40,14 @@ class AlbumLogService(
     }
 
     fun getAlbumLogCount(memberKey: String): Long = albumLogCounter.count(memberKey)
+    
+    fun findAlbumLogs(
+        albumId: Long,
+        cursorable: Cursorable<Long>,
+        memberKey: String,
+    ): Slice<AlbumLog> {
+        albumMemberManager.validateMember(albumId, memberKey)
+
+        return albumLogManager.findAlbumLogs(albumId, cursorable)
+    }
 }

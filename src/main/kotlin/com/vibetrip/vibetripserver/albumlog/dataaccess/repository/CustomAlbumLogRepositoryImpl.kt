@@ -4,6 +4,8 @@ import com.vibetrip.vibetripserver.album.dataaccess.entity.QAlbumEntity.albumEnt
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.AlbumLogEntity
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.QAlbumLogEntity.albumLogEntity
 import com.vibetrip.vibetripserver.common.enums.EntityStatus
+import com.vibetrip.vibetripserver.support.paging.Cursorable
+import com.vibetrip.vibetripserver.support.paging.Slice
 import com.vibetrip.vibetripserver.support.querydsl.QuerydslRepositorySupport
 
 class CustomAlbumLogRepositoryImpl :
@@ -26,4 +28,23 @@ class CustomAlbumLogRepositoryImpl :
                 albumEntity.status.eq(EntityStatus.ACTIVE),
                 albumLogEntity.status.eq(EntityStatus.ACTIVE),
             ).fetchOne() ?: 0L
+      
+    override fun findByAlbumId(
+        albumId: Long,
+        cursorable: Cursorable<Long>,
+    ): Slice<AlbumLogEntity> {
+        val content =
+            selectFrom(albumLogEntity)
+                .where(
+                    ltCursor(cursorable.cursor),
+                    albumLogEntity.albumId.eq(albumId),
+                    albumLogEntity.status.eq(EntityStatus.ACTIVE),
+                ).orderBy(albumLogEntity.id.desc())
+                .limit(cursorable.limit + 1L)
+                .fetch()
+
+        return Slice(content, cursorable, hasNext(cursorable, content))
+    }
+
+    private fun ltCursor(cursor: Long?) = cursor?.let { albumLogEntity.id.lt(it) }
 }

@@ -14,6 +14,8 @@ import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
 import com.vibetrip.vibetripserver.common.util.TempFileStorage
 import com.vibetrip.vibetripserver.fixture.AlbumLogFixture
+import com.vibetrip.vibetripserver.support.paging.Cursorable
+import com.vibetrip.vibetripserver.support.paging.Slice
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -39,7 +41,7 @@ class AlbumLogServiceTest :
             val albumLogConter = mockk<AlbumLogCounter>()
 
             val albumMemberManager = AlbumMemberManager(albumMemberRepository)
-            val albumLogManager = AlbumLogManager(albumLogRepository)
+            val albumLogManager = AlbumLogManager(albumLogRepository, albumLogImageRepository)
             val albumLogImageOutboxProcessor =
                 AlbumLogImageOutboxProcessor(
                     outboxRepository = albumLogImageOutboxRepository,
@@ -154,6 +156,70 @@ class AlbumLogServiceTest :
 
                     Then("앨범 로그 ID가 반환된다") {
                         result shouldBe 1L
+                    }
+                }
+            }
+
+            Given("앨범 로그 목록을 조회하는 상황에서") {
+                val memberKey = "member-key-123"
+                val albumId = 1L
+                val cursorable = Cursorable<Long>(cursor = null, limit = 10)
+
+                When("앨범 멤버이고 앨범 로그가 존재하면") {
+                    val albumLogEntities =
+                        listOf(
+                            AlbumLogFixture.albumLogEntity(id = 2L, albumId = albumId),
+                            AlbumLogFixture.albumLogEntity(id = 1L, albumId = albumId),
+                        )
+                    val albumLogImages =
+                        listOf(
+                            AlbumLogFixture.albumLogImageEntity(id = 1L, albumLogId = 2L),
+                            AlbumLogFixture.albumLogImageEntity(id = 2L, albumLogId = 2L),
+                            AlbumLogFixture.albumLogImageEntity(id = 3L, albumLogId = 1L),
+                        )
+
+                    every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns true
+                    every { albumLogRepository.findByAlbumId(albumId, cursorable) } returns
+                        Slice(albumLogEntities, cursorable, hasNext = false)
+                    every { albumLogImageRepository.findByAlbumLogIds(listOf(2L, 1L)) } returns albumLogImages
+
+                    val result = albumLogService.findAlbumLogs(albumId, cursorable, memberKey)
+
+                    Then("앨범 로그 목록이 반환된다") {
+                        result.content.size shouldBe 2
+                        result.hasNext shouldBe false
+                    }
+
+                    Then("각 앨범 로그에 이미지가 포함된다") {
+                        result.content[0].albumLogImages.size shouldBe 2
+                        result.content[1].albumLogImages.size shouldBe 1
+                    }
+                }
+
+                When("앨범 멤버이고 앨범 로그가 없으면") {
+                    every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns true
+                    every { albumLogRepository.findByAlbumId(albumId, cursorable) } returns
+                        Slice(emptyList(), cursorable, hasNext = false)
+                    every { albumLogImageRepository.findByAlbumLogIds(emptyList()) } returns emptyList()
+
+                    val result = albumLogService.findAlbumLogs(albumId, cursorable, memberKey)
+
+                    Then("빈 목록이 반환된다") {
+                        result.content.size shouldBe 0
+                        result.hasNext shouldBe false
+                    }
+                }
+
+                When("앨범 멤버가 아니라면") {
+                    every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns false
+
+                    Then("NOT_ALBUM_MEMBER 예외가 발생한다") {
+                        val exception =
+                            shouldThrow<AppException> {
+                                albumLogService.findAlbumLogs(albumId, cursorable, memberKey)
+                            }
+
+                        exception.errorType shouldBe ErrorType.NOT_ALBUM_MEMBER
                     }
                 }
             }

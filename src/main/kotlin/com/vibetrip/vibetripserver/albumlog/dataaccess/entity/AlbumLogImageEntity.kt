@@ -1,5 +1,6 @@
 package com.vibetrip.vibetripserver.albumlog.dataaccess.entity
 
+import com.vibetrip.vibetripserver.albumlog.domain.AlbumLogImage
 import com.vibetrip.vibetripserver.common.entity.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -18,4 +19,10 @@ class AlbumLogImageEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_log_image_id")
     var id: Long? = null,
-) : BaseEntity()
+) : BaseEntity() {
+    fun toDomain() =
+        AlbumLogImage(
+            id = id!!,
+            imageUrl = imageUrl,
+        )
+}

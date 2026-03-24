@@ -6,6 +6,7 @@ import com.vibetrip.vibetripserver.albumlog.dataaccess.repository.AlbumLogImageO
 import com.vibetrip.vibetripserver.albumlog.dataaccess.repository.AlbumLogImageRepository
 import com.vibetrip.vibetripserver.albumlog.dataaccess.repository.AlbumLogRepository
 import com.vibetrip.vibetripserver.albumlog.domain.event.AlbumLogImageEvent
+import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogCounter
 import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogImageOutboxProcessor
 import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogManager
 import com.vibetrip.vibetripserver.common.exception.AppException
@@ -35,6 +36,7 @@ class AlbumLogServiceTest :
             val albumLogImageRepository = mockk<AlbumLogImageRepository>()
             val googleImageUploader = mockk<GoogleImageUploader>()
             val eventPublisher = mockk<ApplicationEventPublisher>(relaxed = true)
+            val albumLogConter = mockk<AlbumLogCounter>()
 
             val albumMemberManager = AlbumMemberManager(albumMemberRepository)
             val albumLogManager = AlbumLogManager(albumLogRepository)
@@ -51,6 +53,7 @@ class AlbumLogServiceTest :
                     albumLogManager = albumLogManager,
                     eventPublisher = eventPublisher,
                     albumLogImageOutboxProcessor = albumLogImageOutboxProcessor,
+                    albumLogCounter = albumLogConter,
                 )
 
             beforeSpec {

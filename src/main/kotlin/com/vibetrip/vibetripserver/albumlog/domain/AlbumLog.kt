@@ -18,4 +18,7 @@ data class AlbumLog(
             albumId = albumId,
         )
     }
+
+    val descriptionValue: String
+        get() = description.value
 }

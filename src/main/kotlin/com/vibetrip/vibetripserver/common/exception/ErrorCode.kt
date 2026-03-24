@@ -31,7 +31,20 @@ enum class ErrorCode {
     // Album
     E3000,
     E3001,
+    E3002,
+    E3003,
+    E3004,
+    E3005,
+    E3006,
+    E3007,
+    E3008,
 
     // AlbumLog
     E4000,
+
+    // AlbumLogImage
+    E5000,
+
+    // AlbumMember
+    E6000,
 }

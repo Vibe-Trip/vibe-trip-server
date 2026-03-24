@@ -11,19 +11,19 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.LocalDate
 
-@Table(name = "album")
 @Entity
+@Table(name = "album")
 class AlbumEntity(
     @Column(nullable = false)
     var memberKey: String,
-    @Column(nullable = false)
-    var title: String? = null,
-    @Column(nullable = false)
-    var coverImageUrl: String,
     @Column(nullable = false, length = 15)
+    var title: String = "",
+    @Column(nullable = false, columnDefinition = "TEXT")
+    var coverImageUrl: String = "",
+    @Column(nullable = false, length = 20)
     var region: String,
-    @Column(columnDefinition = "TEXT")
-    var comment: String?,
+    @Column(nullable = false, columnDefinition = "TEXT")
+    var comment: String = "",
     @Column(nullable = false)
     var travelStartDate: LocalDate,
     @Column(nullable = false)
@@ -34,15 +34,17 @@ class AlbumEntity(
     var id: Long? = null,
 ) : BaseEntity() {
     companion object {
-        fun from(newAlbum: NewAlbum) =
-            AlbumEntity(
-                memberKey = newAlbum.memberKey,
-                region = newAlbum.regionValue,
-                comment = newAlbum.commentValue,
-                travelStartDate = newAlbum.travelStartDate,
-                travelEndDate = newAlbum.travelEndDate,
-                coverImageUrl = newAlbum.coverImageUrl,
-            )
+        fun from(
+            newAlbum: NewAlbum,
+            coverImageUrl: String,
+        ) = AlbumEntity(
+            memberKey = newAlbum.memberKey,
+            coverImageUrl = coverImageUrl,
+            region = newAlbum.region.value,
+            comment = newAlbum.comment.value,
+            travelStartDate = newAlbum.travelDate.startDate,
+            travelEndDate = newAlbum.travelDate.endDate,
+        )
     }
 
     fun toDomain() =

@@ -8,11 +8,11 @@ value class Comment(
     val value: String,
 ) {
     companion object {
-        private const val COMMENT_MAX_LENGTH = 500
+        private const val MAX_COMMENT_LENGTH = 500
     }
 
     init {
-        if (value.length > COMMENT_MAX_LENGTH) {
+        if (value.length > MAX_COMMENT_LENGTH) {
             throw AppException(ErrorType.INVALID_ALBUM_COMMENT)
         }
     }

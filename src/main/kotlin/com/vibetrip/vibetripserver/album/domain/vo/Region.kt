@@ -8,11 +8,11 @@ value class Region(
     val value: String,
 ) {
     companion object {
-        private const val REGION_MAX_LENGTH = 15
+        private const val MAX_REGION_LENGTH = 25
     }
 
     init {
-        if (value.length > REGION_MAX_LENGTH) {
+        if (value.isBlank() || value.length > MAX_REGION_LENGTH) {
             throw AppException(ErrorType.INVALID_ALBUM_REGION)
         }
     }

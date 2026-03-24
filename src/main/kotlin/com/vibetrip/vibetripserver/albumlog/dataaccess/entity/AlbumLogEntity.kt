@@ -1,13 +1,10 @@
 package com.vibetrip.vibetripserver.albumlog.dataaccess.entity
 
 import com.vibetrip.vibetripserver.albumlog.domain.AlbumLog
-import com.vibetrip.vibetripserver.albumlog.domain.ImageUploadStatus
 import com.vibetrip.vibetripserver.albumlog.domain.NewAlbumLog
 import com.vibetrip.vibetripserver.common.entity.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -20,11 +17,7 @@ class AlbumLogEntity(
     var description: String,
     @Column(nullable = false)
     var albumId: Long,
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    var imageUploadStatus: ImageUploadStatus = ImageUploadStatus.PENDING,
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_log_id")
     var id: Long? = null,
 ) : BaseEntity() {

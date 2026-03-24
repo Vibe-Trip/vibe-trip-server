@@ -8,11 +8,11 @@ value class Name(
     val value: String,
 ) {
     companion object {
-        private const val NAME_MAX_LENGTH = 20
+        private const val MAX_NAME_LENGTH = 20
     }
 
     init {
-        if (value.length > NAME_MAX_LENGTH) {
+        if (value.length > MAX_NAME_LENGTH) {
             throw AppException(ErrorType.INVALID_NAME_LENGTH)
         }
     }

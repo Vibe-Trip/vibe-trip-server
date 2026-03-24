@@ -8,11 +8,11 @@ value class Description(
     val value: String,
 ) {
     companion object {
-        private const val DESCRIPTION_MAX_LENGTH = 500
+        private const val MAX_DESCRIPTION_LENGTH = 500
     }
 
     init {
-        if (value.length > DESCRIPTION_MAX_LENGTH) {
+        if (value.length > MAX_DESCRIPTION_LENGTH) {
             throw AppException(ErrorType.INVALID_DESCRIPTION_LENGTH)
         }
     }

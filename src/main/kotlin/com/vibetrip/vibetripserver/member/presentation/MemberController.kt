@@ -25,9 +25,9 @@ class MemberController(
     @Operation(summary = "프로필 조회", description = "멤버의 프로필을 조회합니다.")
     @GetMapping("/profile")
     fun getMemberProfile(
-        @AuthMember member: Member,
+        @AuthMember authMember: Member,
     ): ResponseEntity<ApiResponse<MemberResponse>> {
-        val member = memberService.getMember(member.memberKey)
+        val member = memberService.getMember(authMember.memberKey)
         val albumCount = albumService.getAlbumCount(member.memberKey)
         val albumLogCount = albumLogService.getAlbumLogCount(member.memberKey)
 

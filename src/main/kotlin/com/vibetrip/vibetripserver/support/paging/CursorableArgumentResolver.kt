@@ -16,8 +16,7 @@ private const val LIMIT = "limit"
 @Component
 class CursorableArgumentResolver : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter) =
-        parameter.hasParameterAnnotation(CursorDefault::class.java) &&
-            parameter.parameterType == Cursorable::class.java
+        parameter.parameterType == Cursorable::class.java
 
     override fun resolveArgument(
         parameter: MethodParameter,
@@ -25,12 +24,11 @@ class CursorableArgumentResolver : HandlerMethodArgumentResolver {
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
     ): Any? {
-        val annotation =
-            parameter.getParameterAnnotation(CursorDefault::class.java)
-                ?: throw AppException(ErrorType.SERVER_ERROR)
-
-        val defaultLimit = annotation.defaultLimit
-        val limit = webRequest.getParameter(LIMIT)?.toIntOrNull() ?: defaultLimit
+        val annotation = parameter.getParameterAnnotation(CursorDefault::class.java)
+        val limit =
+            webRequest.getParameter(LIMIT)?.toIntOrNull()
+                ?: annotation?.defaultLimit
+                ?: throw AppException(ErrorType.INVALID_PAGING_PARAMETER)
         val cursorParam = webRequest.getParameter(CURSOR)
 
         val cursor =

@@ -26,6 +26,7 @@ enum class ErrorType(
     INVALID_IMAGE_TYPE(HttpStatus.BAD_REQUEST, ErrorCode.E400, "지원하지 않는 이미지 형식입니다.", LogLevel.WARN),
 
     INVALID_PAGING_SIZE(HttpStatus.BAD_REQUEST, ErrorCode.E400, "잘못된 페이징 크기입니다.", LogLevel.WARN),
+    INVALID_PAGING_PARAMETER(HttpStatus.BAD_REQUEST, ErrorCode.E400, "페이징 요소가 누락되었습니다.", LogLevel.WARN),
 
     // Member
     INVALID_MEMBER_KEY(HttpStatus.BAD_REQUEST, ErrorCode.E1000, "멤버 key가 유효하지 않습니다.", LogLevel.WARN),

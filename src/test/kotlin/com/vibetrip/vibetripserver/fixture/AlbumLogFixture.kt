@@ -1,6 +1,7 @@
 package com.vibetrip.vibetripserver.fixture
 
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.AlbumLogEntity
+import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.AlbumLogImageEntity
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.AlbumLogImageOutbox
 import com.vibetrip.vibetripserver.albumlog.domain.NewAlbumLog
 import org.springframework.mock.web.MockMultipartFile
@@ -21,6 +22,15 @@ object AlbumLogFixture {
     ) = AlbumLogEntity(
         description = description,
         albumId = albumId,
+    ).apply { this.id = id }
+
+    fun albumLogImageEntity(
+        id: Long = 1L,
+        imageUrl: String = "https://storage.example.com/test.jpg",
+        albumLogId: Long = 1L,
+    ) = AlbumLogImageEntity(
+        imageUrl = imageUrl,
+        albumLogId = albumLogId,
     ).apply { this.id = id }
 
     fun albumLogImageOutbox(

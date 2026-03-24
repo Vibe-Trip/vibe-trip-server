@@ -6,9 +6,9 @@ import com.querydsl.core.types.dsl.PathBuilder
 import com.querydsl.jpa.impl.JPAQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.querydsl.jpa.impl.JPAUpdateClause
+import com.vibetrip.vibetripserver.support.paging.Cursorable
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
-import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport
 import org.springframework.data.jpa.repository.support.Querydsl
 import org.springframework.data.querydsl.SimpleEntityPathResolver
@@ -44,10 +44,10 @@ abstract class QuerydslRepositorySupport(
     protected fun <T : Any> update(from: EntityPath<T>): JPAUpdateClause = jpaQueryFactory.update(from)
 
     protected fun <T> hasNext(
-        pageable: Pageable,
-        content: MutableList<T?>,
-    ) = if (content.size > pageable.pageSize) {
-        content.removeAt(pageable.pageSize)
+        cursorable: Cursorable<*>,
+        content: MutableList<T>,
+    ) = if (content.size > cursorable.limit) {
+        content.removeLast()
         true
     } else {
         false

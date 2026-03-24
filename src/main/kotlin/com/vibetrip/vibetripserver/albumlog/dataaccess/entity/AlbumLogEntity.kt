@@ -1,14 +1,10 @@
 package com.vibetrip.vibetripserver.albumlog.dataaccess.entity
 
 import com.vibetrip.vibetripserver.albumlog.domain.AlbumLog
+import com.vibetrip.vibetripserver.albumlog.domain.AlbumLogImage
 import com.vibetrip.vibetripserver.albumlog.domain.NewAlbumLog
 import com.vibetrip.vibetripserver.common.entity.BaseEntity
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 
 @Table(name = "album_log")
 @Entity
@@ -29,10 +25,12 @@ class AlbumLogEntity(
             )
     }
 
-    fun toDomain() =
+    fun toDomain(albumLogImages: List<AlbumLogImage> = emptyList()) =
         AlbumLog.of(
             id = id!!,
             description = description,
             albumId = albumId,
+            postedAt = createdAt,
+            albumLogImages = albumLogImages,
         )
 }

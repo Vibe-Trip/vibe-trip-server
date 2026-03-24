@@ -15,8 +15,7 @@ private const val LIMIT = "limit"
 
 @Component
 class CursorableArgumentResolver : HandlerMethodArgumentResolver {
-    override fun supportsParameter(parameter: MethodParameter) =
-        parameter.parameterType == Cursorable::class.java
+    override fun supportsParameter(parameter: MethodParameter) = parameter.parameterType == Cursorable::class.java
 
     override fun resolveArgument(
         parameter: MethodParameter,

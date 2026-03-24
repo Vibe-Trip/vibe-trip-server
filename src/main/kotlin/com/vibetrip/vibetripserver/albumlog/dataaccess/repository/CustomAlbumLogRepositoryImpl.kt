@@ -15,7 +15,7 @@ class CustomAlbumLogRepositoryImpl :
                 albumLogEntity.id.eq(id),
                 albumLogEntity.status.eq(EntityStatus.ACTIVE),
             ).fetchOne()
-            
+
     override fun countByMemberKey(memberKey: String): Long =
         select(albumLogEntity.count())
             .from(albumLogEntity)

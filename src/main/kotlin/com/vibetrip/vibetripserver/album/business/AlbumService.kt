@@ -2,7 +2,6 @@ package com.vibetrip.vibetripserver.album.business
 
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
-import com.vibetrip.vibetripserver.album.implement.AlbumCounter
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
 import org.springframework.stereotype.Service
@@ -12,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile
 class AlbumService(
     private val albumManager: AlbumManager,
     private val aiProcessor: AiProcessor,
-    private val albumCounter: AlbumCounter,
 ) {
     fun create(
         newAlbum: NewAlbum,
@@ -27,5 +25,5 @@ class AlbumService(
         return AlbumCreateResponse(albumId)
     }
 
-    fun getAlbumCount(memberKey: String) = albumCounter.count(memberKey)
+    fun getAlbumCount(memberKey: String) = albumManager.count(memberKey)
 }

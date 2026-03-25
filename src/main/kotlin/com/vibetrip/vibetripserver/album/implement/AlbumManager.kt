@@ -29,4 +29,6 @@ class AlbumManager(
             .orElseThrow { AppException(ErrorType.NOT_FOUND_ALBUM) }
             .updateTitle(validatedTitle.value)
     }
+
+    fun count(memberKey: String) = albumRepository.countByMemberKey(memberKey)
 }

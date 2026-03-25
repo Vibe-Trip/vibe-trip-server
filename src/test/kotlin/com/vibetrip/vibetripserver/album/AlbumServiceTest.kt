@@ -2,7 +2,6 @@ package com.vibetrip.vibetripserver.album
 
 import com.vibetrip.vibetripserver.album.business.AlbumService
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
-import com.vibetrip.vibetripserver.album.implement.AlbumCounter
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
 import com.vibetrip.vibetripserver.common.exception.AppException
@@ -24,13 +23,11 @@ class AlbumServiceTest :
 
         val albumManager = mockk<AlbumManager>()
         val aiProcessor = mockk<AiProcessor>()
-        val albumCounter = mockk<AlbumCounter>()
 
         val albumService =
             AlbumService(
                 albumManager = albumManager,
                 aiProcessor = aiProcessor,
-                albumCounter = albumCounter,
             )
 
         Given("앨범 생성을 요청하는 상황에서") {

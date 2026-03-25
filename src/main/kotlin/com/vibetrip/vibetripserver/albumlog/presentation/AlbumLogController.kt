@@ -1,7 +1,9 @@
 package com.vibetrip.vibetripserver.albumlog.presentation
 
 import com.vibetrip.vibetripserver.albumlog.business.AlbumLogService
+import com.vibetrip.vibetripserver.albumlog.domain.EditAlbumLog
 import com.vibetrip.vibetripserver.albumlog.presentation.dto.request.AlbumLogRegisterRequest
+import com.vibetrip.vibetripserver.albumlog.presentation.dto.request.AlbumLogUpdateRequest
 import com.vibetrip.vibetripserver.albumlog.presentation.dto.response.AlbumLogListResponse
 import com.vibetrip.vibetripserver.member.domain.Member
 import com.vibetrip.vibetripserver.support.paging.CursorDefault
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
@@ -58,5 +61,31 @@ class AlbumLogController(
                 .map(AlbumLogListResponse::from)
 
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(slice)))
+    }
+
+    @PutMapping(
+        "/{albumLogId}",
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE],
+        produces = [MediaType.APPLICATION_JSON_VALUE],
+    )
+    fun updateAlbumLog(
+        @PathVariable albumId: Long,
+        @PathVariable albumLogId: Long,
+        @Valid @RequestPart request: AlbumLogUpdateRequest,
+        @Valid @Size(max = 5) @RequestPart(required = false) newImages: List<MultipartFile>,
+        @AuthMember member: Member,
+    ): ResponseEntity<ApiResponse<Unit>> {
+        albumLogService.updateAlbumLog(
+            EditAlbumLog.of(
+                id = albumLogId,
+                description = request.description,
+                albumId = albumId,
+                newImages = newImages,
+                removeImageIds = request.removeImageIds,
+            ),
+            member.memberKey,
+        )
+
+        return ResponseEntity.ok(ApiResponse.success())
     }
 }

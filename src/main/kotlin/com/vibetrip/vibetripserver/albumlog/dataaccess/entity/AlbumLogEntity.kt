@@ -38,4 +38,8 @@ class AlbumLogEntity(
             postedAt = createdAt,
             albumLogImages = albumLogImages,
         )
+
+    fun update(description: String) {
+        this.description = description
+    }
 }

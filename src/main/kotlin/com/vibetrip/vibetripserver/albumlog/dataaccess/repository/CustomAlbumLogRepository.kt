@@ -8,7 +8,7 @@ interface CustomAlbumLogRepository {
     fun find(id: Long): AlbumLogEntity?
 
     fun countByMemberKey(memberKey: String): Long
-  
+
     fun findByAlbumId(
         albumId: Long,
         cursorable: Cursorable<Long>,

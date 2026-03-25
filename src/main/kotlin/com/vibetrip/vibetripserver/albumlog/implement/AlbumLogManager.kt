@@ -34,4 +34,6 @@ class AlbumLogManager(
             it.toDomain(imageMap[it.id].orEmpty().map(AlbumLogImageEntity::toDomain))
         }
     }
+
+    fun count(memberKey: String) = albumLogRepository.countByMemberKey(memberKey)
 }

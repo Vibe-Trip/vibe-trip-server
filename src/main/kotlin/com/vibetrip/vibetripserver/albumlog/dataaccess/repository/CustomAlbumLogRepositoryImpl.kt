@@ -28,7 +28,7 @@ class CustomAlbumLogRepositoryImpl :
                 albumEntity.status.eq(EntityStatus.ACTIVE),
                 albumLogEntity.status.eq(EntityStatus.ACTIVE),
             ).fetchOne() ?: 0L
-      
+
     override fun findByAlbumId(
         albumId: Long,
         cursorable: Cursorable<Long>,

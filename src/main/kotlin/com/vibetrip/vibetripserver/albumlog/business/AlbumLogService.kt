@@ -4,7 +4,6 @@ import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
 import com.vibetrip.vibetripserver.albumlog.domain.AlbumLog
 import com.vibetrip.vibetripserver.albumlog.domain.NewAlbumLog
 import com.vibetrip.vibetripserver.albumlog.domain.event.AlbumLogImageEvent
-import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogCounter
 import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogImageOutboxProcessor
 import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogManager
 import com.vibetrip.vibetripserver.support.paging.Cursorable
@@ -20,7 +19,6 @@ class AlbumLogService(
     private val albumLogManager: AlbumLogManager,
     private val eventPublisher: ApplicationEventPublisher,
     private val albumLogImageOutboxProcessor: AlbumLogImageOutboxProcessor,
-    private val albumLogCounter: AlbumLogCounter,
 ) {
     @Transactional
     fun registerAlbumLog(
@@ -39,8 +37,8 @@ class AlbumLogService(
         return albumLog.id
     }
 
-    fun getAlbumLogCount(memberKey: String): Long = albumLogCounter.count(memberKey)
-    
+    fun getAlbumLogCount(memberKey: String): Long = albumLogManager.count(memberKey)
+
     fun findAlbumLogs(
         albumId: Long,
         cursorable: Cursorable<Long>,

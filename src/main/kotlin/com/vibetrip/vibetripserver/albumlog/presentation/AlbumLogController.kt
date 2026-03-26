@@ -17,6 +17,7 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Size
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -86,6 +87,18 @@ class AlbumLogController(
             ),
             member.memberKey,
         )
+
+        return ResponseEntity.ok(ApiResponse.success())
+    }
+
+    @Operation(summary = "앨범 로그 삭제", description = "앨범 로그를 삭제합니다. 해당 로그에 포함된 이미지도 함께 삭제됩니다.")
+    @DeleteMapping("/{albumLogId}")
+    fun deleteAlbumLog(
+        @PathVariable albumId: Long,
+        @PathVariable albumLogId: Long,
+        @AuthMember member: Member,
+    ): ResponseEntity<ApiResponse<Unit>> {
+        albumLogService.deleteAlbumLog(albumId, albumLogId, member.memberKey)
 
         return ResponseEntity.ok(ApiResponse.success())
     }

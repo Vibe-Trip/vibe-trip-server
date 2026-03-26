@@ -11,4 +11,6 @@ interface CustomAlbumLogRepository {
         albumId: Long,
         cursorable: Cursorable<Long>,
     ): Slice<AlbumLogEntity>
+
+    fun delete(id: Long)
 }

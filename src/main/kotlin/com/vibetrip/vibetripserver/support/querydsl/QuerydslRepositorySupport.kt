@@ -52,4 +52,8 @@ abstract class QuerydslRepositorySupport(
     } else {
         false
     }
+
+    fun flush() = entityManager.flush()
+
+    fun clear() = entityManager.clear()
 }

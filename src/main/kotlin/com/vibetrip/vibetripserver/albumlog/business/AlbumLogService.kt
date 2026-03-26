@@ -61,4 +61,14 @@ class AlbumLogService(
             eventPublisher.publishEvent(AlbumLogImageEvent(editAlbumLog.id, it))
         }
     }
+
+    fun deleteAlbumLog(
+        albumId: Long,
+        albumLogId: Long,
+        memberKey: String,
+    ) {
+        albumMemberManager.validateMember(albumId, memberKey)
+
+        albumLogManager.delete(albumLogId)
+    }
 }

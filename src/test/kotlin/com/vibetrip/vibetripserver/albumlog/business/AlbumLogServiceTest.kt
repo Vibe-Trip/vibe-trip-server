@@ -588,4 +588,58 @@ class AlbumLogServiceTest {
 
         assertThat(exception.errorType).isEqualTo(ErrorType.NOT_FOUND_DATA)
     }
+
+    @Test
+    fun `앨범 멤버이면 앨범 로그가 삭제된다`() {
+        // given
+        val memberKey = "member-key-123"
+        val albumId = 1L
+        val albumLogId = 1L
+
+        every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns true
+        every { albumLogRepository.delete(albumLogId) } returns Unit
+        every { albumLogImageRepository.deleteByAlbumLogId(albumLogId) } returns Unit
+
+        // when
+        albumLogService.deleteAlbumLog(albumId, albumLogId, memberKey)
+
+        // then
+        verify { albumLogRepository.delete(albumLogId) }
+    }
+
+    @Test
+    fun `앨범 멤버이면 앨범 로그 삭제 시 이미지도 함께 삭제된다`() {
+        // given
+        val memberKey = "member-key-123"
+        val albumId = 1L
+        val albumLogId = 1L
+
+        every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns true
+        every { albumLogRepository.delete(albumLogId) } returns Unit
+        every { albumLogImageRepository.deleteByAlbumLogId(albumLogId) } returns Unit
+
+        // when
+        albumLogService.deleteAlbumLog(albumId, albumLogId, memberKey)
+
+        // then
+        verify { albumLogImageRepository.deleteByAlbumLogId(albumLogId) }
+    }
+
+    @Test
+    fun `앨범 로그 삭제 시 앨범 멤버가 아니라면 NOT_ALBUM_MEMBER 예외가 발생한다`() {
+        // given
+        val memberKey = "member-key-123"
+        val albumId = 1L
+        val albumLogId = 1L
+
+        every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns false
+
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                albumLogService.deleteAlbumLog(albumId, albumLogId, memberKey)
+            }
+
+        assertThat(exception.errorType).isEqualTo(ErrorType.NOT_ALBUM_MEMBER)
+    }
 }

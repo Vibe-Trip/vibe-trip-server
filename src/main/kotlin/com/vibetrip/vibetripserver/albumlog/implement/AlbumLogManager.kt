@@ -42,8 +42,13 @@ class AlbumLogManager(
         description: String,
         removeImageIds: List<Long>,
     ) {
-        albumLogImageRepository.deleteByIds(removeImageIds)
-
         albumLogRepository.find(id)?.update(description) ?: throw AppException(ErrorType.NOT_FOUND_DATA)
+
+        albumLogImageRepository.deleteByIds(removeImageIds)
+    }
+
+    fun delete(id: Long) {
+        albumLogRepository.delete(id)
+        albumLogImageRepository.deleteByAlbumLogId(id)
     }
 }

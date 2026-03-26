@@ -10,209 +10,226 @@ import com.vibetrip.vibetripserver.auth.implement.RefreshTokenManager
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.fixture.AuthFixture
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-class OAuthServiceTest :
-    BehaviorSpec(
-        {
-            val kakaoAuthenticator = mockk<OAuthAuthenticator>()
-            val appleAuthenticator = mockk<OAuthAuthenticator>()
-            val oAuthRegistrar = mockk<OAuthRegistrar>()
-            val jwtGenerator = mockk<JwtGenerator>()
-            val jwtValidator = mockk<JwtValidator>()
-            val refreshTokenManager = mockk<RefreshTokenManager>()
+class OAuthServiceTest {
+    private val kakaoAuthenticator = mockk<OAuthAuthenticator>()
+    private val appleAuthenticator = mockk<OAuthAuthenticator>()
+    private val oAuthRegistrar = mockk<OAuthRegistrar>()
+    private val jwtGenerator = mockk<JwtGenerator>()
+    private val jwtValidator = mockk<JwtValidator>()
+    private val refreshTokenManager = mockk<RefreshTokenManager>()
 
-            every { kakaoAuthenticator.provider } returns OAuthProvider.KAKAO
-            every { appleAuthenticator.provider } returns OAuthProvider.APPLE
+    private lateinit var oAuthService: OAuthService
 
-            val oAuthService =
-                OAuthService(
-                    authenticators = listOf(kakaoAuthenticator, appleAuthenticator),
-                    oAuthRegistrar = oAuthRegistrar,
-                    jwtGenerator = jwtGenerator,
-                    jwtValidator = jwtValidator,
-                    refreshTokenManager = refreshTokenManager,
-                )
+    @BeforeEach
+    fun setUp() {
+        every { kakaoAuthenticator.provider } returns OAuthProvider.KAKAO
+        every { appleAuthenticator.provider } returns OAuthProvider.APPLE
 
-            Given("OAuth Kakao Login을 하는 상황에서") {
-                val kakaoLogin = AuthFixture.kakaoLogin()
+        oAuthService =
+            OAuthService(
+                authenticators = listOf(kakaoAuthenticator, appleAuthenticator),
+                oAuthRegistrar = oAuthRegistrar,
+                jwtGenerator = jwtGenerator,
+                jwtValidator = jwtValidator,
+                refreshTokenManager = refreshTokenManager,
+            )
+    }
 
-                When("유저 정보 조회가 성공하면") {
-                    val oAuthMember = AuthFixture.kakaoMember()
-                    val memberKey = "member-key-123"
-                    val expectedJwt = AuthFixture.jwt()
+    @Test
+    fun `Kakao 로그인 시 유저 정보 조회가 성공하면 JWT가 반환된다`() {
+        // given
+        val kakaoLogin = AuthFixture.kakaoLogin()
+        val oAuthMember = AuthFixture.kakaoMember()
+        val memberKey = "member-key-123"
+        val expectedJwt = AuthFixture.jwt()
 
-                    every { kakaoAuthenticator.authenticate(kakaoLogin) } returns oAuthMember
-                    every { oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, kakaoLogin.fcmToken, kakaoLogin.deviceId) } returns
-                        memberKey
-                    every { jwtGenerator.generateJwt(memberKey) } returns expectedJwt
-                    every { refreshTokenManager.update(expectedJwt.refreshToken, memberKey) } returns Unit
+        every { kakaoAuthenticator.authenticate(kakaoLogin) } returns oAuthMember
+        every { oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, kakaoLogin.fcmToken, kakaoLogin.deviceId) } returns memberKey
+        every { jwtGenerator.generateJwt(memberKey) } returns expectedJwt
+        every { refreshTokenManager.update(expectedJwt.refreshToken, memberKey) } returns Unit
 
-                    Then("JWT가 반환된다") {
-                        val result = oAuthService.login(kakaoLogin)
+        // when
+        val result = oAuthService.login(kakaoLogin)
 
-                        result shouldBe expectedJwt
-                        verify { kakaoAuthenticator.authenticate(kakaoLogin) }
-                        verify { oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, kakaoLogin.fcmToken, kakaoLogin.deviceId) }
-                        verify { jwtGenerator.generateJwt(memberKey) }
-                        verify { refreshTokenManager.update(expectedJwt.refreshToken, memberKey) }
-                    }
-                }
+        // then
+        assertThat(result).isEqualTo(expectedJwt)
+        verify { kakaoAuthenticator.authenticate(kakaoLogin) }
+        verify { oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, kakaoLogin.fcmToken, kakaoLogin.deviceId) }
+        verify { jwtGenerator.generateJwt(memberKey) }
+        verify { refreshTokenManager.update(expectedJwt.refreshToken, memberKey) }
+    }
 
-                When("유저 정보 조회 값이 없으면") {
-                    every { kakaoAuthenticator.authenticate(kakaoLogin) } throws AppException(ErrorType.INVALID_OAUTH_USER)
+    @Test
+    fun `Kakao 로그인 시 유저 정보 조회 값이 없으면 INVALID_OAUTH_USER 예외가 발생한다`() {
+        // given
+        val kakaoLogin = AuthFixture.kakaoLogin()
 
-                    Then("AppException 예외가 발생한다") {
-                        val exception =
-                            shouldThrow<AppException> {
-                                oAuthService.login(kakaoLogin)
-                            }
+        every { kakaoAuthenticator.authenticate(kakaoLogin) } throws AppException(ErrorType.INVALID_OAUTH_USER)
 
-                        exception.errorType shouldBe ErrorType.INVALID_OAUTH_USER
-                    }
-                }
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                oAuthService.login(kakaoLogin)
             }
 
-            Given("OAuth Apple Login을 하는 상황에서") {
-                val appleLogin = AuthFixture.appleLogin()
+        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_OAUTH_USER)
+    }
 
-                When("유저 정보 조회가 성공하면") {
-                    val oAuthMember = AuthFixture.appleMember()
-                    val memberKey = "member-key-456"
-                    val expectedJwt = AuthFixture.jwt()
+    @Test
+    fun `Apple 로그인 시 유저 정보 조회가 성공하면 JWT가 반환된다`() {
+        // given
+        val appleLogin = AuthFixture.appleLogin()
+        val oAuthMember = AuthFixture.appleMember()
+        val memberKey = "member-key-456"
+        val expectedJwt = AuthFixture.jwt()
 
-                    every { appleAuthenticator.authenticate(appleLogin) } returns oAuthMember
-                    every { oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, appleLogin.fcmToken, appleLogin.deviceId) } returns
-                        memberKey
-                    every { jwtGenerator.generateJwt(memberKey) } returns expectedJwt
-                    every { refreshTokenManager.update(expectedJwt.refreshToken, memberKey) } returns Unit
+        every { appleAuthenticator.authenticate(appleLogin) } returns oAuthMember
+        every { oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, appleLogin.fcmToken, appleLogin.deviceId) } returns memberKey
+        every { jwtGenerator.generateJwt(memberKey) } returns expectedJwt
+        every { refreshTokenManager.update(expectedJwt.refreshToken, memberKey) } returns Unit
 
-                    Then("JWT가 반환된다") {
-                        val result = oAuthService.login(appleLogin)
+        // when
+        val result = oAuthService.login(appleLogin)
 
-                        result shouldBe expectedJwt
-                    }
-                }
+        // then
+        assertThat(result).isEqualTo(expectedJwt)
+    }
 
-                When("Apple Identity Token이 유효하지 않으면") {
-                    every { appleAuthenticator.authenticate(appleLogin) } throws AppException(ErrorType.INVALID_APPLE_IDENTITY_TOKEN)
+    @Test
+    fun `Apple 로그인 시 Identity Token이 유효하지 않으면 INVALID_APPLE_IDENTITY_TOKEN 예외가 발생한다`() {
+        // given
+        val appleLogin = AuthFixture.appleLogin()
 
-                    Then("AppException 예외가 발생한다") {
-                        val exception =
-                            shouldThrow<AppException> {
-                                oAuthService.login(appleLogin)
-                            }
+        every { appleAuthenticator.authenticate(appleLogin) } throws AppException(ErrorType.INVALID_APPLE_IDENTITY_TOKEN)
 
-                        exception.errorType shouldBe ErrorType.INVALID_APPLE_IDENTITY_TOKEN
-                    }
-                }
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                oAuthService.login(appleLogin)
             }
 
-            Given("토큰 갱신을 하는 상황에서") {
-                val bearerRefreshToken = "Bearer valid-refresh-token"
-                val tokenBody = "valid-refresh-token"
-                val memberKey = "member-key-123"
+        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_APPLE_IDENTITY_TOKEN)
+    }
 
-                When("유효한 리프레시 토큰이면") {
-                    val savedRefreshToken =
-                        AuthFixture.refreshToken(
-                            refreshToken = tokenBody,
-                            memberKey = memberKey,
-                        )
-                    val newJwt =
-                        AuthFixture.jwt(
-                            accessToken = "new-access-token",
-                            refreshToken = "new-refresh-token",
-                        )
+    @Test
+    fun `토큰 갱신 시 유효한 리프레시 토큰이면 새로운 JWT가 반환된다`() {
+        // given
+        val bearerRefreshToken = "Bearer valid-refresh-token"
+        val tokenBody = "valid-refresh-token"
+        val memberKey = "member-key-123"
+        val savedRefreshToken =
+            AuthFixture.refreshToken(
+                refreshToken = tokenBody,
+                memberKey = memberKey,
+            )
+        val newJwt =
+            AuthFixture.jwt(
+                accessToken = "new-access-token",
+                refreshToken = "new-refresh-token",
+            )
 
-                    every { jwtValidator.getBearerTokenBody(bearerRefreshToken) } returns tokenBody
-                    every { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) } returns memberKey
-                    every { refreshTokenManager.findByMemberKey(memberKey) } returns savedRefreshToken
-                    every { jwtGenerator.generateJwt(memberKey) } returns newJwt
-                    every { refreshTokenManager.update(newJwt.refreshToken, memberKey) } returns Unit
+        every { jwtValidator.getBearerTokenBody(bearerRefreshToken) } returns tokenBody
+        every { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) } returns memberKey
+        every { refreshTokenManager.findByMemberKey(memberKey) } returns savedRefreshToken
+        every { jwtGenerator.generateJwt(memberKey) } returns newJwt
+        every { refreshTokenManager.update(newJwt.refreshToken, memberKey) } returns Unit
 
-                    Then("새로운 JWT가 반환된다") {
-                        val result = oAuthService.refresh(bearerRefreshToken)
+        // when
+        val result = oAuthService.refresh(bearerRefreshToken)
 
-                        result shouldBe newJwt
-                        verify { jwtValidator.getBearerTokenBody(bearerRefreshToken) }
-                        verify { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) }
-                        verify { refreshTokenManager.update(newJwt.refreshToken, memberKey) }
-                    }
-                }
+        // then
+        assertThat(result).isEqualTo(newJwt)
+        verify { jwtValidator.getBearerTokenBody(bearerRefreshToken) }
+        verify { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) }
+        verify { refreshTokenManager.update(newJwt.refreshToken, memberKey) }
+    }
 
-                When("리프레시 토큰이 재사용되면") {
-                    val savedRefreshToken =
-                        AuthFixture.refreshToken(
-                            refreshToken = "different-refresh-token",
-                            memberKey = memberKey,
-                        )
+    @Test
+    fun `토큰 갱신 시 리프레시 토큰이 재사용되면 FAILED_AUTH 예외가 발생하고 토큰이 삭제된다`() {
+        // given
+        val bearerRefreshToken = "Bearer valid-refresh-token"
+        val tokenBody = "valid-refresh-token"
+        val memberKey = "member-key-123"
+        val savedRefreshToken =
+            AuthFixture.refreshToken(
+                refreshToken = "different-refresh-token",
+                memberKey = memberKey,
+            )
 
-                    every { jwtValidator.getBearerTokenBody(bearerRefreshToken) } returns tokenBody
-                    every { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) } returns memberKey
-                    every { refreshTokenManager.findByMemberKey(memberKey) } returns savedRefreshToken
-                    every { refreshTokenManager.delete(savedRefreshToken.id) } returns Unit
+        every { jwtValidator.getBearerTokenBody(bearerRefreshToken) } returns tokenBody
+        every { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) } returns memberKey
+        every { refreshTokenManager.findByMemberKey(memberKey) } returns savedRefreshToken
+        every { refreshTokenManager.delete(savedRefreshToken.id) } returns Unit
 
-                    Then("AppException 예외가 발생하고 토큰이 삭제된다") {
-                        val exception =
-                            shouldThrow<AppException> {
-                                oAuthService.refresh(bearerRefreshToken)
-                            }
-
-                        exception.errorType shouldBe ErrorType.FAILED_AUTH
-                        verify { refreshTokenManager.delete(savedRefreshToken.id) }
-                    }
-                }
-
-                When("저장된 리프레시 토큰이 없으면") {
-                    every { jwtValidator.getBearerTokenBody(bearerRefreshToken) } returns tokenBody
-                    every { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) } returns memberKey
-                    every { refreshTokenManager.findByMemberKey(memberKey) } throws AppException(ErrorType.NOT_FOUND_DATA)
-
-                    Then("AppException 예외가 발생한다") {
-                        val exception =
-                            shouldThrow<AppException> {
-                                oAuthService.refresh(bearerRefreshToken)
-                            }
-
-                        exception.errorType shouldBe ErrorType.NOT_FOUND_DATA
-                    }
-                }
-
-                When("리프레시 토큰이 만료되었으면") {
-                    every { jwtValidator.getBearerTokenBody(bearerRefreshToken) } returns tokenBody
-                    every { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) } throws
-                        AppException(ErrorType.EXPIRED_JWT)
-
-                    Then("AppException 예외가 발생한다") {
-                        val exception =
-                            shouldThrow<AppException> {
-                                oAuthService.refresh(bearerRefreshToken)
-                            }
-
-                        exception.errorType shouldBe ErrorType.EXPIRED_JWT
-                    }
-                }
-
-                When("Bearer 토큰 형식이 아니면") {
-                    val invalidToken = "invalid-token"
-
-                    every { jwtValidator.getBearerTokenBody(invalidToken) } throws AppException(ErrorType.INVALID_TOKEN_METHOD)
-
-                    Then("AppException 예외가 발생한다") {
-                        val exception =
-                            shouldThrow<AppException> {
-                                oAuthService.refresh(invalidToken)
-                            }
-
-                        exception.errorType shouldBe ErrorType.INVALID_TOKEN_METHOD
-                    }
-                }
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                oAuthService.refresh(bearerRefreshToken)
             }
-        },
-    )
+
+        assertThat(exception.errorType).isEqualTo(ErrorType.FAILED_AUTH)
+        verify { refreshTokenManager.delete(savedRefreshToken.id) }
+    }
+
+    @Test
+    fun `토큰 갱신 시 저장된 리프레시 토큰이 없으면 NOT_FOUND_DATA 예외가 발생한다`() {
+        // given
+        val bearerRefreshToken = "Bearer valid-refresh-token"
+        val tokenBody = "valid-refresh-token"
+        val memberKey = "member-key-123"
+
+        every { jwtValidator.getBearerTokenBody(bearerRefreshToken) } returns tokenBody
+        every { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) } returns memberKey
+        every { refreshTokenManager.findByMemberKey(memberKey) } throws AppException(ErrorType.NOT_FOUND_DATA)
+
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                oAuthService.refresh(bearerRefreshToken)
+            }
+
+        assertThat(exception.errorType).isEqualTo(ErrorType.NOT_FOUND_DATA)
+    }
+
+    @Test
+    fun `토큰 갱신 시 리프레시 토큰이 만료되었으면 EXPIRED_JWT 예외가 발생한다`() {
+        // given
+        val bearerRefreshToken = "Bearer valid-refresh-token"
+        val tokenBody = "valid-refresh-token"
+
+        every { jwtValidator.getBearerTokenBody(bearerRefreshToken) } returns tokenBody
+        every { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) } throws AppException(ErrorType.EXPIRED_JWT)
+
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                oAuthService.refresh(bearerRefreshToken)
+            }
+
+        assertThat(exception.errorType).isEqualTo(ErrorType.EXPIRED_JWT)
+    }
+
+    @Test
+    fun `토큰 갱신 시 Bearer 토큰 형식이 아니면 INVALID_TOKEN_METHOD 예외가 발생한다`() {
+        // given
+        val invalidToken = "invalid-token"
+
+        every { jwtValidator.getBearerTokenBody(invalidToken) } throws AppException(ErrorType.INVALID_TOKEN_METHOD)
+
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                oAuthService.refresh(invalidToken)
+            }
+
+        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_TOKEN_METHOD)
+    }
+}

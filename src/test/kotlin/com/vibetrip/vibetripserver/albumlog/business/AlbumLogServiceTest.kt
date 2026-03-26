@@ -22,8 +22,8 @@ import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.unmockkObject
 import io.mockk.verify
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -94,7 +94,7 @@ class AlbumLogServiceTest {
         val result = albumLogService.registerAlbumLog(newAlbumLog, images, memberKey)
 
         // then
-        assertEquals(1L, result)
+        assertThat(result).isEqualTo(1L)
     }
 
     @Test
@@ -181,8 +181,8 @@ class AlbumLogServiceTest {
         val eventSlot = slot<AlbumLogImageEvent>()
         verify { eventPublisher.publishEvent(capture(eventSlot)) }
 
-        assertEquals(1L, eventSlot.captured.albumLogId)
-        assertEquals(listOf(1L, 2L), eventSlot.captured.outboxIds)
+        assertThat(eventSlot.captured.albumLogId).isEqualTo(1L)
+        assertThat(eventSlot.captured.outboxIds).isEqualTo(listOf(1L, 2L))
     }
 
     @Test
@@ -200,7 +200,7 @@ class AlbumLogServiceTest {
                 albumLogService.registerAlbumLog(newAlbumLog, images, memberKey)
             }
 
-        assertEquals(ErrorType.NOT_ALBUM_MEMBER, exception.errorType)
+        assertThat(exception.errorType).isEqualTo(ErrorType.NOT_ALBUM_MEMBER)
     }
 
     @Test
@@ -223,7 +223,7 @@ class AlbumLogServiceTest {
                 albumLogService.registerAlbumLog(newAlbumLog, invalidImages, memberKey)
             }
 
-        assertEquals(ErrorType.INVALID_IMAGE_TYPE, exception.errorType)
+        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_TYPE)
     }
 
     @Test
@@ -241,7 +241,7 @@ class AlbumLogServiceTest {
         val result = albumLogService.registerAlbumLog(newAlbumLog, emptyImages, memberKey)
 
         // then
-        assertEquals(1L, result)
+        assertThat(result).isEqualTo(1L)
     }
 
     @Test
@@ -271,8 +271,8 @@ class AlbumLogServiceTest {
         val result = albumLogService.findAlbumLogs(albumId, cursorable, memberKey)
 
         // then
-        assertEquals(2, result.content.size)
-        assertEquals(false, result.hasNext)
+        assertThat(result.content.size).isEqualTo(2)
+        assertThat(result.hasNext).isEqualTo(false)
     }
 
     @Test
@@ -302,8 +302,8 @@ class AlbumLogServiceTest {
         val result = albumLogService.findAlbumLogs(albumId, cursorable, memberKey)
 
         // then
-        assertEquals(2, result.content[0].albumLogImages.size)
-        assertEquals(1, result.content[1].albumLogImages.size)
+        assertThat(result.content[0].albumLogImages.size).isEqualTo(2)
+        assertThat(result.content[1].albumLogImages.size).isEqualTo(1)
     }
 
     @Test
@@ -322,8 +322,8 @@ class AlbumLogServiceTest {
         val result = albumLogService.findAlbumLogs(albumId, cursorable, memberKey)
 
         // then
-        assertEquals(0, result.content.size)
-        assertEquals(false, result.hasNext)
+        assertThat(result.content.size).isEqualTo(0)
+        assertThat(result.hasNext).isEqualTo(false)
     }
 
     @Test
@@ -341,7 +341,7 @@ class AlbumLogServiceTest {
                 albumLogService.findAlbumLogs(albumId, cursorable, memberKey)
             }
 
-        assertEquals(ErrorType.NOT_ALBUM_MEMBER, exception.errorType)
+        assertThat(exception.errorType).isEqualTo(ErrorType.NOT_ALBUM_MEMBER)
     }
 
     @Test
@@ -458,8 +458,8 @@ class AlbumLogServiceTest {
         val eventSlot = slot<AlbumLogImageEvent>()
         verify { eventPublisher.publishEvent(capture(eventSlot)) }
 
-        assertEquals(albumLogId, eventSlot.captured.albumLogId)
-        assertEquals(listOf(3L, 4L), eventSlot.captured.outboxIds)
+        assertThat(eventSlot.captured.albumLogId).isEqualTo(albumLogId)
+        assertThat(eventSlot.captured.outboxIds).isEqualTo(listOf(3L, 4L))
     }
 
     @Test
@@ -497,7 +497,7 @@ class AlbumLogServiceTest {
         albumLogService.updateAlbumLog(editAlbumLog, memberKey)
 
         // then
-        assertEquals("수정된 설명", existingAlbumLogEntity.description)
+        assertThat(existingAlbumLogEntity.description).isEqualTo("수정된 설명")
     }
 
     @Test
@@ -522,7 +522,7 @@ class AlbumLogServiceTest {
         albumLogService.updateAlbumLog(editAlbumLog, memberKey)
 
         // then
-        assertEquals("새로운 설명", existingAlbumLogEntity.description)
+        assertThat(existingAlbumLogEntity.description).isEqualTo("새로운 설명")
     }
 
     @Test
@@ -566,7 +566,7 @@ class AlbumLogServiceTest {
                 albumLogService.updateAlbumLog(editAlbumLog, memberKey)
             }
 
-        assertEquals(ErrorType.NOT_ALBUM_MEMBER, exception.errorType)
+        assertThat(exception.errorType).isEqualTo(ErrorType.NOT_ALBUM_MEMBER)
     }
 
     @Test
@@ -586,6 +586,6 @@ class AlbumLogServiceTest {
                 albumLogService.updateAlbumLog(editAlbumLog, memberKey)
             }
 
-        assertEquals(ErrorType.NOT_FOUND_DATA, exception.errorType)
+        assertThat(exception.errorType).isEqualTo(ErrorType.NOT_FOUND_DATA)
     }
 }

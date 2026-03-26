@@ -1,5 +1,6 @@
 package com.vibetrip.vibetripserver.fixture
 
+import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
 import com.vibetrip.vibetripserver.album.domain.AlbumMusic
 import com.vibetrip.vibetripserver.album.domain.GenreType
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
@@ -26,6 +27,19 @@ object AlbumFixture {
         vocalGender = vocalGender,
         genre = genre,
     )
+
+    fun albumEntity(
+        id: Long = 1L,
+        memberKey: String = "member-key-123",
+        region: String = "도쿄",
+        travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),
+        travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
+    ) = AlbumEntity(
+        memberKey = memberKey,
+        region = region,
+        travelStartDate = travelStartDate,
+        travelEndDate = travelEndDate,
+    ).apply { this.id = id }
 
     fun generatedMusic(
         title: String = "도쿄의 밤",

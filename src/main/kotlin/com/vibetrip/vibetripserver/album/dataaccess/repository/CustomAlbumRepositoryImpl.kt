@@ -26,7 +26,7 @@ class CustomAlbumRepositoryImpl :
                 .where(
                     albumEntity.memberKey.eq(memberKey),
                     albumEntity.status.eq(EntityStatus.ACTIVE),
-                    ltCursor(cursorable.limit + 1L),
+                    ltCursor(cursorable.cursor),
                 ).orderBy(albumEntity.id.desc())
                 .limit(cursorable.limit + 1L)
                 .fetch()

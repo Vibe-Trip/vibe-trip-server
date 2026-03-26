@@ -6,4 +6,6 @@ interface CustomAlbumLogImageRepository {
     fun findByAlbumLogIds(albumLogIds: List<Long>): List<AlbumLogImageEntity>
 
     fun deleteByIds(ids: List<Long>)
+
+    fun deleteByAlbumLogId(albumLogId: Long)
 }

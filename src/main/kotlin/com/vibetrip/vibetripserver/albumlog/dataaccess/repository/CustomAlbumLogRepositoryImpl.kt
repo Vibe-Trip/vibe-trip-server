@@ -6,6 +6,7 @@ import com.vibetrip.vibetripserver.common.enums.EntityStatus
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
 import com.vibetrip.vibetripserver.support.querydsl.QuerydslRepositorySupport
+import java.time.LocalDateTime
 
 class CustomAlbumLogRepositoryImpl :
     QuerydslRepositorySupport(AlbumLogEntity::class),
@@ -32,6 +33,18 @@ class CustomAlbumLogRepositoryImpl :
                 .fetch()
 
         return Slice(content, cursorable, hasNext(cursorable, content))
+    }
+
+    override fun delete(id: Long) {
+        flush()
+
+        update(albumLogEntity)
+            .set(albumLogEntity.status, EntityStatus.DELETED)
+            .set(albumLogEntity.deletedAt, LocalDateTime.now())
+            .where(albumLogEntity.id.eq(id))
+            .execute()
+
+        clear()
     }
 
     private fun ltCursor(cursor: Long?) = cursor?.let { albumLogEntity.id.lt(it) }

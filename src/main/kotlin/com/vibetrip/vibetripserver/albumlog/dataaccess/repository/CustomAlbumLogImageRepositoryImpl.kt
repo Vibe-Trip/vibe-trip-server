@@ -17,10 +17,28 @@ class CustomAlbumLogImageRepositoryImpl :
             ).fetch()
 
     override fun deleteByIds(ids: List<Long>) {
+        if (ids.isEmpty()) return
+
+        flush()
+
         update(albumLogImageEntity)
             .set(albumLogImageEntity.status, EntityStatus.DELETED)
             .set(albumLogImageEntity.deletedAt, LocalDateTime.now())
             .where(albumLogImageEntity.id.`in`(ids))
             .execute()
+
+        clear()
+    }
+
+    override fun deleteByAlbumLogId(albumLogId: Long) {
+        flush()
+
+        update(albumLogImageEntity)
+            .set(albumLogImageEntity.status, EntityStatus.DELETED)
+            .set(albumLogImageEntity.deletedAt, LocalDateTime.now())
+            .where(albumLogImageEntity.albumLogId.eq(albumLogId))
+            .execute()
+
+        clear()
     }
 }

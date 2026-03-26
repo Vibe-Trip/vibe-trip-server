@@ -63,6 +63,7 @@ class AlbumLogController(
         return ResponseEntity.ok(ApiResponse.success(PageResponse.from(slice)))
     }
 
+    @Operation(summary = "앨범 로그 수정", description = "앨범 로그를 수정합니다. 새 이미지 추가(최대 5개), 기존 이미지 삭제가 가능합니다.")
     @PutMapping(
         "/{albumLogId}",
         consumes = [MediaType.MULTIPART_FORM_DATA_VALUE],

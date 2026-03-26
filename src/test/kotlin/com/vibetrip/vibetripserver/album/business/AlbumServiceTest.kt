@@ -31,11 +31,12 @@ class AlbumServiceTest {
 
     @BeforeEach
     fun setUp() {
-        albumService = AlbumService(
-            albumManager = AlbumManager(albumRepository),
-            aiProcessor = aiProcessor,
-            albumFinder = AlbumFinder(albumRepository),
-        )
+        albumService =
+            AlbumService(
+                albumManager = AlbumManager(albumRepository),
+                aiProcessor = aiProcessor,
+                albumFinder = AlbumFinder(albumRepository),
+            )
     }
 
     @Test
@@ -83,10 +84,11 @@ class AlbumServiceTest {
         // given
         val memberKey = "member-key-123"
         val cursorable = Cursorable<Long>(cursor = null, limit = 10)
-        val albumEntities = listOf(
-            AlbumFixture.albumEntity(id = 2L),
-            AlbumFixture.albumEntity(id = 1L),
-        )
+        val albumEntities =
+            listOf(
+                AlbumFixture.albumEntity(id = 2L),
+                AlbumFixture.albumEntity(id = 1L),
+            )
 
         every { albumRepository.findAllByMemberKey(memberKey, cursorable) } returns
             Slice(albumEntities, cursorable, hasNext = false)
@@ -105,10 +107,11 @@ class AlbumServiceTest {
         // given
         val memberKey = "member-key-123"
         val cursorable = Cursorable<Long>(cursor = null, limit = 2)
-        val albumEntities = listOf(
-            AlbumFixture.albumEntity(id = 3L),
-            AlbumFixture.albumEntity(id = 2L),
-        )
+        val albumEntities =
+            listOf(
+                AlbumFixture.albumEntity(id = 3L),
+                AlbumFixture.albumEntity(id = 2L),
+            )
 
         every { albumRepository.findAllByMemberKey(memberKey, cursorable) } returns
             Slice(albumEntities, cursorable, hasNext = true)

@@ -4,6 +4,7 @@ import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.AlbumLogImageEntit
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.QAlbumLogImageEntity.albumLogImageEntity
 import com.vibetrip.vibetripserver.common.enums.EntityStatus
 import com.vibetrip.vibetripserver.support.querydsl.QuerydslRepositorySupport
+import java.time.LocalDateTime
 
 class CustomAlbumLogImageRepositoryImpl :
     QuerydslRepositorySupport(AlbumLogImageEntity::class),
@@ -14,4 +15,30 @@ class CustomAlbumLogImageRepositoryImpl :
                 albumLogImageEntity.albumLogId.`in`(albumLogIds),
                 albumLogImageEntity.status.eq(EntityStatus.ACTIVE),
             ).fetch()
+
+    override fun deleteByIds(ids: List<Long>) {
+        if (ids.isEmpty()) return
+
+        flush()
+
+        update(albumLogImageEntity)
+            .set(albumLogImageEntity.status, EntityStatus.DELETED)
+            .set(albumLogImageEntity.deletedAt, LocalDateTime.now())
+            .where(albumLogImageEntity.id.`in`(ids))
+            .execute()
+
+        clear()
+    }
+
+    override fun deleteByAlbumLogId(albumLogId: Long) {
+        flush()
+
+        update(albumLogImageEntity)
+            .set(albumLogImageEntity.status, EntityStatus.DELETED)
+            .set(albumLogImageEntity.deletedAt, LocalDateTime.now())
+            .where(albumLogImageEntity.albumLogId.eq(albumLogId))
+            .execute()
+
+        clear()
+    }
 }

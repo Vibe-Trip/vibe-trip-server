@@ -3,8 +3,10 @@ package com.vibetrip.vibetripserver.fixture
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.AlbumLogEntity
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.AlbumLogImageEntity
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.AlbumLogImageOutbox
+import com.vibetrip.vibetripserver.albumlog.domain.EditAlbumLog
 import com.vibetrip.vibetripserver.albumlog.domain.NewAlbumLog
 import org.springframework.mock.web.MockMultipartFile
+import org.springframework.web.multipart.MultipartFile
 
 object AlbumLogFixture {
     fun newAlbumLog(
@@ -13,6 +15,20 @@ object AlbumLogFixture {
     ) = NewAlbumLog.of(
         description = description,
         albumId = albumId,
+    )
+
+    fun editAlbumLog(
+        id: Long = 1L,
+        description: String = "수정된 설명",
+        albumId: Long = 1L,
+        newImages: List<MultipartFile> = emptyList(),
+        removeImageIds: List<Long> = emptyList(),
+    ) = EditAlbumLog.of(
+        id = id,
+        description = description,
+        albumId = albumId,
+        newImages = newImages,
+        removeImageIds = removeImageIds,
     )
 
     fun albumLogEntity(

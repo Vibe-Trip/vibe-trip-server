@@ -2,6 +2,7 @@ package com.vibetrip.vibetripserver.albumlog.business
 
 import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
 import com.vibetrip.vibetripserver.albumlog.domain.AlbumLog
+import com.vibetrip.vibetripserver.albumlog.domain.EditAlbumLog
 import com.vibetrip.vibetripserver.albumlog.domain.NewAlbumLog
 import com.vibetrip.vibetripserver.albumlog.domain.event.AlbumLogImageEvent
 import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogImageOutboxProcessor
@@ -46,6 +47,30 @@ class AlbumLogService(
     ): Slice<AlbumLog> {
         albumMemberManager.validateMember(albumId, memberKey)
 
-        return albumLogManager.findAlbumLogs(albumId, cursorable)
+        return albumLogManager.find(albumId, cursorable)
+    }
+
+    @Transactional
+    fun updateAlbumLog(
+        editAlbumLog: EditAlbumLog,
+        memberKey: String,
+    ) {
+        albumMemberManager.validateMember(editAlbumLog.albumId, memberKey)
+
+        albumLogManager.update(editAlbumLog.id, editAlbumLog.descriptionValue, editAlbumLog.removeImageIds)
+
+        albumLogImageOutboxProcessor.saveOutbox(editAlbumLog.newImages, editAlbumLog.id).also {
+            eventPublisher.publishEvent(AlbumLogImageEvent(editAlbumLog.id, it))
+        }
+    }
+
+    fun deleteAlbumLog(
+        albumId: Long,
+        albumLogId: Long,
+        memberKey: String,
+    ) {
+        albumMemberManager.validateMember(albumId, memberKey)
+
+        albumLogManager.delete(albumLogId)
     }
 }

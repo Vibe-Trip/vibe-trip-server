@@ -6,6 +6,8 @@ import com.vibetrip.vibetripserver.albumlog.dataaccess.repository.AlbumLogImageR
 import com.vibetrip.vibetripserver.albumlog.dataaccess.repository.AlbumLogRepository
 import com.vibetrip.vibetripserver.albumlog.domain.AlbumLog
 import com.vibetrip.vibetripserver.albumlog.domain.NewAlbumLog
+import com.vibetrip.vibetripserver.common.exception.AppException
+import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
 import org.springframework.stereotype.Component
@@ -19,7 +21,7 @@ class AlbumLogManager(
 ) {
     fun register(newAlbumLog: NewAlbumLog) = albumLogRepository.save(AlbumLogEntity.from(newAlbumLog)).toDomain()
 
-    fun findAlbumLogs(
+    fun find(
         albumId: Long,
         cursorable: Cursorable<Long>,
     ): Slice<AlbumLog> {
@@ -36,4 +38,18 @@ class AlbumLogManager(
     }
 
     fun count(memberKey: String) = albumLogRepository.countByMemberKey(memberKey)
+    fun update(
+        id: Long,
+        description: String,
+        removeImageIds: List<Long>,
+    ) {
+        albumLogRepository.find(id)?.update(description) ?: throw AppException(ErrorType.NOT_FOUND_DATA)
+
+        albumLogImageRepository.deleteByIds(removeImageIds)
+    }
+
+    fun delete(id: Long) {
+        albumLogRepository.delete(id)
+        albumLogImageRepository.deleteByAlbumLogId(id)
+    }
 }

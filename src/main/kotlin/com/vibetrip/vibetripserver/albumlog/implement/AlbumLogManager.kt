@@ -38,6 +38,7 @@ class AlbumLogManager(
     }
 
     fun count(memberKey: String) = albumLogRepository.countByMemberKey(memberKey)
+    
     fun update(
         id: Long,
         description: String,

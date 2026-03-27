@@ -39,7 +39,7 @@ class AlbumController(
 
     @Operation(summary = "앨범 목록 조회", description = "앨범 목록을 조회합니다")
     @GetMapping
-    fun getAlbums(
+    fun find(
         @AuthMember member: Member,
         @CursorDefault cursorable: Cursorable<Long>,
     ): ResponseEntity<ApiResponse<AlbumPageResponse>> {

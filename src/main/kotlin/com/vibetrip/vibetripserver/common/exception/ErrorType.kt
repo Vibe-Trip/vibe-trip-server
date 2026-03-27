@@ -49,14 +49,15 @@ enum class ErrorType(
 
     // Album
     INVALID_ALBUM_REGION(HttpStatus.BAD_REQUEST, ErrorCode.E3000, "여행지가 너무 깁니다.", LogLevel.WARN),
-    INVALID_ALBUM_COMMENT(HttpStatus.BAD_REQUEST, ErrorCode.E3001, "코멘트가 너무 깁나다.", LogLevel.WARN),
+    INVALID_ALBUM_COMMENT(HttpStatus.BAD_REQUEST, ErrorCode.E3001, "코멘트가 너무 깁니다.", LogLevel.WARN),
     NOT_FOUND_ALBUM(HttpStatus.NOT_FOUND, ErrorCode.E3002, "앨범을 찾을 수 없습니다.", LogLevel.WARN),
     FORBIDDEN_ALBUM(HttpStatus.FORBIDDEN, ErrorCode.E3003, "해당 앨범에 대한 권한이 없습니다.", LogLevel.WARN),
     MUSIC_GENERATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E3004, "음악 생성에 실패했습니다.", LogLevel.ERROR),
     INVALID_VOCAL_GENDER(HttpStatus.BAD_REQUEST, ErrorCode.E3005, "가사가 있을 경우 보컬 성별을 선택해야 합니다.", LogLevel.WARN),
     INVALID_ALBUM_TRAVEL_DATE(HttpStatus.BAD_REQUEST, ErrorCode.E3006, "여행 종료일은 시작일 이후여야 합니다.", LogLevel.WARN),
     INVALID_GENRE_LYRICS_MISMATCH(HttpStatus.BAD_REQUEST, ErrorCode.E3007, "가사 여부와 장르 조합이 맞지 않습니다.", LogLevel.WARN),
-    INVALID_ALBUM_TITLE(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E3008, "앨범 제목은 15자를 초과할 수 없습니다.", LogLevel.ERROR),
+    INVALID_ALBUM_TITLE(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E3008, "앨범 제목이 너무 깁니다.", LogLevel.WARN),
+    INVALID_IMAGE_SIZE(HttpStatus.BAD_REQUEST, ErrorCode.E3009, "커버 이미지 사이즈가 너무 큽니다", LogLevel.WARN),
 
     // AlbumLog
     INVALID_DESCRIPTION_LENGTH(HttpStatus.BAD_REQUEST, ErrorCode.E4000, "설명이 너무 깁니다.", LogLevel.WARN),

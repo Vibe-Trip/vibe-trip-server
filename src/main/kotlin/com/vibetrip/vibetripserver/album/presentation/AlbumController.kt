@@ -39,14 +39,14 @@ class AlbumController(
 
     @Operation(summary = "앨범 목록 조회", description = "앨범 목록을 조회합니다")
     @GetMapping
-    fun find(
+    fun getAlbums(
         @AuthMember member: Member,
         @CursorDefault cursorable: Cursorable<Long>,
     ): ResponseEntity<ApiResponse<AlbumPageResponse>> {
         val totalCount = albumService.countAlbums(member.memberKey)
         val slice =
             albumService
-                .getAlbums(member.memberKey, cursorable)
+                .findAlbums(member.memberKey, cursorable)
                 .map { AlbumListResponse.from(it) }
 
         return ResponseEntity.ok(ApiResponse.success(AlbumPageResponse.of(totalCount, slice)))

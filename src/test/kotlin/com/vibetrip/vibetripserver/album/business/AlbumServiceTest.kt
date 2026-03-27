@@ -94,7 +94,7 @@ class AlbumServiceTest {
             Slice(albumEntities, cursorable, hasNext = false)
 
         // when
-        val result = albumService.getAlbums(memberKey, cursorable)
+        val result = albumService.findAlbums(memberKey, cursorable)
 
         // then
         assertThat(result.content.size).isEqualTo(2)
@@ -117,7 +117,7 @@ class AlbumServiceTest {
             Slice(albumEntities, cursorable, hasNext = true)
 
         // when
-        val result = albumService.getAlbums(memberKey, cursorable)
+        val result = albumService.findAlbums(memberKey, cursorable)
 
         // then
         assertThat(result.hasNext).isEqualTo(true)
@@ -133,7 +133,7 @@ class AlbumServiceTest {
             Slice(emptyList(), cursorable, hasNext = false)
 
         // when
-        val result = albumService.getAlbums(memberKey, cursorable)
+        val result = albumService.findAlbums(memberKey, cursorable)
 
         // then
         assertThat(result.content).isEmpty()

@@ -28,7 +28,7 @@ class AlbumService(
         return AlbumCreateResponse(albumId)
     }
 
-    fun getAlbums(
+    fun findAlbums(
         memberKey: String,
         cursorable: Cursorable<Long>,
     ) = albumFinder.findAllByMemberKey(memberKey, cursorable)

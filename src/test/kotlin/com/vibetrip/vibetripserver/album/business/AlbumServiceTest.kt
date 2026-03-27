@@ -2,8 +2,12 @@ package com.vibetrip.vibetripserver.album.business
 
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
+import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumFinder
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
+import com.vibetrip.vibetripserver.common.exception.AppException
+import com.vibetrip.vibetripserver.common.exception.ErrorType
+import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
 import com.vibetrip.vibetripserver.fixture.AlbumFixture
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
@@ -16,17 +20,19 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.web.multipart.MultipartFile
 
 class AlbumServiceTest {
     private val albumRepository = mockk<AlbumRepository>()
     private val aiProcessor = mockk<AiProcessor>()
+    private val googleImageUploader = mockk<GoogleImageUploader>()
 
     private lateinit var albumService: AlbumService
 
     @AfterEach
     fun tearDown() {
-        clearMocks(albumRepository, aiProcessor)
+        clearMocks(albumRepository, aiProcessor, googleImageUploader)
     }
 
     @BeforeEach
@@ -36,6 +42,7 @@ class AlbumServiceTest {
                 albumManager = AlbumManager(albumRepository),
                 aiProcessor = aiProcessor,
                 albumFinder = AlbumFinder(albumRepository),
+                albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader),
             )
     }
 
@@ -46,6 +53,11 @@ class AlbumServiceTest {
         val image = mockk<MultipartFile>()
         val imageKeywords = "도시, 야경, 활기찬"
 
+        every { image.contentType } returns "image/jpeg"
+        every { image.size } returns 1024L
+        every { image.inputStream } returns mockk(relaxed = true)
+        every { image.originalFilename } returns "test.jpg"
+        every { googleImageUploader.uploadImage(any()) } returns "https://storage.googleapis.com/test.jpg"
         every { albumRepository.save(any()) } returns AlbumFixture.albumEntity(id = 1L)
         every { aiProcessor.analyzeImage(any()) } returns imageKeywords
         justRun { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
@@ -65,6 +77,11 @@ class AlbumServiceTest {
         val image = mockk<MultipartFile>()
         val imageKeywords = "도시, 야경, 활기찬"
 
+        every { image.contentType } returns "image/jpeg"
+        every { image.size } returns 1024L
+        every { image.inputStream } returns mockk(relaxed = true)
+        every { image.originalFilename } returns "test.jpg"
+        every { googleImageUploader.uploadImage(any()) } returns "https://storage.googleapis.com/test.jpg"
         every { albumRepository.save(any()) } returns AlbumFixture.albumEntity(id = 1L)
         every { aiProcessor.analyzeImage(any()) } returns imageKeywords
         justRun { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
@@ -77,6 +94,40 @@ class AlbumServiceTest {
         verify(exactly = 1) { aiProcessor.analyzeImage(any()) }
         verify(exactly = 1) { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
         verify(exactly = 1) { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
+    }
+
+    @Test
+    fun `유효하지 않은 이미지 타입이면 INVALID_IMAGE_TYPE 예외가 발생한다`() {
+        // given
+        val newAlbum = AlbumFixture.newAlbum()
+        val image = mockk<MultipartFile>()
+
+        every { image.contentType } returns "application/pdf"
+        every { image.size } returns 1024L
+
+        // when & then
+        val exception = assertThrows<AppException> {
+            albumService.create(newAlbum, image)
+        }
+
+        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_TYPE)
+    }
+
+    @Test
+    fun `이미지 사이즈가 10MB를 초과하면 INVALID_IMAGE_SIZE 예외가 발생한다`() {
+        // given
+        val newAlbum = AlbumFixture.newAlbum()
+        val image = mockk<MultipartFile>()
+
+        every { image.contentType } returns "image/jpeg"
+        every { image.size } returns 11 * 1024 * 1024L
+
+        // when & then
+        val exception = assertThrows<AppException> {
+            albumService.create(newAlbum, image)
+        }
+
+        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_SIZE)
     }
 
     @Test

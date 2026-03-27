@@ -1,5 +1,6 @@
 package com.vibetrip.vibetripserver.albumlog.dataaccess.repository
 
+import com.vibetrip.vibetripserver.album.dataaccess.entity.QAlbumEntity.albumEntity
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.AlbumLogEntity
 import com.vibetrip.vibetripserver.albumlog.dataaccess.entity.QAlbumLogEntity.albumLogEntity
 import com.vibetrip.vibetripserver.common.enums.EntityStatus
@@ -43,6 +44,23 @@ class CustomAlbumLogRepositoryImpl :
             .set(albumLogEntity.deletedAt, LocalDateTime.now())
             .where(albumLogEntity.id.eq(id))
             .execute()
+
+        clear()
+    }
+
+    override fun deleteByMemberKey(memberKey: String) {
+        flush()
+
+        update(albumLogEntity)
+            .set(albumLogEntity.status, EntityStatus.DELETED)
+            .set(albumLogEntity.deletedAt, LocalDateTime.now())
+            .where(
+                albumLogEntity.albumId.`in`(
+                    select(albumEntity.id)
+                        .from(albumEntity)
+                        .where(albumEntity.memberKey.eq(memberKey)),
+                ),
+            ).execute()
 
         clear()
     }

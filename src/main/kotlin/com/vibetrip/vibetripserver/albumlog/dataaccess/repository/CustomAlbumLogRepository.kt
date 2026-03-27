@@ -13,4 +13,6 @@ interface CustomAlbumLogRepository {
     ): Slice<AlbumLogEntity>
 
     fun delete(id: Long)
+
+    fun deleteByMemberKey(memberKey: String)
 }

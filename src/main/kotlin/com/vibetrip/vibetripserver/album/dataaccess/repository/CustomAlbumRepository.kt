@@ -13,4 +13,6 @@ interface CustomAlbumRepository {
     ): Slice<AlbumEntity>
 
     fun countByMemberKey(memberKey: String): Long
+
+    fun deleteByMemberKey(memberKey: String)
 }

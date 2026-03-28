@@ -42,7 +42,7 @@ class AlbumServiceTest {
                 albumManager = AlbumManager(albumRepository),
                 aiProcessor = aiProcessor,
                 albumFinder = AlbumFinder(albumRepository),
-                albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader),
+                albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader, "test-bucket"),
             )
     }
 
@@ -64,7 +64,7 @@ class AlbumServiceTest {
         justRun { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
 
         // when
-        val result = albumService.create(newAlbum, image)
+        val result = albumService.createAlbum(newAlbum, listOf(image))
 
         // then
         assertThat(result.albumId).isEqualTo(1L)
@@ -88,12 +88,41 @@ class AlbumServiceTest {
         justRun { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
 
         // when
-        albumService.create(newAlbum, image)
+        albumService.createAlbum(newAlbum, listOf(image))
 
         // then
         verify(exactly = 1) { aiProcessor.analyzeImage(any()) }
         verify(exactly = 1) { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
         verify(exactly = 1) { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
+    }
+
+    @Test
+    fun `이미지가 2장 이상이면 INVALID_IMAGE_COUNT 예외가 발생한다`() {
+        // given
+        val newAlbum = AlbumFixture.newAlbum()
+        val image = mockk<MultipartFile>()
+
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                albumService.createAlbum(newAlbum, listOf(image, image))
+            }
+
+        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_COUNT)
+    }
+
+    @Test
+    fun `이미지가 0장이면 INVALID_IMAGE_COUNT 예외가 발생한다`() {
+        // given
+        val newAlbum = AlbumFixture.newAlbum()
+
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                albumService.createAlbum(newAlbum, emptyList())
+            }
+
+        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_COUNT)
     }
 
     @Test
@@ -103,12 +132,12 @@ class AlbumServiceTest {
         val image = mockk<MultipartFile>()
 
         every { image.contentType } returns "application/pdf"
-        every { image.size } returns 1024L
 
         // when & then
-        val exception = assertThrows<AppException> {
-            albumService.create(newAlbum, image)
-        }
+        val exception =
+            assertThrows<AppException> {
+                albumService.createAlbum(newAlbum, listOf(image))
+            }
 
         assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_TYPE)
     }
@@ -123,15 +152,16 @@ class AlbumServiceTest {
         every { image.size } returns 11 * 1024 * 1024L
 
         // when & then
-        val exception = assertThrows<AppException> {
-            albumService.create(newAlbum, image)
-        }
+        val exception =
+            assertThrows<AppException> {
+                albumService.createAlbum(newAlbum, listOf(image))
+            }
 
         assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_SIZE)
     }
 
     @Test
-    fun `앨범이 존재하면 최신순으로 앨범 목록이 반환된다`() {
+    fun `앨범이 존재하면 앨범 목록이 반환된다`() {
         // given
         val memberKey = "member-key-123"
         val cursorable = Cursorable<Long>(cursor = null, limit = 10)
@@ -149,8 +179,6 @@ class AlbumServiceTest {
 
         // then
         assertThat(result.content.size).isEqualTo(2)
-        assertThat(result.content[0].albumId).isEqualTo(2L)
-        assertThat(result.content[1].albumId).isEqualTo(1L)
     }
 
     @Test

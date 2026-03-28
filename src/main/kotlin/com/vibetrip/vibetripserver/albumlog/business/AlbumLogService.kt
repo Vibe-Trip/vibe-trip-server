@@ -10,6 +10,9 @@ import com.vibetrip.vibetripserver.albumlog.implement.AlbumLogManager
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.orm.ObjectOptimisticLockingFailureException
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -50,6 +53,11 @@ class AlbumLogService(
         return albumLogManager.find(albumId, cursorable)
     }
 
+    @Retryable(
+        retryFor = [ObjectOptimisticLockingFailureException::class],
+        maxAttempts = 3,
+        backoff = Backoff(delay = 100),
+    )
     @Transactional
     fun updateAlbumLog(
         editAlbumLog: EditAlbumLog,

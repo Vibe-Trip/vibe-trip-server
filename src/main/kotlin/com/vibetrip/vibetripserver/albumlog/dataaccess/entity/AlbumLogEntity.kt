@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.Version
 
 @Table(name = "album_log")
 @Entity
@@ -21,6 +22,8 @@ class AlbumLogEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_log_id")
     var id: Long? = null,
+    @Version
+    var version: Long = 0,
 ) : BaseEntity() {
     companion object {
         fun from(newAlbumLog: NewAlbumLog) =

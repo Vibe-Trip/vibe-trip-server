@@ -59,5 +59,22 @@ class CustomAlbumLogRepositoryImpl :
         clear()
     }
 
+    override fun deleteByMemberKey(memberKey: String) {
+        flush()
+
+        update(albumLogEntity)
+            .set(albumLogEntity.status, EntityStatus.DELETED)
+            .set(albumLogEntity.deletedAt, LocalDateTime.now())
+            .where(
+                albumLogEntity.albumId.`in`(
+                    select(albumEntity.id)
+                        .from(albumEntity)
+                        .where(albumEntity.memberKey.eq(memberKey)),
+                ),
+            ).execute()
+
+        clear()
+    }
+
     private fun ltCursor(cursor: Long?) = cursor?.let { albumLogEntity.id.lt(it) }
 }

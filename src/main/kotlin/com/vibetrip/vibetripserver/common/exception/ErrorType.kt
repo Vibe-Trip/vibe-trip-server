@@ -58,6 +58,7 @@ enum class ErrorType(
     INVALID_GENRE_LYRICS_MISMATCH(HttpStatus.BAD_REQUEST, ErrorCode.E3007, "가사 여부와 장르 조합이 맞지 않습니다.", LogLevel.WARN),
     INVALID_ALBUM_TITLE(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E3008, "앨범 제목이 너무 깁니다.", LogLevel.WARN),
     INVALID_IMAGE_SIZE(HttpStatus.BAD_REQUEST, ErrorCode.E3009, "커버 이미지 사이즈가 너무 큽니다", LogLevel.WARN),
+    INVALID_IMAGE_COUNT(HttpStatus.BAD_REQUEST, ErrorCode.E3010, "커버 이미지 개수가 올바르지 않습니다.", LogLevel.WARN),
 
     // AlbumLog
     INVALID_DESCRIPTION_LENGTH(HttpStatus.BAD_REQUEST, ErrorCode.E4000, "설명이 너무 깁니다.", LogLevel.WARN),

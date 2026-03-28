@@ -32,10 +32,17 @@ class AlbumController(
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createAlbum(
         @AuthMember member: Member,
-        @RequestPart image: MultipartFile,
+        @RequestPart coverImage: List<MultipartFile>,
         @Valid @RequestPart request: AlbumCreateRequest,
     ): ResponseEntity<ApiResponse<AlbumCreateResponse>> =
-        ResponseEntity.ok(ApiResponse.success(albumService.create(request.toNewAlbum(member.memberKey), image)))
+        ResponseEntity.ok(
+            ApiResponse.success(
+                albumService.createAlbum(
+                    request.toNewAlbum(member.memberKey),
+                    coverImage,
+                ),
+            ),
+        )
 
     @Operation(summary = "앨범 목록 조회", description = "앨범 목록을 조회합니다")
     @GetMapping

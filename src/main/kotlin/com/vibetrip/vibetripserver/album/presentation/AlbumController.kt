@@ -29,7 +29,7 @@ class AlbumController(
     private val albumService: AlbumService,
 ) {
     @Operation(summary = "앨범생성", description = "새로운 앨범을 생성합니다.")
-    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun createAlbum(
         @AuthMember member: Member,
         @RequestPart coverImage: List<MultipartFile>,

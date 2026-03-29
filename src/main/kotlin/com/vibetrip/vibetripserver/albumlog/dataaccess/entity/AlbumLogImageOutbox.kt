@@ -28,7 +28,7 @@ class AlbumLogImageOutbox(
     @Column(nullable = false)
     var albumLogId: Long,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "album_log_image_id")
+    @Column(name = "album_log_image_outbox_id")
     var id: Long? = null,
 ) {
     fun toImageData() =

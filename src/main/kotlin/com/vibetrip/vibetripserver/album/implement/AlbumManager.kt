@@ -1,6 +1,8 @@
 package com.vibetrip.vibetripserver.album.implement
 
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
+import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumMemberEntity
+import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.vo.Title
@@ -13,11 +15,14 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class AlbumManager(
     private val albumRepository: AlbumRepository,
+    private val albumMemberRepository: AlbumMemberRepository,
 ) {
     fun create(
         newAlbum: NewAlbum,
         coverImageUrl: String,
-    ): Long = albumRepository.save(AlbumEntity.from(newAlbum, coverImageUrl)).id!!
+    ): Long = albumRepository.save(AlbumEntity.from(newAlbum, coverImageUrl)).also { album ->
+        albumMemberRepository.save(AlbumMemberEntity(memberKey = newAlbum.memberKey, albumId = album.id!!))
+    }.id!!
 
     fun updateTitle(
         albumId: Long,

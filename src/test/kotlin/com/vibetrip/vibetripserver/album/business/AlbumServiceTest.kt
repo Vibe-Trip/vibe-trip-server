@@ -64,7 +64,7 @@ class AlbumServiceTest {
         justRun { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
 
         // when
-        val result = albumService.createAlbum(newAlbum, listOf(image))
+        val result = albumService.createAlbum(newAlbum, image)
 
         // then
         assertThat(result.albumId).isEqualTo(1L)
@@ -88,41 +88,12 @@ class AlbumServiceTest {
         justRun { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
 
         // when
-        albumService.createAlbum(newAlbum, listOf(image))
+        albumService.createAlbum(newAlbum, image)
 
         // then
         verify(exactly = 1) { aiProcessor.analyzeImage(any()) }
         verify(exactly = 1) { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
         verify(exactly = 1) { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
-    }
-
-    @Test
-    fun `이미지가 2장 이상이면 INVALID_IMAGE_COUNT 예외가 발생한다`() {
-        // given
-        val newAlbum = AlbumFixture.newAlbum()
-        val image = mockk<MultipartFile>()
-
-        // when & then
-        val exception =
-            assertThrows<AppException> {
-                albumService.createAlbum(newAlbum, listOf(image, image))
-            }
-
-        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_COUNT)
-    }
-
-    @Test
-    fun `이미지가 0장이면 INVALID_IMAGE_COUNT 예외가 발생한다`() {
-        // given
-        val newAlbum = AlbumFixture.newAlbum()
-
-        // when & then
-        val exception =
-            assertThrows<AppException> {
-                albumService.createAlbum(newAlbum, emptyList())
-            }
-
-        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_COUNT)
     }
 
     @Test
@@ -136,7 +107,7 @@ class AlbumServiceTest {
         // when & then
         val exception =
             assertThrows<AppException> {
-                albumService.createAlbum(newAlbum, listOf(image))
+                albumService.createAlbum(newAlbum, image)
             }
 
         assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_TYPE)
@@ -154,7 +125,7 @@ class AlbumServiceTest {
         // when & then
         val exception =
             assertThrows<AppException> {
-                albumService.createAlbum(newAlbum, listOf(image))
+                albumService.createAlbum(newAlbum, image)
             }
 
         assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_SIZE)

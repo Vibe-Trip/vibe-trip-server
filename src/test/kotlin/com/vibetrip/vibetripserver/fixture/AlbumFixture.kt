@@ -29,7 +29,7 @@ object AlbumFixture {
     )
 
     fun albumEntity(
-        id: Long = 1L,
+        id: Long? = null,
         memberKey: String = "member-key-123",
         region: String = "도쿄",
         travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),

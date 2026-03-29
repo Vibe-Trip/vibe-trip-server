@@ -6,6 +6,7 @@ import com.vibetrip.vibetripserver.common.enums.EntityStatus
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
 import com.vibetrip.vibetripserver.support.querydsl.QuerydslRepositorySupport
+import java.time.LocalDateTime
 
 class CustomAlbumRepositoryImpl :
     QuerydslRepositorySupport(AlbumEntity::class),
@@ -41,6 +42,18 @@ class CustomAlbumRepositoryImpl :
                 albumEntity.memberKey.eq(memberKey),
                 albumEntity.status.eq(EntityStatus.ACTIVE),
             ).fetchOne() ?: 0L
+
+    override fun deleteByMemberKey(memberKey: String) {
+        flush()
+
+        update(albumEntity)
+            .set(albumEntity.status, EntityStatus.DELETED)
+            .set(albumEntity.deletedAt, LocalDateTime.now())
+            .where(albumEntity.memberKey.eq(memberKey))
+            .execute()
+
+        clear()
+    }
 
     private fun ltCursor(cursor: Long?) = cursor?.let { albumEntity.id.lt(it) }
 }

@@ -61,6 +61,7 @@ class AlbumServiceTest {
         every { image.originalFilename } returns "test.jpg"
         every { googleImageUploader.uploadImage(any()) } returns "https://storage.googleapis.com/test.jpg"
         every { albumRepository.save(any()) } returns AlbumFixture.albumEntity(id = 1L)
+        every { albumMemberRepository.save(any()) } returns mockk()
         every { aiProcessor.analyzeImage(any()) } returns imageKeywords
         justRun { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
         justRun { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
@@ -85,6 +86,7 @@ class AlbumServiceTest {
         every { image.originalFilename } returns "test.jpg"
         every { googleImageUploader.uploadImage(any()) } returns "https://storage.googleapis.com/test.jpg"
         every { albumRepository.save(any()) } returns AlbumFixture.albumEntity(id = 1L)
+        every { albumMemberRepository.save(any()) } returns mockk()
         every { aiProcessor.analyzeImage(any()) } returns imageKeywords
         justRun { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
         justRun { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }

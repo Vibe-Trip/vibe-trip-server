@@ -4,10 +4,13 @@ import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumMemberEntity
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
+import com.vibetrip.vibetripserver.album.domain.Album
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.vo.Title
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
+import com.vibetrip.vibetripserver.support.paging.Cursorable
+import com.vibetrip.vibetripserver.support.paging.Slice
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -37,4 +40,15 @@ class AlbumManager(
             .orElseThrow { AppException(ErrorType.NOT_FOUND_ALBUM) }
             .updateTitle(validatedTitle.value)
     }
+
+    fun find(
+        memberKey: String,
+        cursorable: Cursorable<Long>,
+    ): Slice<Album> {
+        val albumSlice = albumRepository.findAllByMemberKey(memberKey, cursorable)
+
+        return albumSlice.map { it.toDomain() }
+    }
+
+    fun count(memberKey: String): Long = albumRepository.countByMemberKey(memberKey)
 }

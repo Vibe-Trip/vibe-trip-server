@@ -32,7 +32,7 @@ class AlbumController(
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun createAlbum(
         @AuthMember member: Member,
-        @RequestPart coverImage: List<MultipartFile>,
+        @RequestPart coverImage: MultipartFile,
         @Valid @RequestPart request: AlbumCreateRequest,
     ): ResponseEntity<ApiResponse<AlbumCreateResponse>> =
         ResponseEntity.ok(

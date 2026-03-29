@@ -21,7 +21,7 @@ class AlbumService(
     @Transactional
     fun createAlbum(
         newAlbum: NewAlbum,
-        coverImage: List<MultipartFile>,
+        coverImage: MultipartFile,
     ): AlbumCreateResponse {
         val coverImageUrl = albumCoverImageProcessor.imageUpload(coverImage)
         val gcsUri = albumCoverImageProcessor.toGcsUri(coverImageUrl)

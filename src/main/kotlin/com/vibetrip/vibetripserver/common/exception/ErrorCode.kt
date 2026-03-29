@@ -39,7 +39,6 @@ enum class ErrorCode {
     E3007,
     E3008,
     E3009,
-    E3010,
 
     // AlbumLog
     E4000,

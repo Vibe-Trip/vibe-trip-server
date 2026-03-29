@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
 
 private const val MAX_COVER_IMAGE_SIZE = 10 * 1024 * 1024L
-private const val MAX_COVER_IMAGE_COUNT = 1
 
 @Component
 class AlbumCoverImageProcessor(
@@ -18,27 +17,24 @@ class AlbumCoverImageProcessor(
     @Value("\${spring.cloud.gcp.storage.bucket}")
     private val bucketName: String,
 ) {
-    fun imageUpload(coverImage: List<MultipartFile>): String {
+    fun imageUpload(coverImage: MultipartFile): String {
         val imageData = validateAndConvert(coverImage)
         return googleImageUploader.uploadImage(imageData)
     }
 
     fun toGcsUri(coverImageUrl: String): String = "gs://$bucketName/${coverImageUrl.substringAfterLast("/")}"
 
-    private fun validateAndConvert(coverImage: List<MultipartFile>): ImageData {
-        val image =
-            coverImage.takeIf { it.size == MAX_COVER_IMAGE_COUNT }?.get(0)
-                ?: throw AppException(ErrorType.INVALID_IMAGE_COUNT)
-        val contentType = validateImageContentType(image.contentType)
+    private fun validateAndConvert(coverImage: MultipartFile): ImageData {
+        val contentType = validateImageContentType(coverImage.contentType)
 
-        if (image.size > MAX_COVER_IMAGE_SIZE) {
+        if (coverImage.size > MAX_COVER_IMAGE_SIZE) {
             throw AppException(ErrorType.INVALID_IMAGE_SIZE)
         }
 
         return ImageData(
-            image.inputStream,
+            coverImage.inputStream,
             contentType,
-            image.originalFilename!!,
+            coverImage.originalFilename!!
         )
     }
 }

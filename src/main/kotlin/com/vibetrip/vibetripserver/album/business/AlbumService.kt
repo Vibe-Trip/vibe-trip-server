@@ -8,6 +8,9 @@ import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
 import com.vibetrip.vibetripserver.support.paging.Cursorable
+import org.springframework.orm.ObjectOptimisticLockingFailureException
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -40,6 +43,12 @@ class AlbumService(
 
     fun countAlbums(memberKey: String): Long = albumManager.count(memberKey)
 
+    @Retryable(
+        retryFor = [ObjectOptimisticLockingFailureException::class],
+        maxAttempts = 3,
+        backoff = Backoff(delay = 100),
+    )
+    @Transactional
     fun updateAlbum(
         editAlbum: EditAlbum,
         memberKey: String,

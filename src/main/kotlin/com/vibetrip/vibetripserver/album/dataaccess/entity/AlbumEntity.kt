@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.Version
 import java.time.LocalDate
 
 @Entity
@@ -33,6 +34,8 @@ class AlbumEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_id")
     var id: Long? = null,
+    @Version
+    var version: Long = 0,
 ) : BaseEntity() {
     companion object {
         fun from(

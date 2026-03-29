@@ -47,13 +47,8 @@ class AlbumManager(
     fun count(memberKey: String): Long = albumRepository.countByMemberKey(memberKey)
 
     fun update(editAlbum: EditAlbum) {
-        val coverImageUrl =
-            editAlbum.image?.let {
-                "" // TODO
-            } ?: getCoverImageUrl(editAlbum.albumId)
-        albumRepository.find(editAlbum.albumId)?.updateAlbum(editAlbum, coverImageUrl) ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
+        val entity = albumRepository.find(editAlbum.albumId) ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
+        val coverImageUrl = editAlbum.image?.let { "" } ?: entity.coverImageUrl
+        entity.updateAlbum(editAlbum, coverImageUrl)
     }
-
-    private fun getCoverImageUrl(albumId: Long) =
-        albumRepository.find(albumId)?.coverImageUrl ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
 }

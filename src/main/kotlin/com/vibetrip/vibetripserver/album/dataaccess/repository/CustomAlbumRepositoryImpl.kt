@@ -23,12 +23,13 @@ class CustomAlbumRepositoryImpl :
         memberKey: String,
         cursorable: Cursorable<Long>,
     ): Slice<AlbumEntity> {
-        val albumIds = select(albumMemberEntity.albumId)
-            .from(albumMemberEntity)
-            .where(
-                albumMemberEntity.memberKey.eq(memberKey),
-                albumMemberEntity.status.eq(EntityStatus.ACTIVE),
-            )
+        val albumIds =
+            select(albumMemberEntity.albumId)
+                .from(albumMemberEntity)
+                .where(
+                    albumMemberEntity.memberKey.eq(memberKey),
+                    albumMemberEntity.status.eq(EntityStatus.ACTIVE),
+                )
 
         val content =
             selectFrom(albumEntity)

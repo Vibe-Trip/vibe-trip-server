@@ -34,14 +34,14 @@ class AlbumServiceTest {
 
     @AfterEach
     fun tearDown() {
-        clearMocks(albumRepository, aiProcessor, googleImageUploader,albumMemberRepository)
+        clearMocks(albumRepository, aiProcessor, googleImageUploader, albumMemberRepository)
     }
 
     @BeforeEach
     fun setUp() {
         albumService =
             AlbumService(
-                albumManager = AlbumManager(albumRepository,albumMemberRepository),
+                albumManager = AlbumManager(albumRepository, albumMemberRepository),
                 aiProcessor = aiProcessor,
                 albumFinder = AlbumFinder(albumRepository),
                 albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader, "test-bucket"),

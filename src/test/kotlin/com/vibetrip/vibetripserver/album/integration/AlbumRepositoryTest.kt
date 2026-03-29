@@ -36,9 +36,9 @@ class AlbumRepositoryTest : SpringTest() {
         val saved1 = albumRepository.save(AlbumFixture.albumEntity())
         val saved2 = albumRepository.save(AlbumFixture.albumEntity())
         val saved3 = albumRepository.save(AlbumFixture.albumEntity())
-        albumMemberRepository.save(AlbumMemberEntity(memberKey=memberKey, albumId = saved1.id!!))
-        albumMemberRepository.save(AlbumMemberEntity(memberKey=memberKey, albumId = saved2.id!!))
-        albumMemberRepository.save(AlbumMemberEntity(memberKey=memberKey, albumId = saved3.id!!))
+        albumMemberRepository.save(AlbumMemberEntity(memberKey = memberKey, albumId = saved1.id!!))
+        albumMemberRepository.save(AlbumMemberEntity(memberKey = memberKey, albumId = saved2.id!!))
+        albumMemberRepository.save(AlbumMemberEntity(memberKey = memberKey, albumId = saved3.id!!))
         val cursorable = Cursorable<Long>(cursor = null, limit = 10)
 
         // when

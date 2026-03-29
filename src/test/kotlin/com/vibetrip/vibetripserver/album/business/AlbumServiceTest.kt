@@ -1,5 +1,6 @@
 package com.vibetrip.vibetripserver.album.business
 
+import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.web.multipart.MultipartFile
 
 class AlbumServiceTest {
+    private val albumMemberRepository = mockk<AlbumMemberRepository>()
     private val albumRepository = mockk<AlbumRepository>()
     private val aiProcessor = mockk<AiProcessor>()
     private val googleImageUploader = mockk<GoogleImageUploader>()
@@ -32,14 +34,14 @@ class AlbumServiceTest {
 
     @AfterEach
     fun tearDown() {
-        clearMocks(albumRepository, aiProcessor, googleImageUploader)
+        clearMocks(albumRepository, aiProcessor, googleImageUploader,albumMemberRepository)
     }
 
     @BeforeEach
     fun setUp() {
         albumService =
             AlbumService(
-                albumManager = AlbumManager(albumRepository),
+                albumManager = AlbumManager(albumRepository,albumMemberRepository),
                 aiProcessor = aiProcessor,
                 albumFinder = AlbumFinder(albumRepository),
                 albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader, "test-bucket"),

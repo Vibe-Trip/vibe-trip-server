@@ -2,6 +2,7 @@ package com.vibetrip.vibetripserver.album.dataaccess.repository
 
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
 import com.vibetrip.vibetripserver.album.dataaccess.entity.QAlbumEntity.albumEntity
+import com.vibetrip.vibetripserver.album.dataaccess.entity.QAlbumMemberEntity.albumMemberEntity
 import com.vibetrip.vibetripserver.common.enums.EntityStatus
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
@@ -22,10 +23,17 @@ class CustomAlbumRepositoryImpl :
         memberKey: String,
         cursorable: Cursorable<Long>,
     ): Slice<AlbumEntity> {
+        val albumIds = select(albumMemberEntity.albumId)
+            .from(albumMemberEntity)
+            .where(
+                albumMemberEntity.memberKey.eq(memberKey),
+                albumMemberEntity.status.eq(EntityStatus.ACTIVE),
+            )
+
         val content =
             selectFrom(albumEntity)
                 .where(
-                    albumEntity.memberKey.eq(memberKey),
+                    albumEntity.id.`in`(albumIds),
                     albumEntity.status.eq(EntityStatus.ACTIVE),
                     ltCursor(cursorable.cursor),
                 ).orderBy(albumEntity.id.desc())
@@ -39,7 +47,14 @@ class CustomAlbumRepositoryImpl :
         select(albumEntity.count())
             .from(albumEntity)
             .where(
-                albumEntity.memberKey.eq(memberKey),
+                albumEntity.id.`in`(
+                    select(albumMemberEntity.albumId)
+                        .from(albumMemberEntity)
+                        .where(
+                            albumMemberEntity.memberKey.eq(memberKey),
+                            albumMemberEntity.status.eq(EntityStatus.ACTIVE),
+                        ),
+                ),
                 albumEntity.status.eq(EntityStatus.ACTIVE),
             ).fetchOne() ?: 0L
 

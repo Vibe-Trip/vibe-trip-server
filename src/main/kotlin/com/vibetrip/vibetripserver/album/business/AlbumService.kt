@@ -1,9 +1,11 @@
 package com.vibetrip.vibetripserver.album.business
 
+import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
+import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import org.springframework.stereotype.Service
@@ -15,6 +17,7 @@ class AlbumService(
     private val albumManager: AlbumManager,
     private val aiProcessor: AiProcessor,
     private val albumCoverImageProcessor: AlbumCoverImageProcessor,
+    private val albumMemberManager: AlbumMemberManager,
 ) {
     @Transactional
     fun createAlbum(
@@ -36,4 +39,12 @@ class AlbumService(
     ) = albumManager.find(memberKey, cursorable)
 
     fun countAlbums(memberKey: String): Long = albumManager.count(memberKey)
+
+    fun updateAlbum(
+        editAlbum: EditAlbum,
+        memberKey: String,
+    ) {
+        albumMemberManager.validateMember(editAlbum.albumId, memberKey)
+        albumManager.update(editAlbum)
+    }
 }

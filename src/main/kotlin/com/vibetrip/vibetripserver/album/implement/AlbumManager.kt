@@ -5,6 +5,7 @@ import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumMemberEntity
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
 import com.vibetrip.vibetripserver.album.domain.Album
+import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.vo.Title
 import com.vibetrip.vibetripserver.common.exception.AppException
@@ -44,4 +45,15 @@ class AlbumManager(
     ): Slice<Album> = albumRepository.findAllByMemberKey(memberKey, cursorable).map(AlbumEntity::toDomain)
 
     fun count(memberKey: String): Long = albumRepository.countByMemberKey(memberKey)
+
+    fun update(editAlbum: EditAlbum) {
+        val coverImageUrl =
+            editAlbum.image?.let {
+                "" // TODO
+            } ?: getCoverImageUrl(editAlbum.albumId)
+        albumRepository.find(editAlbum.albumId)?.updateAlbum(editAlbum, coverImageUrl) ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
+    }
+
+    private fun getCoverImageUrl(albumId: Long) =
+        albumRepository.find(albumId)?.coverImageUrl ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
 }

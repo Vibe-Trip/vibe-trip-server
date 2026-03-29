@@ -40,6 +40,4 @@ class AlbumRepositoryTest : SpringTest() {
         assertThat(result.content[1].id).isEqualTo(saved2.id)
         assertThat(result.content[2].id).isEqualTo(saved1.id)
     }
-
-
 }

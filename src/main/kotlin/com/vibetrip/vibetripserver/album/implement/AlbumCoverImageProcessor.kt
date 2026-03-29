@@ -34,7 +34,7 @@ class AlbumCoverImageProcessor(
         return ImageData(
             coverImage.inputStream,
             contentType,
-            coverImage.originalFilename!!
+            coverImage.originalFilename!!,
         )
     }
 }

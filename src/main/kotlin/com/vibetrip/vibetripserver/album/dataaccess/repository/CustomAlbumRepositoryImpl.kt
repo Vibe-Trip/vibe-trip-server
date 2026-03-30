@@ -23,18 +23,14 @@ class CustomAlbumRepositoryImpl :
         memberKey: String,
         cursorable: Cursorable<Long>,
     ): Slice<AlbumEntity> {
-        val albumIds =
-            select(albumMemberEntity.albumId)
-                .from(albumMemberEntity)
-                .where(
-                    albumMemberEntity.memberKey.eq(memberKey),
-                    albumMemberEntity.status.eq(EntityStatus.ACTIVE),
-                )
-
         val content =
             selectFrom(albumEntity)
-                .where(
-                    albumEntity.id.`in`(albumIds),
+                .join(albumMemberEntity)
+                .on(
+                    albumMemberEntity.albumId.eq(albumEntity.id),
+                    albumMemberEntity.memberKey.eq(memberKey),
+                    albumMemberEntity.status.eq(EntityStatus.ACTIVE),
+                ).where(
                     albumEntity.status.eq(EntityStatus.ACTIVE),
                     ltCursor(cursorable.cursor),
                 ).orderBy(albumEntity.id.desc())
@@ -45,19 +41,15 @@ class CustomAlbumRepositoryImpl :
     }
 
     override fun countByMemberKey(memberKey: String) =
-        select(albumEntity.count())
+        select(albumEntity.id.count())
             .from(albumEntity)
-            .where(
-                albumEntity.id.`in`(
-                    select(albumMemberEntity.albumId)
-                        .from(albumMemberEntity)
-                        .where(
-                            albumMemberEntity.memberKey.eq(memberKey),
-                            albumMemberEntity.status.eq(EntityStatus.ACTIVE),
-                        ),
-                ),
-                albumEntity.status.eq(EntityStatus.ACTIVE),
-            ).fetchOne() ?: 0L
+            .join(albumMemberEntity)
+            .on(
+                albumMemberEntity.albumId.eq(albumEntity.id),
+                albumMemberEntity.memberKey.eq(memberKey),
+                albumMemberEntity.status.eq(EntityStatus.ACTIVE),
+            ).where(albumEntity.status.eq(EntityStatus.ACTIVE))
+            .fetchOne() ?: 0L
 
     override fun deleteByMemberKey(memberKey: String) {
         flush()

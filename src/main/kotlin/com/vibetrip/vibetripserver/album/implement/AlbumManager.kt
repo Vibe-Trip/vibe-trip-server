@@ -26,8 +26,8 @@ class AlbumManager(
     ): Long =
         albumRepository
             .save(AlbumEntity.from(newAlbum, coverImageUrl))
-            .also { album ->
-                albumMemberRepository.save(AlbumMemberEntity(memberKey = newAlbum.memberKey, albumId = album.id!!))
+            .also {
+                albumMemberRepository.save(AlbumMemberEntity(memberKey = it.memberKey, albumId = it.id!!))
             }.id!!
 
     fun updateTitle(
@@ -44,11 +44,7 @@ class AlbumManager(
     fun find(
         memberKey: String,
         cursorable: Cursorable<Long>,
-    ): Slice<Album> {
-        val albumSlice = albumRepository.findAllByMemberKey(memberKey, cursorable)
-
-        return albumSlice.map { it.toDomain() }
-    }
+    ): Slice<Album> = albumRepository.findAllByMemberKey(memberKey, cursorable).map(AlbumEntity::toDomain)
 
     fun count(memberKey: String): Long = albumRepository.countByMemberKey(memberKey)
 }

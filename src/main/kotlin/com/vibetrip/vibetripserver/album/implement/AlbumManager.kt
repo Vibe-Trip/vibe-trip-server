@@ -34,11 +34,8 @@ class AlbumManager(
         albumId: Long,
         title: String,
     ) {
-        val validatedTitle = Title(title)
-        albumRepository
-            .findById(albumId)
-            .orElseThrow { AppException(ErrorType.NOT_FOUND_ALBUM) }
-            .updateTitle(validatedTitle.value)
+        albumRepository.find(albumId)?.updateTitle(Title(title).value)
+            ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
     }
 
     fun find(

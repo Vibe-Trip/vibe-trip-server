@@ -17,7 +17,7 @@ class AlbumMemberEntity(
     @Column(nullable = false)
     var albumId: Long,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "album_log_id")
+    @Column(name = "album_member_id")
     var id: Long? = null,
 ) : BaseEntity() {
     fun toDomain() =

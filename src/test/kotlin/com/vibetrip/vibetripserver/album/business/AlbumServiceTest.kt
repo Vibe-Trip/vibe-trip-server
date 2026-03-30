@@ -116,24 +116,6 @@ class AlbumServiceTest {
     }
 
     @Test
-    fun `이미지 사이즈가 10MB를 초과하면 INVALID_IMAGE_SIZE 예외가 발생한다`() {
-        // given
-        val newAlbum = AlbumFixture.newAlbum()
-        val image = mockk<MultipartFile>()
-
-        every { image.contentType } returns "image/jpeg"
-        every { image.size } returns 11 * 1024 * 1024L
-
-        // when & then
-        val exception =
-            assertThrows<AppException> {
-                albumService.createAlbum(newAlbum, image)
-            }
-
-        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_SIZE)
-    }
-
-    @Test
     fun `앨범이 존재하면 앨범 목록이 반환된다`() {
         // given
         val memberKey = "member-key-123"

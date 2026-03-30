@@ -1,8 +1,6 @@
 package com.vibetrip.vibetripserver.album.implement
 
 import com.vibetrip.vibetripserver.common.domain.ImageData
-import com.vibetrip.vibetripserver.common.exception.AppException
-import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
 import com.vibetrip.vibetripserver.common.util.validateImageContentType
 import org.springframework.beans.factory.annotation.Value
@@ -26,10 +24,6 @@ class AlbumCoverImageProcessor(
 
     private fun validateAndConvert(coverImage: MultipartFile): ImageData {
         val contentType = validateImageContentType(coverImage.contentType)
-
-        if (coverImage.size > MAX_COVER_IMAGE_SIZE) {
-            throw AppException(ErrorType.INVALID_IMAGE_SIZE)
-        }
 
         return ImageData(
             coverImage.inputStream,

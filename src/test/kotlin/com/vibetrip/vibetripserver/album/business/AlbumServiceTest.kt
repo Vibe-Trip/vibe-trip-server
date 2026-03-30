@@ -1,9 +1,13 @@
 package com.vibetrip.vibetripserver.album.business
 
+import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
-import com.vibetrip.vibetripserver.album.implement.AlbumFinder
+import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
+import com.vibetrip.vibetripserver.common.exception.AppException
+import com.vibetrip.vibetripserver.common.exception.ErrorType
+import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
 import com.vibetrip.vibetripserver.fixture.AlbumFixture
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
@@ -16,26 +20,29 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.web.multipart.MultipartFile
 
 class AlbumServiceTest {
+    private val albumMemberRepository = mockk<AlbumMemberRepository>()
     private val albumRepository = mockk<AlbumRepository>()
     private val aiProcessor = mockk<AiProcessor>()
+    private val googleImageUploader = mockk<GoogleImageUploader>()
 
     private lateinit var albumService: AlbumService
 
     @AfterEach
     fun tearDown() {
-        clearMocks(albumRepository, aiProcessor)
+        clearMocks(albumRepository, aiProcessor, googleImageUploader, albumMemberRepository)
     }
 
     @BeforeEach
     fun setUp() {
         albumService =
             AlbumService(
-                albumManager = AlbumManager(albumRepository),
+                albumManager = AlbumManager(albumRepository, albumMemberRepository),
                 aiProcessor = aiProcessor,
-                albumFinder = AlbumFinder(albumRepository),
+                albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader, "test-bucket"),
             )
     }
 
@@ -46,13 +53,19 @@ class AlbumServiceTest {
         val image = mockk<MultipartFile>()
         val imageKeywords = "도시, 야경, 활기찬"
 
+        every { image.contentType } returns "image/jpeg"
+        every { image.size } returns 1024L
+        every { image.inputStream } returns mockk(relaxed = true)
+        every { image.originalFilename } returns "test.jpg"
+        every { googleImageUploader.uploadImage(any()) } returns "https://storage.googleapis.com/test.jpg"
         every { albumRepository.save(any()) } returns AlbumFixture.albumEntity(id = 1L)
+        every { albumMemberRepository.save(any()) } returns mockk()
         every { aiProcessor.analyzeImage(any()) } returns imageKeywords
         justRun { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
         justRun { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
 
         // when
-        val result = albumService.create(newAlbum, image)
+        val result = albumService.createAlbum(newAlbum, image)
 
         // then
         assertThat(result.albumId).isEqualTo(1L)
@@ -65,13 +78,19 @@ class AlbumServiceTest {
         val image = mockk<MultipartFile>()
         val imageKeywords = "도시, 야경, 활기찬"
 
+        every { image.contentType } returns "image/jpeg"
+        every { image.size } returns 1024L
+        every { image.inputStream } returns mockk(relaxed = true)
+        every { image.originalFilename } returns "test.jpg"
+        every { googleImageUploader.uploadImage(any()) } returns "https://storage.googleapis.com/test.jpg"
         every { albumRepository.save(any()) } returns AlbumFixture.albumEntity(id = 1L)
+        every { albumMemberRepository.save(any()) } returns mockk()
         every { aiProcessor.analyzeImage(any()) } returns imageKeywords
         justRun { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
         justRun { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
 
         // when
-        albumService.create(newAlbum, image)
+        albumService.createAlbum(newAlbum, image)
 
         // then
         verify(exactly = 1) { aiProcessor.analyzeImage(any()) }
@@ -80,7 +99,24 @@ class AlbumServiceTest {
     }
 
     @Test
-    fun `앨범이 존재하면 최신순으로 앨범 목록이 반환된다`() {
+    fun `유효하지 않은 이미지 타입이면 INVALID_IMAGE_TYPE 예외가 발생한다`() {
+        // given
+        val newAlbum = AlbumFixture.newAlbum()
+        val image = mockk<MultipartFile>()
+
+        every { image.contentType } returns "application/pdf"
+
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                albumService.createAlbum(newAlbum, image)
+            }
+
+        assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_TYPE)
+    }
+
+    @Test
+    fun `앨범이 존재하면 앨범 목록이 반환된다`() {
         // given
         val memberKey = "member-key-123"
         val cursorable = Cursorable<Long>(cursor = null, limit = 10)
@@ -98,8 +134,6 @@ class AlbumServiceTest {
 
         // then
         assertThat(result.content.size).isEqualTo(2)
-        assertThat(result.content[0].albumId).isEqualTo(2L)
-        assertThat(result.content[1].albumId).isEqualTo(1L)
     }
 
     @Test

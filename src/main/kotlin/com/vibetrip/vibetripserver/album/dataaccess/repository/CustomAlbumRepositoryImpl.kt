@@ -2,6 +2,7 @@ package com.vibetrip.vibetripserver.album.dataaccess.repository
 
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
 import com.vibetrip.vibetripserver.album.dataaccess.entity.QAlbumEntity.albumEntity
+import com.vibetrip.vibetripserver.album.dataaccess.entity.QAlbumMemberEntity.albumMemberEntity
 import com.vibetrip.vibetripserver.common.enums.EntityStatus
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
@@ -24,8 +25,12 @@ class CustomAlbumRepositoryImpl :
     ): Slice<AlbumEntity> {
         val content =
             selectFrom(albumEntity)
-                .where(
-                    albumEntity.memberKey.eq(memberKey),
+                .join(albumMemberEntity)
+                .on(
+                    albumMemberEntity.albumId.eq(albumEntity.id),
+                    albumMemberEntity.memberKey.eq(memberKey),
+                    albumMemberEntity.status.eq(EntityStatus.ACTIVE),
+                ).where(
                     albumEntity.status.eq(EntityStatus.ACTIVE),
                     ltCursor(cursorable.cursor),
                 ).orderBy(albumEntity.id.desc())
@@ -36,12 +41,15 @@ class CustomAlbumRepositoryImpl :
     }
 
     override fun countByMemberKey(memberKey: String) =
-        select(albumEntity.count())
+        select(albumEntity.id.count())
             .from(albumEntity)
-            .where(
-                albumEntity.memberKey.eq(memberKey),
-                albumEntity.status.eq(EntityStatus.ACTIVE),
-            ).fetchOne() ?: 0L
+            .join(albumMemberEntity)
+            .on(
+                albumMemberEntity.albumId.eq(albumEntity.id),
+                albumMemberEntity.memberKey.eq(memberKey),
+                albumMemberEntity.status.eq(EntityStatus.ACTIVE),
+            ).where(albumEntity.status.eq(EntityStatus.ACTIVE))
+            .fetchOne() ?: 0L
 
     override fun deleteByMemberKey(memberKey: String) {
         flush()

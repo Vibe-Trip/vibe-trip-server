@@ -1,32 +1,47 @@
 package com.vibetrip.vibetripserver.album.implement
 
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
+import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumMemberEntity
+import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
+import com.vibetrip.vibetripserver.album.domain.Album
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.vo.Title
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
-import jakarta.transaction.Transactional
+import com.vibetrip.vibetripserver.support.paging.Cursorable
+import com.vibetrip.vibetripserver.support.paging.Slice
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 @Transactional
 class AlbumManager(
     private val albumRepository: AlbumRepository,
+    private val albumMemberRepository: AlbumMemberRepository,
 ) {
     fun create(
         newAlbum: NewAlbum,
         coverImageUrl: String,
-    ): Long = albumRepository.save(AlbumEntity.from(newAlbum, coverImageUrl)).id!!
+    ): Long =
+        albumRepository
+            .save(AlbumEntity.from(newAlbum, coverImageUrl))
+            .also {
+                albumMemberRepository.save(AlbumMemberEntity(memberKey = it.memberKey, albumId = it.id!!))
+            }.id!!
 
     fun updateTitle(
         albumId: Long,
         title: String,
     ) {
-        val validatedTitle = Title(title)
-        albumRepository
-            .findById(albumId)
-            .orElseThrow { AppException(ErrorType.NOT_FOUND_ALBUM) }
-            .updateTitle(validatedTitle.value)
+        albumRepository.find(albumId)?.updateTitle(Title(title).value)
+            ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
     }
+
+    fun find(
+        memberKey: String,
+        cursorable: Cursorable<Long>,
+    ): Slice<Album> = albumRepository.findAllByMemberKey(memberKey, cursorable).map(AlbumEntity::toDomain)
+
+    fun count(memberKey: String): Long = albumRepository.countByMemberKey(memberKey)
 }

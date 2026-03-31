@@ -8,10 +8,9 @@ import org.springframework.stereotype.Service
 @Service
 class MemberService(
     private val memberFinder: MemberFinder,
-) {
-    fun getMember(memberKey: String): Member = memberFinder.find(memberKey)
-    
     private val memberWithdrawer: MemberWithdrawer,
 ) {
+    fun getMember(memberKey: String): Member = memberFinder.find(memberKey)
+
     fun withdraw(memberKey: String) = memberWithdrawer.withdraw(memberKey)
 }

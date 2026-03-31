@@ -10,20 +10,12 @@ import com.vibetrip.vibetripserver.support.security.annotation.AuthMember
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "Member", description = "멤버 관련 API")
-import com.vibetrip.vibetripserver.member.business.MemberService
-import com.vibetrip.vibetripserver.member.domain.Member
-import com.vibetrip.vibetripserver.support.response.ApiResponse
-import com.vibetrip.vibetripserver.support.security.annotation.AuthMember
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-
 @RestController
 @RequestMapping("/api/v1/members")
 class MemberController(
@@ -51,7 +43,8 @@ class MemberController(
                 ),
             ),
         )
-) {
+    }
+
     @DeleteMapping("/me/withdraw")
     fun withdraw(
         @AuthMember member: Member,

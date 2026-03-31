@@ -44,5 +44,4 @@ class AlbumManager(
         memberKey: String,
         cursorable: Cursorable<Long>,
     ): Slice<Album> = albumRepository.findAllByMemberKey(memberKey, cursorable).map(AlbumEntity::toDomain)
-
 }

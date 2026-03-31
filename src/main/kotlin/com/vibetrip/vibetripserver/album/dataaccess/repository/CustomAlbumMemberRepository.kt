@@ -5,4 +5,6 @@ interface CustomAlbumMemberRepository {
         albumId: Long,
         memberKey: String,
     ): Boolean
+
+    fun deleteByAlbumId(albumId: Long)
 }

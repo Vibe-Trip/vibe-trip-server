@@ -54,6 +54,7 @@ class AlbumService(
         memberKey: String,
     ) {
         albumMemberManager.validateMember(editAlbum.albumId, memberKey)
-        albumManager.update(editAlbum)
+        val coverImageUrl = editAlbum.image?.let { albumCoverImageProcessor.imageUpload(it) }
+        albumManager.update(editAlbum, coverImageUrl)
     }
 }

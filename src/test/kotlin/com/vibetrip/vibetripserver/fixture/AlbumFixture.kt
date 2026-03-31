@@ -2,6 +2,7 @@ package com.vibetrip.vibetripserver.fixture
 
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
 import com.vibetrip.vibetripserver.album.domain.AlbumMusic
+import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.GenreType
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.VocalGender
@@ -32,14 +33,39 @@ object AlbumFixture {
         id: Long? = null,
         memberKey: String = "member-key-123",
         region: String = "도쿄",
+        coverImageUrl: String = "https://storage.googleapis.com/test.jpg",
         travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),
         travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
     ) = AlbumEntity(
         memberKey = memberKey,
         region = region,
+        coverImageUrl = coverImageUrl,
         travelStartDate = travelStartDate,
         travelEndDate = travelEndDate,
     ).apply { this.id = id }
+
+    fun editAlbum(
+        albumId: Long = 1L,
+        region: String = "오사카",
+        comment: String = "즐거운 여행",
+        travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),
+        travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
+        withLyrics: Boolean = false,
+        vocalGender: VocalGender = VocalGender.N,
+        genre: GenreType = GenreType.CLASSICAL,
+    ) = EditAlbum.of(
+        albumId = albumId,
+        region = region,
+        comment = comment,
+        travelStartDate = travelStartDate,
+        travelEndDate = travelEndDate,
+        withLyrics = withLyrics,
+        vocalGender = vocalGender,
+        genre = genre,
+        image = null,
+    )
+
+
 
     fun generatedMusic(
         title: String = "도쿄의 밤",

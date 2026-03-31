@@ -30,4 +30,13 @@ data class Member(
 
     val authorities: List<SimpleGrantedAuthority>
         get() = roles.map { SimpleGrantedAuthority(it.name) }
+
+    val nameValue: String
+        get() = name.value
+
+    val emailValue: String
+        get() = email.value
+
+    val profileImageUrlValue: String
+        get() = profileImageUrl.value
 }

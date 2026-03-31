@@ -36,6 +36,8 @@ class AlbumService(
         return AlbumCreateResponse(albumId)
     }
 
+    fun getAlbumCount(memberKey: String) = albumManager.count(memberKey)
+
     fun findAlbums(
         memberKey: String,
         cursorable: Cursorable<Long>,

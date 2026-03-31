@@ -68,7 +68,7 @@ class AlbumServiceTest {
         val result = albumService.createAlbum(newAlbum, image)
 
         // then
-        assertThat(result.albumId).isEqualTo(1L)
+        assertThat(result).isEqualTo(1L)
     }
 
     @Test

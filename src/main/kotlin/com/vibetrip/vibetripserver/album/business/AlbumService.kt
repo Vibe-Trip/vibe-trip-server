@@ -20,14 +20,14 @@ class AlbumService(
     fun createAlbum(
         newAlbum: NewAlbum,
         coverImage: MultipartFile,
-    ): AlbumCreateResponse {
+    ): Long {
         val coverImageUrl = albumCoverImageProcessor.imageUpload(coverImage)
         val gcsUri = albumCoverImageProcessor.toGcsUri(coverImageUrl)
         val albumId = albumManager.create(newAlbum, coverImageUrl)
         val imageKeywords = aiProcessor.analyzeImage(gcsUri)
         aiProcessor.generateTitle(albumId, newAlbum, imageKeywords)
         aiProcessor.generateMusic(albumId, newAlbum, imageKeywords)
-        return AlbumCreateResponse(albumId)
+        return albumId
     }
 
     fun findAlbums(

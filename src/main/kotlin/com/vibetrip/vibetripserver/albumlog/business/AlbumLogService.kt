@@ -41,6 +41,8 @@ class AlbumLogService(
         return albumLog.id
     }
 
+    fun getAlbumLogCount(memberKey: String): Long = albumLogManager.count(memberKey)
+
     fun findAlbumLogs(
         albumId: Long,
         cursorable: Cursorable<Long>,

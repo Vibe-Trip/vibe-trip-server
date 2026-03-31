@@ -38,10 +38,10 @@ class AlbumManager(
             ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
     }
 
+    fun count(memberKey: String) = albumRepository.countByMemberKey(memberKey)
+
     fun find(
         memberKey: String,
         cursorable: Cursorable<Long>,
     ): Slice<Album> = albumRepository.findAllByMemberKey(memberKey, cursorable).map(AlbumEntity::toDomain)
-
-    fun count(memberKey: String): Long = albumRepository.countByMemberKey(memberKey)
 }

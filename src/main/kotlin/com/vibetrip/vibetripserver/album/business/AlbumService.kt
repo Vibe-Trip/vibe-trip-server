@@ -2,25 +2,27 @@ package com.vibetrip.vibetripserver.album.business
 
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
-import com.vibetrip.vibetripserver.album.implement.AlbumFinder
+import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 
 @Service
 class AlbumService(
     private val albumManager: AlbumManager,
     private val aiProcessor: AiProcessor,
-    private val albumFinder: AlbumFinder,
+    private val albumCoverImageProcessor: AlbumCoverImageProcessor,
 ) {
-    fun create(
+    @Transactional
+    fun createAlbum(
         newAlbum: NewAlbum,
-        image: MultipartFile,
+        coverImage: MultipartFile,
     ): AlbumCreateResponse {
-        val coverImageUrl = "" // TODO: GCS 업로드 후 URL 반환
-        val gcsUri = "" // TODO: GCS URI (gs://bucket/filename)
+        val coverImageUrl = albumCoverImageProcessor.imageUpload(coverImage)
+        val gcsUri = albumCoverImageProcessor.toGcsUri(coverImageUrl)
         val albumId = albumManager.create(newAlbum, coverImageUrl)
         val imageKeywords = aiProcessor.analyzeImage(gcsUri)
         aiProcessor.generateTitle(albumId, newAlbum, imageKeywords)
@@ -33,7 +35,7 @@ class AlbumService(
     fun findAlbums(
         memberKey: String,
         cursorable: Cursorable<Long>,
-    ) = albumFinder.findAllByMemberKey(memberKey, cursorable)
+    ) = albumManager.find(memberKey, cursorable)
 
-    fun countAlbums(memberKey: String): Long = albumFinder.countByMemberKey(memberKey)
+    fun countAlbums(memberKey: String): Long = albumManager.count(memberKey)
 }

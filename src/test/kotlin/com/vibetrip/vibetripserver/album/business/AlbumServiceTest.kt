@@ -1,6 +1,5 @@
 package com.vibetrip.vibetripserver.album.business
 
-import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
@@ -46,7 +45,6 @@ class AlbumServiceTest {
                 aiProcessor = aiProcessor,
                 albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader, "test-bucket"),
                 albumMemberManager = AlbumMemberManager(albumMemberRepository),
-
             )
     }
 
@@ -193,8 +191,8 @@ class AlbumServiceTest {
     }
 
     @Test
-    fun `앨범 멤버이고 앨범이 존재하면 앨범이 수정된다`(){
-        //given
+    fun `앨범 멤버이고 앨범이 존재하면 앨범이 수정된다`() {
+        // given
         val memberKey = "member-key-123"
         val editAlbum = AlbumFixture.editAlbum(albumId = 1L)
         val entity = AlbumFixture.albumEntity(id = 1L)
@@ -202,49 +200,51 @@ class AlbumServiceTest {
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
         every { albumRepository.find(1L) } returns entity
 
-        //when
+        // when
         albumService.updateAlbum(editAlbum, memberKey)
 
-        //then
+        // then
         assertThat(entity.region).isEqualTo(editAlbum.region.value)
     }
 
     @Test
-    fun `앨범 수정 시 앨범 멤버가 아니라면 NOT_ALBUM_MEMBER 예외가 발생한다`(){
-        //given
+    fun `앨범 수정 시 앨범 멤버가 아니라면 NOT_ALBUM_MEMBER 예외가 발생한다`() {
+        // given
         val memberKey = "member-key-123"
         val editAlbum = AlbumFixture.editAlbum(albumId = 1L)
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns false
 
-        //when & then
-        val exception = assertThrows<AppException> {
-            albumService.updateAlbum(editAlbum, memberKey)
-        }
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                albumService.updateAlbum(editAlbum, memberKey)
+            }
 
         assertThat(exception.errorType).isEqualTo(ErrorType.NOT_ALBUM_MEMBER)
     }
 
     @Test
-    fun `앨범 수정 시 앨범이 존재하지 않으면 NOT_FOUND_ALBUM 예외가 발생한다`(){
-        //given
+    fun `앨범 수정 시 앨범이 존재하지 않으면 NOT_FOUND_ALBUM 예외가 발생한다`() {
+        // given
         val memberKey = "member-key-123"
         val editAlbum = AlbumFixture.editAlbum(albumId = 1L)
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
         every { albumRepository.find(1L) } returns null
 
-        //when & then
-        val exception = assertThrows<AppException> {
-            albumService.updateAlbum(editAlbum, memberKey)
-        }
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                albumService.updateAlbum(editAlbum, memberKey)
+            }
 
         assertThat(exception.errorType).isEqualTo(ErrorType.NOT_FOUND_ALBUM)
     }
 
     @Test
-    fun `앨범 멤버이고 이미지가 없으면 기존 coverImageUrl이 유지된다`(){
-        //given
+    fun `앨범 멤버이고 이미지가 없으면 기존 coverImageUrl이 유지된다`() {
+        // given
         val memberKey = "member-key-123"
         val editAlbum = AlbumFixture.editAlbum(albumId = 1L)
         val entity = AlbumFixture.albumEntity(id = 1L)
@@ -253,10 +253,32 @@ class AlbumServiceTest {
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
         every { albumRepository.find(1L) } returns entity
 
-        //when
+        // when
         albumService.updateAlbum(editAlbum, memberKey)
 
-        //given
+        // given
         assertThat(entity.coverImageUrl).isEqualTo(originalCoverImageUrl)
+    }
+
+    @Test
+    fun `앨범 멤버이고 이미지가 있으면 새 coverImageUrl로 수정된다`() {
+        // given
+        val memberKey = "member-key-123"
+        val image = mockk<MultipartFile>()
+        val editAlbum = AlbumFixture.editAlbum(albumId = 1L, image = image)
+        val entity = AlbumFixture.albumEntity(id = 1L)
+
+        every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
+        every { albumRepository.find(1L) } returns entity
+        every { image.contentType } returns "image/jpeg"
+        every { image.inputStream } returns mockk(relaxed = true)
+        every { image.originalFilename } returns "image/jpeg"
+        every { googleImageUploader.uploadImage(any()) } returns "https://storage.googleapis.com/new.jpeg"
+
+        // when
+        albumService.updateAlbum(editAlbum, memberKey)
+
+        // then
+        assertThat(entity.coverImageUrl).isEqualTo("https://storage.googleapis.com/new.jpeg")
     }
 }

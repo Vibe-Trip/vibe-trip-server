@@ -6,6 +6,7 @@ import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.GenreType
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.VocalGender
+import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
 
 object AlbumFixture {
@@ -53,6 +54,7 @@ object AlbumFixture {
         withLyrics: Boolean = false,
         vocalGender: VocalGender = VocalGender.N,
         genre: GenreType = GenreType.CLASSICAL,
+        image: MultipartFile? = null,
     ) = EditAlbum.of(
         albumId = albumId,
         region = region,
@@ -62,10 +64,8 @@ object AlbumFixture {
         withLyrics = withLyrics,
         vocalGender = vocalGender,
         genre = genre,
-        image = null,
+        image = image,
     )
-
-
 
     fun generatedMusic(
         title: String = "도쿄의 밤",

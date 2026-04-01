@@ -44,4 +44,8 @@ class AlbumManager(
         memberKey: String,
         cursorable: Cursorable<Long>,
     ): Slice<Album> = albumRepository.findAllByMemberKey(memberKey, cursorable).map(AlbumEntity::toDomain)
+
+    fun findAlbum(albumId: Long): Album =
+        albumRepository.find(albumId)?.toDomain()
+            ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
 }

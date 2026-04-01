@@ -3,6 +3,7 @@ package com.vibetrip.vibetripserver.album.presentation
 import com.vibetrip.vibetripserver.album.business.AlbumService
 import com.vibetrip.vibetripserver.album.presentation.dto.request.AlbumCreateRequest
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
+import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumDetailResponse
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumListResponse
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumPageResponse
 import com.vibetrip.vibetripserver.member.domain.Member
@@ -16,6 +17,7 @@ import jakarta.validation.Valid
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
@@ -54,4 +56,16 @@ class AlbumController(
 
         return ResponseEntity.ok(ApiResponse.success(AlbumPageResponse.of(totalCount, slice)))
     }
+
+    @Operation(summary = "단일 앨범 조회", description = "단일 앨범을 조회합니다")
+    @GetMapping("/{albumId}")
+    fun getAlbum(
+        @PathVariable albumId: Long,
+        @AuthMember member: Member,
+    ): ResponseEntity<ApiResponse<AlbumDetailResponse>> =
+        ResponseEntity.ok(
+            ApiResponse.success(
+                AlbumDetailResponse.from(albumService.findAlbum(albumId, member.memberKey)),
+            )
+        )
 }

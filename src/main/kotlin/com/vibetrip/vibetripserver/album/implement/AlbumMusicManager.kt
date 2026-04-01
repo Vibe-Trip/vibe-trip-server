@@ -19,4 +19,7 @@ class AlbumMusicManager(
     ) {
         albumMusicRepository.save(AlbumMusicEntity.from(albumId, newAlbum, music))
     }
+
+    @Transactional(readOnly = true)
+    fun getResourceUrl(albumId: Long): String = albumMusicRepository.findByAlbumId(albumId)?.resourceUrl ?: ""
 }

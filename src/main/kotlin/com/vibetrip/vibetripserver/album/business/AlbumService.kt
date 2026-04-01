@@ -6,7 +6,6 @@ import com.vibetrip.vibetripserver.album.implement.AiProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
-import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.retry.annotation.Backoff
@@ -26,14 +25,14 @@ class AlbumService(
     fun createAlbum(
         newAlbum: NewAlbum,
         coverImage: MultipartFile,
-    ): AlbumCreateResponse {
+    ): Long {
         val coverImageUrl = albumCoverImageProcessor.imageUpload(coverImage)
         val gcsUri = albumCoverImageProcessor.toGcsUri(coverImageUrl)
         val albumId = albumManager.create(newAlbum, coverImageUrl)
         val imageKeywords = aiProcessor.analyzeImage(gcsUri)
         aiProcessor.generateTitle(albumId, newAlbum, imageKeywords)
         aiProcessor.generateMusic(albumId, newAlbum, imageKeywords)
-        return AlbumCreateResponse(albumId)
+        return albumId
     }
 
     fun getAlbumCount(memberKey: String) = albumManager.count(memberKey)

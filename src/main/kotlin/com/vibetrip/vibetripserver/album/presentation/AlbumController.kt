@@ -38,15 +38,11 @@ class AlbumController(
         @AuthMember member: Member,
         @RequestPart coverImage: MultipartFile,
         @Valid @RequestPart request: AlbumCreateRequest,
-    ): ResponseEntity<ApiResponse<AlbumCreateResponse>> =
-        ResponseEntity.ok(
-            ApiResponse.success(
-                albumService.createAlbum(
-                    request.toNewAlbum(member.memberKey),
-                    coverImage,
-                ),
-            ),
-        )
+    ): ResponseEntity<ApiResponse<AlbumCreateResponse>> {
+        val albumId = albumService.createAlbum(request.toNewAlbum(member.memberKey), coverImage)
+
+        return ResponseEntity.ok(ApiResponse.success(AlbumCreateResponse(albumId)))
+    }
 
     @Operation(summary = "앨범 목록 조회", description = "앨범 목록을 조회합니다")
     @GetMapping

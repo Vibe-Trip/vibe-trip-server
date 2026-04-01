@@ -25,12 +25,11 @@ class AlbumServiceTest {
     private val aiProcessor = mockk<AiProcessor>()
     private val googleImageUploader = mockk<GoogleImageUploader>()
 
-
     private lateinit var albumService: AlbumService
 
     @AfterEach
     fun tearDown() {
-        clearMocks(albumRepository, aiProcessor, googleImageUploader, albumMemberRepository,albumMusicRepository)
+        clearMocks(albumRepository, aiProcessor, googleImageUploader, albumMemberRepository, albumMusicRepository)
     }
 
     @BeforeEach
@@ -189,7 +188,7 @@ class AlbumServiceTest {
 
     @Test
     fun `앨범 단건 조회 시 앨범 정보와 음악 URL이 반환된다`() {
-        //given
+        // given
         val albumId = 1L
         val memberKey = "member-key-123"
 
@@ -197,17 +196,17 @@ class AlbumServiceTest {
         every { albumRepository.find(albumId) } returns AlbumFixture.albumEntity(1L, memberKey)
         every { albumMusicRepository.findByAlbumId(albumId) } returns AlbumFixture.albumMusicEntity(albumId)
 
-        //when
+        // when
         val result = albumService.findAlbum(albumId, memberKey)
 
-        //then
+        // then
         assertThat(result.album.albumId).isEqualTo(albumId)
         assertThat(result.resourceUrl).isEqualTo("https://mock-music-url.mp3")
     }
 
     @Test
-    fun `음악이 없는 앨범 조회 시 resourceUrl이 빈 문자열로 반환된다`(){
-        //given
+    fun `음악이 없는 앨범 조회 시 resourceUrl이 빈 문자열로 반환된다`() {
+        // given
         val albumId = 1L
         val memberKey = "member-key-123"
 
@@ -215,26 +214,27 @@ class AlbumServiceTest {
         every { albumRepository.find(albumId) } returns AlbumFixture.albumEntity(1L, memberKey)
         every { albumMusicRepository.findByAlbumId(albumId) } returns null
 
-        //when
+        // when
         val result = albumService.findAlbum(albumId, memberKey)
 
-        //then
+        // then
         assertThat(result.resourceUrl).isEmpty()
     }
 
     @Test
-    fun `존재하지 않는 앨범 조회 시 NOT_FOUND_ALBUM 예외가 발생한다`(){
-        //given
+    fun `존재하지 않는 앨범 조회 시 NOT_FOUND_ALBUM 예외가 발생한다`() {
+        // given
         val albumId = 1L
         val memberKey = "member-key-123"
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns true
         every { albumRepository.find(albumId) } returns null
 
-        //when & then
-        val exception = assertThrows<AppException> {
-            albumService.findAlbum(albumId, memberKey)
-        }
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                albumService.findAlbum(albumId, memberKey)
+            }
         assertThat(exception.errorType).isEqualTo(ErrorType.NOT_FOUND_ALBUM)
     }
 }

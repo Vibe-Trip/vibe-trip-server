@@ -66,6 +66,6 @@ class AlbumController(
         ResponseEntity.ok(
             ApiResponse.success(
                 AlbumDetailResponse.from(albumService.findAlbum(albumId, member.memberKey)),
-            )
+            ),
         )
 }

@@ -34,7 +34,7 @@ class AlbumManager(
         albumId: Long,
         title: String,
     ) {
-        albumRepository.find(albumId)?.updateTitle(Title(title).value)
+        albumRepository.find(albumId)?.updateTitle(Title(title).title)
             ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
     }
 

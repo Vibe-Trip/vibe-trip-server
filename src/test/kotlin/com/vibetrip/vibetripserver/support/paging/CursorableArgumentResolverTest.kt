@@ -2,176 +2,219 @@ package com.vibetrip.vibetripserver.support.paging
 
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import org.springframework.core.MethodParameter
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 
-class CursorableArgumentResolverTest :
-    BehaviorSpec(
-        {
-            val resolver = CursorableArgumentResolver()
-            val webRequest = mockk<NativeWebRequest>()
-            val binderFactory = mockk<WebDataBinderFactory>()
+class CursorableArgumentResolverTest {
+    private lateinit var resolver: CursorableArgumentResolver
+    private lateinit var webRequest: NativeWebRequest
+    private lateinit var binderFactory: WebDataBinderFactory
 
-            Given("supportsParameter 검증 시") {
-                When("파라미터 타입이 Cursorable이면") {
-                    val parameter = mockk<MethodParameter>()
-                    every { parameter.parameterType } returns Cursorable::class.java
+    @BeforeEach
+    fun setUp() {
+        resolver = CursorableArgumentResolver()
+        webRequest = mockk()
+        binderFactory = mockk()
+    }
 
-                    Then("true를 반환한다") {
-                        resolver.supportsParameter(parameter) shouldBe true
-                    }
-                }
+    @Nested
+    inner class SupportsParameter {
+        @Test
+        fun `파라미터 타입이 Cursorable이면 true를 반환한다`() {
+            // given
+            val parameter = mockk<MethodParameter>()
+            every { parameter.parameterType } returns Cursorable::class.java
 
-                When("파라미터 타입이 Cursorable이 아니면") {
-                    val parameter = mockk<MethodParameter>()
-                    every { parameter.parameterType } returns String::class.java
+            // when
+            val result = resolver.supportsParameter(parameter)
 
-                    Then("false를 반환한다") {
-                        resolver.supportsParameter(parameter) shouldBe false
-                    }
-                }
-            }
+            // then
+            assertThat(result).isTrue()
+        }
 
-            Given("@CursorDefault 어노테이션이 있는 상황에서") {
-                val parameter = mockk<MethodParameter>()
-                val annotation = CursorDefault(defaultLimit = 20)
+        @Test
+        fun `파라미터 타입이 Cursorable이 아니면 false를 반환한다`() {
+            // given
+            val parameter = mockk<MethodParameter>()
+            every { parameter.parameterType } returns String::class.java
 
-                every { parameter.getParameterAnnotation(CursorDefault::class.java) } returns annotation
+            // when
+            val result = resolver.supportsParameter(parameter)
 
-                When("limit 파라미터가 있으면") {
-                    every { webRequest.getParameter("limit") } returns "15"
-                    every { webRequest.getParameter("cursor") } returns null
+            // then
+            assertThat(result).isFalse()
+        }
+    }
 
-                    Then("요청한 limit 값이 적용된다") {
-                        val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
+    @Nested
+    inner class `CursorDefault 어노테이션이 있는 경우` {
+        private lateinit var parameter: MethodParameter
+        private lateinit var annotation: CursorDefault
 
-                        result shouldBe Cursorable<Long>(null, 15)
-                    }
-                }
+        @BeforeEach
+        fun setUp() {
+            parameter = mockk()
+            annotation = CursorDefault(defaultLimit = 20)
+            every { parameter.getParameterAnnotation(CursorDefault::class.java) } returns annotation
+        }
 
-                When("limit 파라미터가 없으면") {
-                    every { webRequest.getParameter("limit") } returns null
-                    every { webRequest.getParameter("cursor") } returns null
+        @Test
+        fun `limit 파라미터가 있으면 요청한 limit 값이 적용된다`() {
+            // given
+            every { webRequest.getParameter("limit") } returns "15"
+            every { webRequest.getParameter("cursor") } returns null
 
-                    Then("기본값이 적용된다") {
-                        val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
+            // when
+            val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
 
-                        result shouldBe Cursorable<Long>(null, 20)
-                    }
-                }
+            // then
+            assertThat(result).isEqualTo(Cursorable<Long>(null, 15))
+        }
 
-                When("limit 파라미터가 숫자가 아니면") {
-                    every { webRequest.getParameter("limit") } returns "invalid"
-                    every { webRequest.getParameter("cursor") } returns null
+        @Test
+        fun `limit 파라미터가 없으면 기본값이 적용된다`() {
+            // given
+            every { webRequest.getParameter("limit") } returns null
+            every { webRequest.getParameter("cursor") } returns null
 
-                    Then("기본값이 적용된다") {
-                        val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
+            // when
+            val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
 
-                        result shouldBe Cursorable<Long>(null, 20)
-                    }
-                }
-            }
+            // then
+            assertThat(result).isEqualTo(Cursorable<Long>(null, 20))
+        }
 
-            Given("@CursorDefault 어노테이션이 없는 상황에서") {
-                val parameter = mockk<MethodParameter>()
+        @Test
+        fun `limit 파라미터가 숫자가 아니면 기본값이 적용된다`() {
+            // given
+            every { webRequest.getParameter("limit") } returns "invalid"
+            every { webRequest.getParameter("cursor") } returns null
 
-                every { parameter.getParameterAnnotation(CursorDefault::class.java) } returns null
+            // when
+            val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
 
-                When("limit 파라미터가 있으면") {
-                    every { webRequest.getParameter("limit") } returns "10"
-                    every { webRequest.getParameter("cursor") } returns null
+            // then
+            assertThat(result).isEqualTo(Cursorable<Long>(null, 20))
+        }
+    }
 
-                    Then("요청한 limit 값이 적용된다") {
-                        val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
+    @Nested
+    inner class `CursorDefault 어노테이션이 없는 경우` {
+        private lateinit var parameter: MethodParameter
 
-                        result shouldBe Cursorable<Long>(null, 10)
-                    }
-                }
+        @BeforeEach
+        fun setUp() {
+            parameter = mockk()
+            every { parameter.getParameterAnnotation(CursorDefault::class.java) } returns null
+        }
 
-                When("limit 파라미터가 없으면") {
-                    every { webRequest.getParameter("limit") } returns null
+        @Test
+        fun `limit 파라미터가 있으면 요청한 limit 값이 적용된다`() {
+            // given
+            every { webRequest.getParameter("limit") } returns "10"
+            every { webRequest.getParameter("cursor") } returns null
 
-                    Then("INVALID_PAGING_PARAMETER 예외가 발생한다") {
-                        val exception =
-                            shouldThrow<AppException> {
-                                resolver.resolveArgument(parameter, null, webRequest, binderFactory)
-                            }
+            // when
+            val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
 
-                        exception.errorType shouldBe ErrorType.INVALID_PAGING_PARAMETER
-                    }
-                }
+            // then
+            assertThat(result).isEqualTo(Cursorable<Long>(null, 10))
+        }
 
-                When("limit 파라미터가 숫자가 아니면") {
-                    every { webRequest.getParameter("limit") } returns "abc"
+        @Test
+        fun `limit 파라미터가 없으면 INVALID_PAGING_PARAMETER 예외가 발생한다`() {
+            // given
+            every { webRequest.getParameter("limit") } returns null
 
-                    Then("INVALID_PAGING_PARAMETER 예외가 발생한다") {
-                        val exception =
-                            shouldThrow<AppException> {
-                                resolver.resolveArgument(parameter, null, webRequest, binderFactory)
-                            }
+            // when & then
+            assertThatThrownBy {
+                resolver.resolveArgument(parameter, null, webRequest, binderFactory)
+            }.isInstanceOf(AppException::class.java)
+                .extracting("errorType")
+                .isEqualTo(ErrorType.INVALID_PAGING_PARAMETER)
+        }
 
-                        exception.errorType shouldBe ErrorType.INVALID_PAGING_PARAMETER
-                    }
-                }
-            }
+        @Test
+        fun `limit 파라미터가 숫자가 아니면 INVALID_PAGING_PARAMETER 예외가 발생한다`() {
+            // given
+            every { webRequest.getParameter("limit") } returns "abc"
 
-            Given("limit 범위 검증 시") {
-                val parameter = mockk<MethodParameter>()
+            // when & then
+            assertThatThrownBy {
+                resolver.resolveArgument(parameter, null, webRequest, binderFactory)
+            }.isInstanceOf(AppException::class.java)
+                .extracting("errorType")
+                .isEqualTo(ErrorType.INVALID_PAGING_PARAMETER)
+        }
+    }
 
-                every { parameter.getParameterAnnotation(CursorDefault::class.java) } returns null
-                every { webRequest.getParameter("cursor") } returns null
+    @Nested
+    inner class `limit 범위 검증` {
+        private lateinit var parameter: MethodParameter
 
-                When("limit이 0이면") {
-                    every { webRequest.getParameter("limit") } returns "0"
+        @BeforeEach
+        fun setUp() {
+            parameter = mockk()
+            every { parameter.getParameterAnnotation(CursorDefault::class.java) } returns null
+            every { webRequest.getParameter("cursor") } returns null
+        }
 
-                    Then("INVALID_PAGING_SIZE 예외가 발생한다") {
-                        val exception =
-                            shouldThrow<AppException> {
-                                resolver.resolveArgument(parameter, null, webRequest, binderFactory)
-                            }
+        @Test
+        fun `limit이 0이면 INVALID_PAGING_SIZE 예외가 발생한다`() {
+            // given
+            every { webRequest.getParameter("limit") } returns "0"
 
-                        exception.errorType shouldBe ErrorType.INVALID_PAGING_SIZE
-                    }
-                }
+            // when & then
+            assertThatThrownBy {
+                resolver.resolveArgument(parameter, null, webRequest, binderFactory)
+            }.isInstanceOf(AppException::class.java)
+                .extracting("errorType")
+                .isEqualTo(ErrorType.INVALID_PAGING_SIZE)
+        }
 
-                When("limit이 50을 초과하면") {
-                    every { webRequest.getParameter("limit") } returns "51"
+        @Test
+        fun `limit이 50을 초과하면 INVALID_PAGING_SIZE 예외가 발생한다`() {
+            // given
+            every { webRequest.getParameter("limit") } returns "51"
 
-                    Then("INVALID_PAGING_SIZE 예외가 발생한다") {
-                        val exception =
-                            shouldThrow<AppException> {
-                                resolver.resolveArgument(parameter, null, webRequest, binderFactory)
-                            }
+            // when & then
+            assertThatThrownBy {
+                resolver.resolveArgument(parameter, null, webRequest, binderFactory)
+            }.isInstanceOf(AppException::class.java)
+                .extracting("errorType")
+                .isEqualTo(ErrorType.INVALID_PAGING_SIZE)
+        }
 
-                        exception.errorType shouldBe ErrorType.INVALID_PAGING_SIZE
-                    }
-                }
+        @Test
+        fun `limit이 1이면 정상적으로 처리된다`() {
+            // given
+            every { webRequest.getParameter("limit") } returns "1"
 
-                When("limit이 1이면") {
-                    every { webRequest.getParameter("limit") } returns "1"
+            // when
+            val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
 
-                    Then("정상적으로 처리된다") {
-                        val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
+            // then
+            assertThat(result).isEqualTo(Cursorable<Long>(null, 1))
+        }
 
-                        result shouldBe Cursorable<Long>(null, 1)
-                    }
-                }
+        @Test
+        fun `limit이 50이면 정상적으로 처리된다`() {
+            // given
+            every { webRequest.getParameter("limit") } returns "50"
 
-                When("limit이 50이면") {
-                    every { webRequest.getParameter("limit") } returns "50"
+            // when
+            val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
 
-                    Then("정상적으로 처리된다") {
-                        val result = resolver.resolveArgument(parameter, null, webRequest, binderFactory)
-
-                        result shouldBe Cursorable<Long>(null, 50)
-                    }
-                }
-            }
-        },
-    )
+            // then
+            assertThat(result).isEqualTo(Cursorable<Long>(null, 50))
+        }
+    }
+}

@@ -44,7 +44,6 @@ class AlbumService(
 
     fun countAlbums(memberKey: String): Long = albumManager.count(memberKey)
 
-
     @Retryable(
         retryFor = [ObjectOptimisticLockingFailureException::class],
         maxAttempts = 3,

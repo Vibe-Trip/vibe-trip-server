@@ -15,7 +15,6 @@ import com.vibetrip.vibetripserver.support.security.annotation.AuthMember
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.apache.coyote.Response
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -89,6 +88,7 @@ class AlbumController(
         )
         return ResponseEntity.ok(ApiResponse.success())
     }
+
     @Operation(summary = "앨범 삭제", description = "해당 앨범을 삭제합니다")
     @DeleteMapping("/{albumId}")
     fun deleteAlbum(

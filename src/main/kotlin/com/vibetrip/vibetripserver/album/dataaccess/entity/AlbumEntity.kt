@@ -69,12 +69,12 @@ class AlbumEntity(
 
     fun updateAlbum(
         editAlbum: EditAlbum,
-        coverImageUrl: String,
+        coverImageUrl: String?,
     ) {
         region = editAlbum.region.value
         comment = editAlbum.comment.value
         travelStartDate = editAlbum.travelDate.startDate
         travelEndDate = editAlbum.travelDate.endDate
-        this.coverImageUrl = coverImageUrl
+        this.coverImageUrl = coverImageUrl ?: this.coverImageUrl
     }
 }

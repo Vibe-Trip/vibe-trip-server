@@ -50,7 +50,6 @@ class AlbumManager(
         editAlbum: EditAlbum,
         coverImageUrl: String?,
     ) {
-        val entity = albumRepository.find(editAlbum.albumId) ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
-        entity.updateAlbum(editAlbum, coverImageUrl ?: entity.coverImageUrl)
+        albumRepository.find(editAlbum.albumId)?.updateAlbum(editAlbum, coverImageUrl) ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
     }
 }

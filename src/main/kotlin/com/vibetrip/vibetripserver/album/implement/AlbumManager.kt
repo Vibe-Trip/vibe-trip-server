@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 class AlbumManager(
     private val albumRepository: AlbumRepository,
     private val albumMemberRepository: AlbumMemberRepository,
+    private val deletionProcessors: List<AlbumDeletionProcessor>,
 ) {
     fun create(
         newAlbum: NewAlbum,
@@ -50,6 +51,13 @@ class AlbumManager(
         editAlbum: EditAlbum,
         coverImageUrl: String?,
     ) {
-        albumRepository.find(editAlbum.albumId)?.updateAlbum(editAlbum, coverImageUrl) ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
+        albumRepository.find(editAlbum.albumId)?.updateAlbum(editAlbum, coverImageUrl)
+            ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
+    }
+
+    fun delete(albumId: Long) {
+        albumRepository.find(albumId) ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
+        deletionProcessors.forEach { it.process(albumId) }
+        albumRepository.deleteByAlbumId(albumId)
     }
 }

@@ -17,4 +17,8 @@ interface CustomAlbumLogRepository {
     fun delete(id: Long)
 
     fun deleteByMemberKey(memberKey: String)
+
+    fun deleteByAlbumId(albumId: Long)
+
+    fun findIdsByAlbumId(albumId: Long): List<Long>
 }

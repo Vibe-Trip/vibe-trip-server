@@ -16,10 +16,10 @@ import org.springframework.web.multipart.MultipartFile
 
 @Service
 class AlbumService(
+    private val albumMemberManager: AlbumMemberManager,
     private val albumManager: AlbumManager,
     private val aiProcessor: AiProcessor,
     private val albumCoverImageProcessor: AlbumCoverImageProcessor,
-    private val albumMemberManager: AlbumMemberManager,
 ) {
     @Transactional
     fun createAlbum(
@@ -44,6 +44,7 @@ class AlbumService(
 
     fun countAlbums(memberKey: String): Long = albumManager.count(memberKey)
 
+
     @Retryable(
         retryFor = [ObjectOptimisticLockingFailureException::class],
         maxAttempts = 3,
@@ -57,5 +58,14 @@ class AlbumService(
         albumMemberManager.validateMember(editAlbum.albumId, memberKey)
         val coverImageUrl = editAlbum.image?.let { albumCoverImageProcessor.imageUpload(it) }
         albumManager.update(editAlbum, coverImageUrl)
+    }
+
+    @Transactional
+    fun deleteAlbum(
+        albumId: Long,
+        memberKey: String,
+    ) {
+        albumMemberManager.validateMember(albumId, memberKey)
+        albumManager.delete(albumId)
     }
 }

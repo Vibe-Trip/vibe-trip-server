@@ -51,6 +51,16 @@ class CustomAlbumRepositoryImpl :
             ).where(albumEntity.status.eq(EntityStatus.ACTIVE))
             .fetchOne() ?: 0L
 
+    override fun deleteByAlbumId(albumId: Long) {
+        flush()
+        update(albumEntity)
+            .set(albumEntity.status, EntityStatus.DELETED)
+            .set(albumEntity.deletedAt, LocalDateTime.now())
+            .where(albumEntity.id.eq(albumId))
+            .execute()
+        clear()
+    }
+
     override fun deleteByMemberKey(memberKey: String) {
         flush()
 

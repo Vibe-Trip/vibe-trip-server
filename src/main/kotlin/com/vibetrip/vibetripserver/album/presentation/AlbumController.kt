@@ -15,8 +15,10 @@ import com.vibetrip.vibetripserver.support.security.annotation.AuthMember
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.apache.coyote.Response
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -85,6 +87,15 @@ class AlbumController(
             ),
             member.memberKey,
         )
+        return ResponseEntity.ok(ApiResponse.success())
+    }
+    @Operation(summary = "앨범 삭제", description = "해당 앨범을 삭제합니다")
+    @DeleteMapping("/{albumId}")
+    fun deleteAlbum(
+        @PathVariable albumId: Long,
+        @AuthMember member: Member,
+    ): ResponseEntity<ApiResponse<Unit>> {
+        albumService.deleteAlbum(albumId, member.memberKey)
         return ResponseEntity.ok(ApiResponse.success())
     }
 }

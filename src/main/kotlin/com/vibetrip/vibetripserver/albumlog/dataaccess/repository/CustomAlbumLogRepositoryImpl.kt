@@ -76,5 +76,24 @@ class CustomAlbumLogRepositoryImpl :
         clear()
     }
 
+    override fun deleteByAlbumId(albumId: Long) {
+        flush()
+
+        update(albumLogEntity)
+            .set(albumLogEntity.status, EntityStatus.DELETED)
+            .set(albumLogEntity.deletedAt, LocalDateTime.now())
+            .where(albumLogEntity.albumId.eq(albumId))
+            .execute()
+
+        clear()
+    }
+
+    override fun findIdsByAlbumId(albumId: Long): List<Long> =
+        select(albumLogEntity.id)
+            .from(albumLogEntity)
+            .where(albumLogEntity.albumId.eq(albumId), albumLogEntity.status.eq(EntityStatus.ACTIVE))
+            .fetch()
+            .map { it!! }
+
     private fun ltCursor(cursor: Long?) = cursor?.let { albumLogEntity.id.lt(it) }
 }

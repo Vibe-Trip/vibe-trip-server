@@ -41,7 +41,7 @@ class AlbumServiceTest {
     fun setUp() {
         albumService =
             AlbumService(
-                albumManager = AlbumManager(albumRepository, albumMemberRepository),
+                albumManager = AlbumManager(albumRepository, albumMemberRepository, emptyList()),
                 aiProcessor = aiProcessor,
                 albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader, "test-bucket"),
                 albumMemberManager = AlbumMemberManager(albumMemberRepository),

@@ -4,6 +4,7 @@ import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
+import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile
 
 @Service
 class AlbumService(
+    private val albumMemberManager: AlbumMemberManager,
     private val albumManager: AlbumManager,
     private val aiProcessor: AiProcessor,
     private val albumCoverImageProcessor: AlbumCoverImageProcessor,
@@ -37,4 +39,13 @@ class AlbumService(
     ) = albumManager.find(memberKey, cursorable)
 
     fun countAlbums(memberKey: String): Long = albumManager.count(memberKey)
+
+    @Transactional
+    fun deleteAlbum(
+        albumId: Long,
+        memberKey: String,
+    ) {
+        albumMemberManager.validateMember(albumId, memberKey)
+        albumManager.delete(albumId)
+    }
 }

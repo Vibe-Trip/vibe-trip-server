@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 class AlbumManager(
     private val albumRepository: AlbumRepository,
     private val albumMemberRepository: AlbumMemberRepository,
+    private val deletionProcessors: List<AlbumDeletionProcessor>,
 ) {
     fun create(
         newAlbum: NewAlbum,
@@ -44,4 +45,10 @@ class AlbumManager(
         memberKey: String,
         cursorable: Cursorable<Long>,
     ): Slice<Album> = albumRepository.findAllByMemberKey(memberKey, cursorable).map(AlbumEntity::toDomain)
+
+    fun delete(albumId: Long) {
+        albumRepository.find(albumId) ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
+        deletionProcessors.forEach { it.process(albumId) }
+        albumRepository.deleteByAlbumId(albumId)
+    }
 }

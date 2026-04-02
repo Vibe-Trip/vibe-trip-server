@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -57,6 +58,7 @@ class AlbumController(
         return ResponseEntity.ok(ApiResponse.success(AlbumPageResponse.of(totalCount, slice)))
     }
 
+<<<<<<< HEAD
     @Operation(summary = "단일 앨범 조회", description = "단일 앨범을 조회합니다")
     @GetMapping("/{albumId}")
     fun getAlbum(
@@ -68,4 +70,15 @@ class AlbumController(
                 AlbumDetailResponse.from(albumService.findAlbum(albumId, member.memberKey)),
             ),
         )
+=======
+    @Operation(summary = "앨범 삭제", description = "해당 앨범을 삭제합니다")
+    @DeleteMapping("/{albumId}")
+    fun deleteAlbum(
+        @PathVariable albumId: Long,
+        @AuthMember member: Member,
+    ): ResponseEntity<ApiResponse<Unit>> {
+        albumService.deleteAlbum(albumId, member.memberKey)
+        return ResponseEntity.ok(ApiResponse.success())
+    }
+>>>>>>> develop
 }

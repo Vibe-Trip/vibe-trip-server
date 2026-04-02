@@ -55,4 +55,13 @@ class AlbumService(
     }
 
     fun countAlbums(memberKey: String): Long = albumManager.count(memberKey)
+
+    @Transactional
+    fun deleteAlbum(
+        albumId: Long,
+        memberKey: String,
+    ) {
+        albumMemberManager.validateMember(albumId, memberKey)
+        albumManager.delete(albumId)
+    }
 }

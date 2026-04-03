@@ -51,7 +51,6 @@ class AlbumManager(
             ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
 
     fun delete(albumId: Long) {
-        albumRepository.find(albumId) ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
         deletionProcessors.forEach { it.process(albumId) }
         albumRepository.deleteByAlbumId(albumId)
     }

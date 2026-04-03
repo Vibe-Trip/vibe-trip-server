@@ -10,8 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 class AlarmService(
     private val alarmManager: AlarmManager,
 ) {
-    fun findAlarms(memberKey: String): List<AlarmResponse> =
-        alarmManager.findAll(memberKey).map { AlarmResponse.from(it) }
+    fun findAlarms(memberKey: String): List<AlarmResponse> = alarmManager.findAll(memberKey).map { AlarmResponse.from(it) }
 
     @Transactional
     fun deleteAlarm(alarmId: Long) {

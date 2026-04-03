@@ -5,5 +5,8 @@ import com.vibetrip.vibetripserver.common.enums.EntityStatus
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface AlarmRepository : JpaRepository<AlarmEntity, Long> {
-    fun findByMemberKeyAndStatus(memberKey: String, status: EntityStatus): List<AlarmEntity>
+    fun findByMemberKeyAndStatus(
+        memberKey: String,
+        status: EntityStatus,
+    ): List<AlarmEntity>
 }

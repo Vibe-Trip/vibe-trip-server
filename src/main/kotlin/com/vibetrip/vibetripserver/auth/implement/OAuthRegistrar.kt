@@ -21,7 +21,10 @@ class OAuthRegistrar(
         oauthMember: OAuthMember,
         fcmToken: String,
         deviceId: String,
-    ) = oauthRepository.findByAccountAndProvider(oauthMember.account, oauthMember.provider)?.memberKey
+    ) = oauthRepository
+        .findByAccountAndProvider(oauthMember.account, oauthMember.provider)
+        ?.memberKey
+        ?.also { memberDeviceManager.saveOrUpdate(MemberDevice(deviceId, fcmToken, it)) }
         ?: register(oauthMember, fcmToken, deviceId)
 
     private fun register(

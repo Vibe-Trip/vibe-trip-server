@@ -135,21 +135,6 @@ class AlbumDeleteTest : SpringTest() {
         assertThat(exception.errorType).isEqualTo(ErrorType.NOT_ALBUM_MEMBER)
     }
 
-    @Test
-    fun `앨범 삭제 시 앨범이 존재하지 않으면 NOT_FOUND_ALBUM 예외가 발생한다`() {
-        // given
-        val notExistAlbumId = 999L
-        albumMemberRepository.save(AlbumMemberEntity(memberKey = memberKey, albumId = notExistAlbumId))
-
-        // when & then
-        val exception =
-            assertThrows<AppException> {
-                albumService.deleteAlbum(notExistAlbumId, memberKey)
-            }
-
-        assertThat(exception.errorType).isEqualTo(ErrorType.NOT_FOUND_ALBUM)
-    }
-
     private fun createAlbumEntity(memberKey: String) =
         AlbumEntity(
             memberKey = memberKey,

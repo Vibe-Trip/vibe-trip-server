@@ -1,8 +1,7 @@
 package com.vibetrip.vibetripserver.album.business
 
-
-import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.AlbumDetail
+import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor

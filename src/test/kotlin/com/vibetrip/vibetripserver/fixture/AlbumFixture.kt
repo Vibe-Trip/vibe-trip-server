@@ -1,6 +1,7 @@
 package com.vibetrip.vibetripserver.fixture
 
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
+import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumMusicEntity
 import com.vibetrip.vibetripserver.album.domain.AlbumMusic
 import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.GenreType
@@ -33,14 +34,16 @@ object AlbumFixture {
     fun albumEntity(
         id: Long? = null,
         memberKey: String = "member-key-123",
-        region: String = "도쿄",
+        title: String = "도쿄의 밤",
         coverImageUrl: String = "https://storage.googleapis.com/test.jpg",
+        region: String = "도쿄",
         travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),
         travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
     ) = AlbumEntity(
         memberKey = memberKey,
-        region = region,
+        title = title,
         coverImageUrl = coverImageUrl,
+        region = region,
         travelStartDate = travelStartDate,
         travelEndDate = travelEndDate,
     ).apply { this.id = id }
@@ -67,8 +70,19 @@ object AlbumFixture {
         image = image,
     )
 
+    fun albumMusicEntity(
+        albumId: Long = 1L,
+        musicUrl: String = "https://mock-music-url.mp3",
+    ) = AlbumMusicEntity(
+        title = "도쿄의 밤",
+        musicUrl = musicUrl,
+        genre = GenreType.CLASSICAL,
+        withLyrics = false,
+        albumId = albumId,
+    )
+
     fun generatedMusic(
         title: String = "도쿄의 밤",
-        resourceUrl: String = "https://mock-music-url.mp3",
-    ) = AlbumMusic(title = title, resourceUrl = resourceUrl)
+        musicUrl: String = "https://mock-music-url.mp3",
+    ) = AlbumMusic(title = title, musicUrl = musicUrl)
 }

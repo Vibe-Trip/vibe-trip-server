@@ -20,7 +20,7 @@ class AlbumMusicEntity(
     @Column(nullable = false, length = 20)
     val title: String,
     @Column(nullable = false, columnDefinition = "TEXT")
-    val resourceUrl: String,
+    val musicUrl: String,
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val genre: GenreType,
@@ -45,7 +45,7 @@ class AlbumMusicEntity(
             music: AlbumMusic,
         ) = AlbumMusicEntity(
             title = music.title,
-            resourceUrl = music.resourceUrl,
+            musicUrl = music.musicUrl,
             lyrics = music.lyrics,
             genre = newAlbum.genre.value,
             withLyrics = newAlbum.vocalOption.withLyrics,

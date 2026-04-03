@@ -1,11 +1,14 @@
 package com.vibetrip.vibetripserver.album.business
 
+
 import com.vibetrip.vibetripserver.album.domain.EditAlbum
+import com.vibetrip.vibetripserver.album.domain.AlbumDetail
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.implement.AiProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
+import com.vibetrip.vibetripserver.album.implement.AlbumMusicManager
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.retry.annotation.Backoff
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile
 @Service
 class AlbumService(
     private val albumMemberManager: AlbumMemberManager,
+    private val albumMusicManager: AlbumMusicManager,
     private val albumManager: AlbumManager,
     private val aiProcessor: AiProcessor,
     private val albumCoverImageProcessor: AlbumCoverImageProcessor,
@@ -37,10 +41,23 @@ class AlbumService(
 
     fun getAlbumCount(memberKey: String) = albumManager.count(memberKey)
 
+    @Transactional(readOnly = true)
     fun findAlbums(
         memberKey: String,
         cursorable: Cursorable<Long>,
     ) = albumManager.find(memberKey, cursorable)
+
+    @Transactional(readOnly = true)
+    fun findAlbum(
+        albumId: Long,
+        memberKey: String,
+    ): AlbumDetail {
+        albumMemberManager.validateMember(albumId, memberKey)
+        val album = albumManager.findAlbum(albumId)
+        val musicUrl = albumMusicManager.getMusicUrl(albumId)
+
+        return AlbumDetail(album, musicUrl)
+    }
 
     fun countAlbums(memberKey: String): Long = albumManager.count(memberKey)
 

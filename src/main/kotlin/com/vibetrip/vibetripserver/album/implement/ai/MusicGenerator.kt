@@ -16,6 +16,6 @@ class MusicGenerator {
         imageKeywords: String,
     ): AlbumMusic {
         // TODO: Suno API 연동 (region + comment + genre + vocalGender + withLyrics + imageKeywords → 음악 생성)
-        return AlbumMusic(title = "", resourceUrl = "")
+        return AlbumMusic(title = "", musicUrl = "")
     }
 }

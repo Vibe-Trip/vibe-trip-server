@@ -1,7 +1,6 @@
 package com.vibetrip.vibetripserver.alarm.presentation
 
 import com.vibetrip.vibetripserver.alarm.business.AlarmService
-import com.vibetrip.vibetripserver.alarm.presentation.dto.response.AlarmResponse
 import com.vibetrip.vibetripserver.member.domain.Member
 import com.vibetrip.vibetripserver.support.response.ApiResponse
 import com.vibetrip.vibetripserver.support.security.annotation.AuthMember

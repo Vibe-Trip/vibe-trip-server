@@ -44,7 +44,9 @@ class AlarmManager(
         val body = "${errorType.message}으로 생성이 실패했습니다. 앨범 만들기를 다시 시도해 볼까요?"
         save(memberKey, title, body, AlarmType.FAILED)
         sendFcm(
-            memberKey, title, body,
+            memberKey,
+            title,
+            body,
             mapOf(
                 "errorCode" to errorType.errorCode.name,
                 "errorMessage" to errorType.message,
@@ -53,8 +55,7 @@ class AlarmManager(
     }
 
     @Transactional(readOnly = true)
-    fun findAll(memberKey: String): List<AlarmEntity> =
-        alarmRepository.findByMemberKeyAndStatus(memberKey, EntityStatus.ACTIVE)
+    fun findAll(memberKey: String): List<AlarmEntity> = alarmRepository.findByMemberKeyAndStatus(memberKey, EntityStatus.ACTIVE)
 
     fun delete(
         alarmId: Long,

@@ -48,10 +48,10 @@ object AlbumFixture {
 
     fun albumMusicEntity(
         albumId: Long = 1L,
-        resourceUrl: String = "https://mock-music-url.mp3",
+        musicUrl: String = "https://mock-music-url.mp3",
     ) = AlbumMusicEntity(
         title = "도쿄의 밤",
-        resourceUrl = resourceUrl,
+        musicUrl = musicUrl,
         genre = GenreType.CLASSICAL,
         withLyrics = false,
         albumId = albumId,
@@ -59,6 +59,6 @@ object AlbumFixture {
 
     fun generatedMusic(
         title: String = "도쿄의 밤",
-        resourceUrl: String = "https://mock-music-url.mp3",
-    ) = AlbumMusic(title = title, resourceUrl = resourceUrl)
+        musicUrl: String = "https://mock-music-url.mp3",
+    ) = AlbumMusic(title = title, musicUrl = musicUrl)
 }

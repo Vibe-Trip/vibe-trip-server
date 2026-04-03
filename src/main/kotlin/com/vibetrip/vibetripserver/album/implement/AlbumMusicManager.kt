@@ -21,5 +21,5 @@ class AlbumMusicManager(
     }
 
     @Transactional(readOnly = true)
-    fun getResourceUrl(albumId: Long): String = albumMusicRepository.findByAlbumId(albumId)?.resourceUrl ?: ""
+    fun getMusicUrl(albumId: Long): String = albumMusicRepository.findByAlbumId(albumId)?.musicUrl ?: ""
 }

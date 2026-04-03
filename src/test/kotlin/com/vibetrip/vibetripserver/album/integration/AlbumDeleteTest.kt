@@ -199,7 +199,7 @@ class AlbumDeleteTest : SpringTest() {
     private fun createAlbumMusicEntity(albumId: Long) =
         AlbumMusicEntity(
             title = "테스트 음악",
-            resourceUrl = "https://example.com/music.mp3",
+            musicUrl = "https://example.com/music.mp3",
             genre = GenreType.CLASSICAL,
             withLyrics = false,
             albumId = albumId,

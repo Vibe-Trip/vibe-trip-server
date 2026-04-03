@@ -9,7 +9,7 @@ data class AlbumDetailResponse(
     val region: String,
     val travelStartDate: LocalDate,
     val travelEndDate: LocalDate,
-    val resourceUrl: String = "",
+    val musicUrl: String = "",
 ) {
     companion object {
         fun from(albumDetail: AlbumDetail) =
@@ -19,7 +19,7 @@ data class AlbumDetailResponse(
                 region = albumDetail.album.region.value,
                 travelStartDate = albumDetail.album.travelDate.startDate,
                 travelEndDate = albumDetail.album.travelDate.endDate,
-                resourceUrl = albumDetail.resourceUrl,
+                musicUrl = albumDetail.musicUrl,
             )
     }
 }

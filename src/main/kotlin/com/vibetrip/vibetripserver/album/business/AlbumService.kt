@@ -49,9 +49,9 @@ class AlbumService(
     ): AlbumDetail {
         albumMemberManager.validateMember(albumId, memberKey)
         val album = albumManager.findAlbum(albumId)
-        val resourceUrl = albumMusicManager.getResourceUrl(albumId)
+        val musicUrl = albumMusicManager.getMusicUrl(albumId)
 
-        return AlbumDetail(album, resourceUrl)
+        return AlbumDetail(album, musicUrl)
     }
 
     fun countAlbums(memberKey: String): Long = albumManager.count(memberKey)

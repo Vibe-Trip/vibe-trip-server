@@ -209,11 +209,11 @@ class AlbumServiceTest {
 
         // then
         assertThat(result.album.albumId).isEqualTo(albumId)
-        assertThat(result.resourceUrl).isEqualTo("https://mock-music-url.mp3")
+        assertThat(result.musicUrl).isEqualTo("https://mock-music-url.mp3")
     }
 
     @Test
-    fun `음악이 없는 앨범 조회 시 resourceUrl이 빈 문자열로 반환된다`() {
+    fun `음악이 없는 앨범 조회 시 musicUrl이 빈 문자열로 반환된다`() {
         // given
         val albumId = 1L
         val memberKey = "member-key-123"
@@ -226,7 +226,7 @@ class AlbumServiceTest {
         val result = albumService.findAlbum(albumId, memberKey)
 
         // then
-        assertThat(result.resourceUrl).isEmpty()
+        assertThat(result.musicUrl).isEmpty()
     }
 
     @Test

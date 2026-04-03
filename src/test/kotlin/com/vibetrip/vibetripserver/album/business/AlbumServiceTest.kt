@@ -7,10 +7,7 @@ import com.vibetrip.vibetripserver.album.implement.AiProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
-<<<<<<< HEAD
 import com.vibetrip.vibetripserver.album.implement.AlbumMusicManager
-=======
->>>>>>> develop
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
@@ -47,18 +44,11 @@ class AlbumServiceTest {
     fun setUp() {
         albumService =
             AlbumService(
-<<<<<<< HEAD
-                albumManager = AlbumManager(albumRepository, albumMemberRepository),
-                albumMemberManager = AlbumMemberManager(albumMemberRepository),
-                aiProcessor = aiProcessor,
-                albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader, "test-bucket"),
-                albumMusicManager = AlbumMusicManager(albumMusicRepository),
-=======
                 albumManager = AlbumManager(albumRepository, albumMemberRepository, emptyList()),
+                albumMemberManager = AlbumMemberManager(albumMemberRepository),
+                albumMusicManager = AlbumMusicManager(albumMusicRepository),
                 aiProcessor = aiProcessor,
                 albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader, "test-bucket"),
-                albumMemberManager = AlbumMemberManager(albumMemberRepository),
->>>>>>> develop
             )
     }
 

@@ -58,7 +58,6 @@ class AlbumController(
         return ResponseEntity.ok(ApiResponse.success(AlbumPageResponse.of(totalCount, slice)))
     }
 
-<<<<<<< HEAD
     @Operation(summary = "단일 앨범 조회", description = "단일 앨범을 조회합니다")
     @GetMapping("/{albumId}")
     fun getAlbum(
@@ -70,7 +69,7 @@ class AlbumController(
                 AlbumDetailResponse.from(albumService.findAlbum(albumId, member.memberKey)),
             ),
         )
-=======
+
     @Operation(summary = "앨범 삭제", description = "해당 앨범을 삭제합니다")
     @DeleteMapping("/{albumId}")
     fun deleteAlbum(
@@ -80,5 +79,4 @@ class AlbumController(
         albumService.deleteAlbum(albumId, member.memberKey)
         return ResponseEntity.ok(ApiResponse.success())
     }
->>>>>>> develop
 }

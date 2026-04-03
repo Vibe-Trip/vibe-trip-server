@@ -46,15 +46,13 @@ class AlbumManager(
         cursorable: Cursorable<Long>,
     ): Slice<Album> = albumRepository.findAllByMemberKey(memberKey, cursorable).map(AlbumEntity::toDomain)
 
-<<<<<<< HEAD
     fun findAlbum(albumId: Long): Album =
         albumRepository.find(albumId)?.toDomain()
             ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
-=======
+
     fun delete(albumId: Long) {
         albumRepository.find(albumId) ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
         deletionProcessors.forEach { it.process(albumId) }
         albumRepository.deleteByAlbumId(albumId)
     }
->>>>>>> develop
 }

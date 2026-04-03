@@ -30,7 +30,7 @@ object AlbumFixture {
     )
 
     fun albumEntity(
-        id: Long = 1L,
+        id: Long? = null,
         memberKey: String = "member-key-123",
         title: String = "도쿄의 밤",
         coverImageUrl: String = "https://storage.googleapis.com/test.jpg",

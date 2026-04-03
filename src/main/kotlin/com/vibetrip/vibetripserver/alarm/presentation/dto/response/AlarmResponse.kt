@@ -9,7 +9,6 @@ data class AlarmResponse(
     val title: String,
     val description: String,
     val alarmType: AlarmType,
-    val albumId: Long?,
     val createdAt: LocalDateTime,
 ) {
     companion object {
@@ -19,7 +18,6 @@ data class AlarmResponse(
                 title = alarm.title,
                 description = alarm.description,
                 alarmType = alarm.alarmType,
-                albumId = alarm.albumId,
                 createdAt = alarm.createdAt,
             )
     }

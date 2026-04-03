@@ -24,14 +24,15 @@ class AlarmController(
     @GetMapping
     fun getAlarms(
         @AuthMember member: Member,
-    ): ResponseEntity<ApiResponse<List<AlarmResponse>>> = ResponseEntity.ok(ApiResponse.success(alarmService.findAlarms(member.memberKey)))
+    ) = ResponseEntity.ok(ApiResponse.success(alarmService.findAlarms(member.memberKey)))
 
     @Operation(summary = "알림 삭제")
     @DeleteMapping("/{alarmId}")
     fun deleteAlarm(
+        @AuthMember member: Member,
         @PathVariable alarmId: Long,
     ): ResponseEntity<ApiResponse<Unit>> {
-        alarmService.deleteAlarm(alarmId)
+        alarmService.deleteAlarm(alarmId, member.memberKey)
         return ResponseEntity.ok(ApiResponse.success())
     }
 }

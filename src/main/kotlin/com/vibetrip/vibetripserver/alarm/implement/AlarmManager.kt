@@ -28,13 +28,12 @@ class AlarmManager(
 
     fun sendCompleted(
         memberKey: String,
-        albumId: Long,
         albumTitle: String,
     ) {
         val title = "앨범 생성 완료!"
         val body = "세상에 하나뿐인 '$albumTitle'이 완성되었습니다. 지금 바로 완성된 음악을 감상해보세요"
-        save(memberKey, title, body, AlarmType.COMPLETED, albumId)
-        sendFcm(memberKey, title, body, mapOf("albumId" to albumId.toString()))
+        save(memberKey, title, body, AlarmType.COMPLETED)
+        sendFcm(memberKey, title, body)
     }
 
     fun sendFailed(
@@ -45,9 +44,7 @@ class AlarmManager(
         val body = "${errorType.message}으로 생성이 실패했습니다. 앨범 만들기를 다시 시도해 볼까요?"
         save(memberKey, title, body, AlarmType.FAILED)
         sendFcm(
-            memberKey,
-            title,
-            body,
+            memberKey, title, body,
             mapOf(
                 "errorCode" to errorType.errorCode.name,
                 "errorMessage" to errorType.message,
@@ -56,12 +53,20 @@ class AlarmManager(
     }
 
     @Transactional(readOnly = true)
-    fun findAll(memberKey: String): List<AlarmEntity> = alarmRepository.findByMemberKeyAndStatus(memberKey, EntityStatus.ACTIVE)
+    fun findAll(memberKey: String): List<AlarmEntity> =
+        alarmRepository.findByMemberKeyAndStatus(memberKey, EntityStatus.ACTIVE)
 
-    fun delete(alarmId: Long) {
+    fun delete(
+        alarmId: Long,
+        memberKey: String,
+    ) {
         val alarm =
             alarmRepository.findByIdOrNull(alarmId)
                 ?: throw AppException(ErrorType.NOT_FOUND_DATA)
+
+        if (alarm.memberKey != memberKey) {
+            throw AppException(ErrorType.FORBIDDEN)
+        }
         alarm.delete()
     }
 
@@ -70,7 +75,6 @@ class AlarmManager(
         title: String,
         body: String,
         alarmType: AlarmType,
-        albumId: Long? = null,
     ) {
         alarmRepository.save(
             AlarmEntity(
@@ -78,7 +82,6 @@ class AlarmManager(
                 description = body,
                 memberKey = memberKey,
                 alarmType = alarmType,
-                albumId = albumId,
             ),
         )
     }

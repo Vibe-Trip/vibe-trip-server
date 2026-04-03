@@ -13,7 +13,10 @@ class AlarmService(
     fun findAlarms(memberKey: String): List<AlarmResponse> = alarmManager.findAll(memberKey).map { AlarmResponse.from(it) }
 
     @Transactional
-    fun deleteAlarm(alarmId: Long) {
-        alarmManager.delete(alarmId)
+    fun deleteAlarm(
+        alarmId: Long,
+        memberKey: String,
+    ) {
+        alarmManager.delete(alarmId, memberKey)
     }
 }

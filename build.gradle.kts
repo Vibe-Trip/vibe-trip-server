@@ -83,6 +83,9 @@ dependencies {
     runtimeOnly("com.google.cloud:spring-cloud-gcp-starter-storage:8.0.1")
     implementation("com.google.cloud:spring-cloud-gcp-storage:8.0.1")
 
+    // FCM
+    implementation("com.google.firebase:firebase-admin:9.4.2")
+
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-validation-test")

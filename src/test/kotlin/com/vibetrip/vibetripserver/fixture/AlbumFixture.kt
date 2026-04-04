@@ -3,11 +3,9 @@ package com.vibetrip.vibetripserver.fixture
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumMusicEntity
 import com.vibetrip.vibetripserver.album.domain.AlbumMusic
-import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.GenreType
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.VocalGender
-import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
 
 object AlbumFixture {
@@ -47,28 +45,6 @@ object AlbumFixture {
         travelStartDate = travelStartDate,
         travelEndDate = travelEndDate,
     ).apply { this.id = id }
-
-    fun editAlbum(
-        albumId: Long = 1L,
-        region: String = "오사카",
-        comment: String = "즐거운 여행",
-        travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),
-        travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
-        withLyrics: Boolean = false,
-        vocalGender: VocalGender = VocalGender.N,
-        genre: GenreType = GenreType.CLASSICAL,
-        image: MultipartFile? = null,
-    ) = EditAlbum.of(
-        albumId = albumId,
-        region = region,
-        comment = comment,
-        travelStartDate = travelStartDate,
-        travelEndDate = travelEndDate,
-        withLyrics = withLyrics,
-        vocalGender = vocalGender,
-        genre = genre,
-        image = image,
-    )
 
     fun albumMusicEntity(
         albumId: Long = 1L,

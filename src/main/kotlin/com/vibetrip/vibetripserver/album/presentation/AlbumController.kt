@@ -1,7 +1,6 @@
 package com.vibetrip.vibetripserver.album.presentation
 
 import com.vibetrip.vibetripserver.album.business.AlbumService
-import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.presentation.dto.request.AlbumCreateRequest
 import com.vibetrip.vibetripserver.album.presentation.dto.request.AlbumUpdateRequest
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
@@ -74,17 +73,7 @@ class AlbumController(
         @AuthMember member: Member,
     ): ResponseEntity<ApiResponse<Unit>> {
         albumService.updateAlbum(
-            EditAlbum.of(
-                albumId = albumId,
-                region = request.region,
-                comment = request.comment,
-                travelStartDate = request.travelStartDate,
-                travelEndDate = request.travelEndDate,
-                withLyrics = request.withLyrics,
-                vocalGender = request.vocalGender,
-                genre = request.genre,
-                image = image,
-            ),
+            request.toEditAlbum(albumId, image),
             member.memberKey,
         )
         return ResponseEntity.ok(ApiResponse.success())

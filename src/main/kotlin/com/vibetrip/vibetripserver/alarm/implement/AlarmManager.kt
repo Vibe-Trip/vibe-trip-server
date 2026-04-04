@@ -3,12 +3,9 @@ package com.vibetrip.vibetripserver.alarm.implement
 import com.vibetrip.vibetripserver.alarm.dataaccess.entity.AlarmEntity
 import com.vibetrip.vibetripserver.alarm.dataaccess.repository.AlarmRepository
 import com.vibetrip.vibetripserver.alarm.domain.AlarmType
-import com.vibetrip.vibetripserver.common.enums.EntityStatus
-import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.notification.FcmSender
 import com.vibetrip.vibetripserver.member.implement.MemberDeviceManager
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -55,21 +52,12 @@ class AlarmManager(
     }
 
     @Transactional(readOnly = true)
-    fun findAll(memberKey: String): List<AlarmEntity> = alarmRepository.findByMemberKeyAndStatus(memberKey, EntityStatus.ACTIVE)
+    fun findAll(memberKey: String) = alarmRepository.findByMemberKey(memberKey)
 
     fun delete(
         alarmId: Long,
         memberKey: String,
-    ) {
-        val alarm =
-            alarmRepository.findByIdOrNull(alarmId)
-                ?: throw AppException(ErrorType.NOT_FOUND_DATA)
-
-        if (alarm.memberKey != memberKey) {
-            throw AppException(ErrorType.FORBIDDEN)
-        }
-        alarm.delete()
-    }
+    ) = alarmRepository.delete(memberKey, alarmId)
 
     private fun save(
         memberKey: String,

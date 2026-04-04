@@ -16,21 +16,26 @@ class AlarmManager(
     private val memberDeviceManager: MemberDeviceManager,
     private val fcmSender: FcmSender,
 ) {
-    fun sendCreating(memberKey: String) {
+    fun sendCreating(
+        memberKey: String,
+        albumId: Long,
+    ) {
         val title = "앨범을 생성하는 중입니다"
         val body = "나만의 음악이 곧 탄생합니다. 완료되면 바로 알려드릴게요"
-        save(memberKey, title, body, AlarmType.CREATING)
-        sendFcm(memberKey, title, body)
+        save(memberKey, title, body, AlarmType.CREATING, albumId)
+        sendFcm(memberKey, title, body, mapOf("alarmType" to AlarmType.CREATING.name))
     }
 
     fun sendCompleted(
         memberKey: String,
         albumTitle: String,
+        albumId: Long,
     ) {
         val title = "앨범 생성 완료!"
         val body = "세상에 하나뿐인 '$albumTitle'이 완성되었습니다. 지금 바로 완성된 음악을 감상해보세요"
-        save(memberKey, title, body, AlarmType.COMPLETED)
-        sendFcm(memberKey, title, body)
+        save(memberKey, title, body, AlarmType.COMPLETED, albumId)
+        alarmRepository.deleteCreatingByAlbumId(albumId)
+        sendFcm(memberKey, title, body, mapOf("alarmType" to AlarmType.COMPLETED.name, "albumId" to albumId.toString()))
     }
 
     fun sendFailed(
@@ -45,6 +50,7 @@ class AlarmManager(
             title,
             body,
             mapOf(
+                "alarmType" to AlarmType.FAILED.name,
                 "errorCode" to errorType.errorCode.name,
                 "errorMessage" to errorType.message,
             ),
@@ -64,6 +70,7 @@ class AlarmManager(
         title: String,
         body: String,
         alarmType: AlarmType,
+        albumId: Long? = null,
     ) {
         alarmRepository.save(
             AlarmEntity(
@@ -71,6 +78,7 @@ class AlarmManager(
                 description = body,
                 memberKey = memberKey,
                 alarmType = alarmType,
+                albumId = albumId,
             ),
         )
     }

@@ -9,4 +9,6 @@ interface CustomAlarmRepository {
         memberKey: String,
         alarmId: Long,
     )
+
+    fun deleteCreatingByAlbumId(albumId: Long)
 }

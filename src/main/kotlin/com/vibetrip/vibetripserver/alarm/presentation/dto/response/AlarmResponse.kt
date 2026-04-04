@@ -5,18 +5,22 @@ import com.vibetrip.vibetripserver.alarm.domain.AlarmType
 import java.time.LocalDateTime
 
 data class AlarmResponse(
+    val alarmId: Long,
     val title: String,
     val description: String,
     val alarmType: AlarmType,
     val createdAt: LocalDateTime,
+    val albumId: Long?,
 ) {
     companion object {
         fun from(alarm: AlarmEntity) =
             AlarmResponse(
+                alarmId = alarm.id!!,
                 title = alarm.title,
                 description = alarm.description,
                 alarmType = alarm.alarmType,
                 createdAt = alarm.createdAt,
+                albumId = alarm.albumId,
             )
     }
 }

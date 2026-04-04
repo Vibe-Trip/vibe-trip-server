@@ -23,6 +23,8 @@ class AlarmEntity(
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val alarmType: AlarmType,
+    @Column(nullable = true)
+    val albumId: Long? = null,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "alarm_id")
     var id: Long? = null,

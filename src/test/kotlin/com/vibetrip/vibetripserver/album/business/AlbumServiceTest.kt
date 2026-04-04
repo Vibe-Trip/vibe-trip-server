@@ -3,11 +3,12 @@ package com.vibetrip.vibetripserver.album.business
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMusicRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
+import com.vibetrip.vibetripserver.album.dataaccess.repository.SunoMusicDataRepository
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
+import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMusicManager
 import com.vibetrip.vibetripserver.album.implement.ai.ImageAnalyzer
 import com.vibetrip.vibetripserver.album.implement.ai.MusicGenerator
-import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
@@ -29,15 +30,15 @@ class AlbumServiceTest {
     private val albumRepository = mockk<AlbumRepository>()
     private val albumMemberRepository = mockk<AlbumMemberRepository>()
     private val googleImageUploader = mockk<GoogleImageUploader>()
+    private val sunoMusicDataRepository = mockk<SunoMusicDataRepository>()
     private val musicGenerator = mockk<MusicGenerator>()
     private val imageAnalyzer = mockk<ImageAnalyzer>()
-    private val albumMusicManager = mockk<AlbumMusicManager>()
 
     private lateinit var albumService: AlbumService
 
     @AfterEach
     fun tearDown() {
-        clearMocks(albumRepository, aiProcessor, googleImageUploader, albumMemberRepository, albumMusicRepository)
+        clearMocks(albumRepository, googleImageUploader, albumMemberRepository, albumMusicRepository)
         clearMocks(
             albumRepository,
             googleImageUploader,
@@ -48,6 +49,7 @@ class AlbumServiceTest {
 
     @BeforeEach
     fun setUp() {
+        val albumMusicManager = AlbumMusicManager(albumMusicRepository, sunoMusicDataRepository)
         albumService =
             AlbumService(
                 albumManager =
@@ -57,6 +59,7 @@ class AlbumServiceTest {
                         imageAnalyzer,
                         musicGenerator,
                         albumMusicManager,
+                        listOf(),
                     ),
                 googleImageUploader = googleImageUploader,
                 albumMusicManager = albumMusicManager,

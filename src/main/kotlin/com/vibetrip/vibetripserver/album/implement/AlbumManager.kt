@@ -25,10 +25,10 @@ import org.springframework.web.multipart.MultipartFile
 class AlbumManager(
     private val albumRepository: AlbumRepository,
     private val albumMemberRepository: AlbumMemberRepository,
-    private val deletionProcessors: List<AlbumDeletionProcessor>,
     private val imageAnalyzer: ImageAnalyzer,
     private val musicGenerator: MusicGenerator,
     private val albumMusicManager: AlbumMusicManager,
+    private val deletionProcessors: List<AlbumDeletionProcessor>,
 ) {
     fun create(
         newAlbum: NewAlbum,

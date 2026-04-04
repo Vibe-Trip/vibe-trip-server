@@ -9,7 +9,7 @@ data class AlbumMusic(
         fun empty() =
             AlbumMusic(
                 title = "",
-                resourceUrl = "",
+                musicUrl = "",
                 lyrics = "",
             )
     }

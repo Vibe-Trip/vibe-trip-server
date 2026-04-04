@@ -27,6 +27,8 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://repo.spring.io/milestone") }
+    maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
 dependencies {
@@ -86,6 +88,11 @@ dependencies {
     // FCM
     implementation("com.google.firebase:firebase-admin:9.4.2")
 
+    // AI
+    implementation(platform("org.springframework.ai:spring-ai-bom:2.0.0-M4"))
+    implementation("org.springframework.ai:spring-ai-starter-model-google-genai")
+//    implementation("org.springframework.ai:spring-ai-starter-model-openai")
+
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
@@ -93,8 +100,6 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.testcontainers:testcontainers-mysql:2.0.1")
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
     testImplementation("io.mockk:mockk:$mockKVersion")
 }
 
@@ -110,7 +115,7 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
-tasks.withType<Test> {
+tasks.named<Test>("test") {
     useJUnitPlatform {
         excludeTags("integration")
     }

@@ -4,4 +4,13 @@ data class AlbumMusic(
     val title: String,
     val musicUrl: String,
     val lyrics: String = "",
-)
+) {
+    companion object {
+        fun empty() =
+            AlbumMusic(
+                title = "",
+                musicUrl = "",
+                lyrics = "",
+            )
+    }
+}

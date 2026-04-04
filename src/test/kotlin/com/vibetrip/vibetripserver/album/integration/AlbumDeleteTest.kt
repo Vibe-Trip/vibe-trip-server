@@ -188,5 +188,6 @@ class AlbumDeleteTest : SpringTest() {
             genre = GenreType.CLASSICAL,
             withLyrics = false,
             albumId = albumId,
+            taskId = "",
         )
 }

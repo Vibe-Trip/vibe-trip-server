@@ -14,5 +14,7 @@ interface CustomAlbumRepository {
 
     fun countByMemberKey(memberKey: String): Long
 
+    fun deleteByAlbumId(albumId: Long)
+
     fun deleteByMemberKey(memberKey: String)
 }

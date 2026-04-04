@@ -1,11 +1,13 @@
 package com.vibetrip.vibetripserver.album.business
 
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
+import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMusicRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMusicManager
 import com.vibetrip.vibetripserver.album.implement.ai.ImageAnalyzer
 import com.vibetrip.vibetripserver.album.implement.ai.MusicGenerator
+import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.web.multipart.MultipartFile
 
 class AlbumServiceTest {
+    private val albumMusicRepository = mockk<AlbumMusicRepository>()
     private val albumRepository = mockk<AlbumRepository>()
     private val albumMemberRepository = mockk<AlbumMemberRepository>()
     private val googleImageUploader = mockk<GoogleImageUploader>()
@@ -34,6 +37,7 @@ class AlbumServiceTest {
 
     @AfterEach
     fun tearDown() {
+        clearMocks(albumRepository, aiProcessor, googleImageUploader, albumMemberRepository, albumMusicRepository)
         clearMocks(
             albumRepository,
             googleImageUploader,
@@ -56,6 +60,7 @@ class AlbumServiceTest {
                     ),
                 googleImageUploader = googleImageUploader,
                 albumMusicManager = albumMusicManager,
+                albumMemberManager = AlbumMemberManager(albumMemberRepository),
             )
     }
 
@@ -147,5 +152,57 @@ class AlbumServiceTest {
 
         // then
         assertThat(result).isEqualTo(5L)
+    }
+
+    @Test
+    fun `앨범 단건 조회 시 앨범 정보와 음악 URL이 반환된다`() {
+        // given
+        val albumId = 1L
+        val memberKey = "member-key-123"
+
+        every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns true
+        every { albumRepository.find(albumId) } returns AlbumFixture.albumEntity(1L, memberKey)
+        every { albumMusicRepository.findByAlbumId(albumId) } returns AlbumFixture.albumMusicEntity(albumId)
+
+        // when
+        val result = albumService.findAlbum(albumId, memberKey)
+
+        // then
+        assertThat(result.album.albumId).isEqualTo(albumId)
+        assertThat(result.musicUrl).isEqualTo("https://mock-music-url.mp3")
+    }
+
+    @Test
+    fun `음악이 없는 앨범 조회 시 musicUrl이 빈 문자열로 반환된다`() {
+        // given
+        val albumId = 1L
+        val memberKey = "member-key-123"
+
+        every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns true
+        every { albumRepository.find(albumId) } returns AlbumFixture.albumEntity(1L, memberKey)
+        every { albumMusicRepository.findByAlbumId(albumId) } returns null
+
+        // when
+        val result = albumService.findAlbum(albumId, memberKey)
+
+        // then
+        assertThat(result.musicUrl).isEmpty()
+    }
+
+    @Test
+    fun `존재하지 않는 앨범 조회 시 NOT_FOUND_ALBUM 예외가 발생한다`() {
+        // given
+        val albumId = 1L
+        val memberKey = "member-key-123"
+
+        every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns true
+        every { albumRepository.find(albumId) } returns null
+
+        // when & then
+        val exception =
+            assertThrows<AppException> {
+                albumService.findAlbum(albumId, memberKey)
+            }
+        assertThat(exception.errorType).isEqualTo(ErrorType.NOT_FOUND_ALBUM)
     }
 }

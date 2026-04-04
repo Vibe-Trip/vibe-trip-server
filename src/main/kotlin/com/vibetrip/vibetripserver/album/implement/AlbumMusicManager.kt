@@ -32,4 +32,7 @@ class AlbumMusicManager(
         albumMusicRepository.findByTaskId(sunoMusicData.taskId)?.update(sunoMusicData.audioUrl, sunoMusicData.prompt)
             ?: throw AppException(ErrorType.NOT_FOUND_DATA)
     }
+
+    @Transactional(readOnly = true)
+    fun getMusicUrl(albumId: Long): String = albumMusicRepository.findByAlbumId(albumId)?.musicUrl ?: ""
 }

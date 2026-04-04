@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile
 class AlbumManager(
     private val albumRepository: AlbumRepository,
     private val albumMemberRepository: AlbumMemberRepository,
+    private val deletionProcessors: List<AlbumDeletionProcessor>,
     private val imageAnalyzer: ImageAnalyzer,
     private val musicGenerator: MusicGenerator,
     private val albumMusicManager: AlbumMusicManager,
@@ -53,6 +54,15 @@ class AlbumManager(
         memberKey: String,
         cursorable: Cursorable<Long>,
     ): Slice<Album> = albumRepository.findAllByMemberKey(memberKey, cursorable).map(AlbumEntity::toDomain)
+
+    fun findAlbum(albumId: Long): Album =
+        albumRepository.find(albumId)?.toDomain()
+            ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
+
+    fun delete(albumId: Long) {
+        deletionProcessors.forEach { it.process(albumId) }
+        albumRepository.deleteByAlbumId(albumId)
+    }
 
     @Async("musicGenerationExecutor")
     fun generateMusic(

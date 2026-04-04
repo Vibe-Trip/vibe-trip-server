@@ -18,12 +18,12 @@ data class SunoCallbackRequest(
             sourceStreamAudioUrl = data.data[0].sourceStreamAudioUrl ?: "",
             imageUrl = data.data[0].imageUrl ?: "",
             sourceImageUrl = data.data[0].sourceImageUrl ?: "",
-            prompt = data.data[0].prompt,
-            modelName = data.data[0].modelName,
+            prompt = data.data[0].prompt ?: "",
+            modelName = data.data[0].modelName ?: "",
             title = data.data[0].title,
-            tags = data.data[0].tags,
-            createTime = data.data[0].createTime,
-            duration = data.data[0].duration,
+            tags = data.data[0].tags ?: "",
+            createTime = data.data[0].createTime ?: "",
+            duration = data.data[0].duration ?: 0.0,
         )
 }
 
@@ -48,11 +48,11 @@ data class GeneratedMusic(
     val imageUrl: String?,
     @JsonProperty("source_image_url")
     val sourceImageUrl: String?,
-    val prompt: String,
+    val prompt: String?,
     @JsonProperty("model_name")
-    val modelName: String,
+    val modelName: String?,
     val title: String,
-    val tags: String,
-    val createTime: String,
-    val duration: Double,
+    val tags: String?,
+    val createTime: String?,
+    val duration: Double?,
 )

@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import java.time.LocalDateTime
 
 @Entity
 @Table(name = "suno_music_data")
@@ -37,7 +36,7 @@ class SunoMusicDataEntity(
     @Column(nullable = false)
     val tags: String,
     @Column(nullable = false)
-    val createTime: LocalDateTime,
+    val createTime: String,
     @Column(nullable = false)
     val duration: Double,
     @Id

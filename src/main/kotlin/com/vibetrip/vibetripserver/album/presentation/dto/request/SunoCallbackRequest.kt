@@ -1,9 +1,7 @@
 package com.vibetrip.vibetripserver.album.presentation.dto.request
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.vibetrip.vibetripserver.album.domain.SunoMusicData
-import java.time.LocalDateTime
 
 data class SunoCallbackRequest(
     val code: Int,
@@ -55,7 +53,6 @@ data class GeneratedMusic(
     val modelName: String,
     val title: String,
     val tags: String,
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    val createTime: LocalDateTime,
+    val createTime: String,
     val duration: Double,
 )

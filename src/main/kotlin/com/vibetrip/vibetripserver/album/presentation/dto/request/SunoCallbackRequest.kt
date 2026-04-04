@@ -13,11 +13,11 @@ data class SunoCallbackRequest(
             taskId = data.taskId,
             id = data.data[0].id,
             audioUrl = data.data[0].audioUrl,
-            sourceAudioUrl = data.data[0].sourceAudioUrl,
-            streamAudioUrl = data.data[0].streamAudioUrl,
-            sourceStreamAudioUrl = data.data[0].sourceStreamAudioUrl,
-            imageUrl = data.data[0].imageUrl,
-            sourceImageUrl = data.data[0].sourceImageUrl,
+            sourceAudioUrl = data.data[0].sourceAudioUrl ?: "",
+            streamAudioUrl = data.data[0].streamAudioUrl ?: "",
+            sourceStreamAudioUrl = data.data[0].sourceStreamAudioUrl ?: "",
+            imageUrl = data.data[0].imageUrl ?: "",
+            sourceImageUrl = data.data[0].sourceImageUrl ?: "",
             prompt = data.data[0].prompt,
             modelName = data.data[0].modelName,
             title = data.data[0].title,
@@ -39,15 +39,15 @@ data class GeneratedMusic(
     @JsonProperty("audio_url")
     val audioUrl: String,
     @JsonProperty("source_audio_url")
-    val sourceAudioUrl: String,
+    val sourceAudioUrl: String?,
     @JsonProperty("stream_audio_url")
-    val streamAudioUrl: String,
+    val streamAudioUrl: String?,
     @JsonProperty("source_stream_audio_url")
-    val sourceStreamAudioUrl: String,
+    val sourceStreamAudioUrl: String?,
     @JsonProperty("image_url")
-    val imageUrl: String,
+    val imageUrl: String?,
     @JsonProperty("source_image_url")
-    val sourceImageUrl: String,
+    val sourceImageUrl: String?,
     val prompt: String,
     @JsonProperty("model_name")
     val modelName: String,

@@ -2,6 +2,7 @@ spring:
   config:
     activate:
       on-profile: local
+    import: aws-secretsmanager:local/retrip
 
   servlet:
     multipart:
@@ -36,20 +37,19 @@ spring:
   ai:
     google:
       genai:
-        api-key: AIzaSyDuG-FdXYOYAPQIyLgSLFKqhvcap2pkkvM
-        project-id: gen-lang-client-0358830517
+        api-key: ${GEMINI_API_KEY}
+        project-id: ${GEMINI_PROJECT_ID}
         chat:
           options:
-            model: gemini-2.5-flash
-            response-mime-type: application/json
-
+            model: ${GEMINI_MODEL}
+            response-mime-type: ${GEMINI_RESPONSE_TYPE}
 
 logging:
   level:
     com.vibetrip: debug
 
 jwt:
-  secret-key: dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdA==
+  secret-key: ${JWT_SECRET_KEY}
 
 app:
   cache:
@@ -60,5 +60,5 @@ app:
 
 ai:
   suno:
-    api-key: 18aa1206d9761a22b9e1bc4b325ce9bf
-    callback-uri: http://58.29.34.29:8080/callback
+    api-key: ${SUNO_API_KEY}
+    callback-uri: ${SUNO_CALLBACK_URL}

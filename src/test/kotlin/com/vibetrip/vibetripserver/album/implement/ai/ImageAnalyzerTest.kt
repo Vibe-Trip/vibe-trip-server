@@ -1,6 +1,7 @@
-package com.vibetrip.vibetripserver.album.integration
+package com.vibetrip.vibetripserver.album.implement.ai
 
-import com.vibetrip.vibetripserver.album.implement.ai.TitleGenerator
+import com.vibetrip.vibetripserver.album.domain.GenreType
+import com.vibetrip.vibetripserver.album.domain.VocalGender
 import com.vibetrip.vibetripserver.support.integration.SpringTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -10,40 +11,30 @@ import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 
-class TitleGeneratorTest : SpringTest() {
+class ImageAnalyzerTest : SpringTest() {
     @Autowired
-    lateinit var titleGenerator: TitleGenerator
+    lateinit var imageAnalyzer: ImageAnalyzer
 
     @Test
-    fun `이미지와 정보를 기반으로 제목을 생성한다`() {
+    fun `이미지를 분석하여 제목과 분석 내용을 생성한다`() {
         // given
         val region = "서울 남산타워"
         val comment = "야경이 아름다운 밤"
         val image = createTestImage()
 
         // when
-        val title = titleGenerator.generateTitle(region, comment, image).title
+        val imageAnalysis =
+            imageAnalyzer.analyze(
+                image = image,
+                region = region,
+                genre = GenreType.ROCK,
+                vocalGender = VocalGender.F,
+                comment = comment,
+            )
 
         // then
-        println("생성된 제목: $title")
-        assertThat(title).isNotBlank()
-        assertThat(title.length).isLessThanOrEqualTo(15)
-    }
-
-    @Test
-    fun `제주도 여행 사진에 대한 제목을 생성한다`() {
-        // given
-        val region = "제주도 성산일출봉"
-        val comment = "일출을 보며 새해 소원을 빌었다"
-        val image = createTestImage()
-
-        // when
-        val title = titleGenerator.generateTitle(region, comment, image).title
-
-        // then
-        println("생성된 제목: $title")
-        assertThat(title).isNotBlank()
-        assertThat(title.length).isLessThanOrEqualTo(15)
+        println("이미지 분석 결과: $imageAnalysis")
+        assertThat(imageAnalysis.title).isNotBlank
     }
 
     private fun createTestImage(): MockMultipartFile {

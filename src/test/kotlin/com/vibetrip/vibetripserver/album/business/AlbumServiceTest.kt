@@ -1,7 +1,6 @@
 package com.vibetrip.vibetripserver.album.business
 
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
-import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMusicRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMusicManager
@@ -16,7 +15,6 @@ import com.vibetrip.vibetripserver.support.paging.Slice
 import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -26,11 +24,11 @@ import org.springframework.web.multipart.MultipartFile
 
 class AlbumServiceTest {
     private val albumRepository = mockk<AlbumRepository>()
-    private val albumMusicRepository = mockk<AlbumMusicRepository>()
     private val albumMemberRepository = mockk<AlbumMemberRepository>()
     private val googleImageUploader = mockk<GoogleImageUploader>()
-    private val imageAnalyzer = mockk<ImageAnalyzer>()
     private val musicGenerator = mockk<MusicGenerator>()
+    private val imageAnalyzer = mockk<ImageAnalyzer>()
+    private val albumMusicManager = mockk<AlbumMusicManager>()
 
     private lateinit var albumService: AlbumService
 
@@ -38,10 +36,8 @@ class AlbumServiceTest {
     fun tearDown() {
         clearMocks(
             albumRepository,
-            albumMusicRepository,
             googleImageUploader,
             albumMemberRepository,
-            imageAnalyzer,
             musicGenerator,
         )
     }
@@ -50,11 +46,16 @@ class AlbumServiceTest {
     fun setUp() {
         albumService =
             AlbumService(
-                albumManager = AlbumManager(albumRepository, albumMemberRepository),
-                albumMusicManager = AlbumMusicManager(albumMusicRepository),
+                albumManager =
+                    AlbumManager(
+                        albumRepository,
+                        albumMemberRepository,
+                        imageAnalyzer,
+                        musicGenerator,
+                        albumMusicManager,
+                    ),
                 googleImageUploader = googleImageUploader,
-                imageAnalyzer = imageAnalyzer,
-                musicGenerator = musicGenerator,
+                albumMusicManager = albumMusicManager,
             )
     }
 

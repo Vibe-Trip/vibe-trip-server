@@ -20,19 +20,21 @@ class AlbumMusicEntity(
     @Column(nullable = false, length = 20)
     val title: String,
     @Column(nullable = false, columnDefinition = "TEXT")
-    val resourceUrl: String,
+    var resourceUrl: String,
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val genre: GenreType,
     @Column(nullable = false)
     val withLyrics: Boolean,
     @Column(nullable = false, columnDefinition = "TEXT")
-    val lyrics: String = "",
+    var lyrics: String = "",
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val vocalGender: VocalGender = VocalGender.N,
     @Column(nullable = false)
     val albumId: Long,
+    @Column(nullable = false)
+    val taskId: String,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_music_id")
@@ -42,6 +44,7 @@ class AlbumMusicEntity(
         fun from(
             albumId: Long,
             newAlbum: NewAlbum,
+            taskId: String,
             music: AlbumMusic,
         ) = AlbumMusicEntity(
             title = music.title,
@@ -50,7 +53,16 @@ class AlbumMusicEntity(
             genre = newAlbum.genre.value,
             withLyrics = newAlbum.vocalOption.withLyrics,
             vocalGender = newAlbum.vocalOption.vocalGender,
+            taskId = taskId,
             albumId = albumId,
         )
+    }
+
+    fun update(
+        resourceUrl: String,
+        lyrics: String,
+    ) {
+        this.resourceUrl = resourceUrl
+        this.lyrics = lyrics
     }
 }

@@ -1,5 +1,8 @@
 package com.vibetrip.vibetripserver.album.implement.ai
 
+import com.vibetrip.vibetripserver.album.domain.GenreType
+import com.vibetrip.vibetripserver.album.domain.ImageAnalysis
+import com.vibetrip.vibetripserver.album.domain.VocalGender
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.log.logger
@@ -13,16 +16,34 @@ import org.springframework.stereotype.Component
 import org.springframework.util.MimeTypeUtils
 import org.springframework.web.multipart.MultipartFile
 
+private const val REGION = "region"
+private const val GENRE = "genre"
+private const val COMMENT = "comment"
+private const val GENDER = "gender"
+
 @Component
 class ImageAnalyzer(
     private val chatClient: ChatClient,
     @Value("classpath:prompts/image-analysis-prompt.st")
     private val imageAnalysisPromptTemplate: Resource,
 ) {
-    fun analyze(image: MultipartFile): String {
+    fun analyze(
+        image: MultipartFile,
+        region: String,
+        genre: GenreType,
+        vocalGender: VocalGender,
+        comment: String,
+    ): ImageAnalysis {
         val imageMedia = Media(MimeTypeUtils.IMAGE_JPEG, image.resource)
-        val prompt = PromptTemplate(imageAnalysisPromptTemplate).render()
-        logger.info { prompt }
+        val prompt =
+            PromptTemplate(imageAnalysisPromptTemplate).render(
+                mapOf(
+                    REGION to region,
+                    GENRE to genre,
+                    GENDER to vocalGender.value,
+                    COMMENT to comment,
+                ),
+            )
         val message =
             UserMessage
                 .builder()
@@ -30,10 +51,14 @@ class ImageAnalyzer(
                 .text(prompt)
                 .build()
 
-        return chatClient
-            .prompt()
-            .messages(message)
-            .call()
-            .content() ?: throw AppException(ErrorType.SERVER_ERROR)
+        val analysis =
+            chatClient
+                .prompt()
+                .messages(message)
+                .call()
+                .entity(ImageAnalysis::class.java) ?: throw AppException(ErrorType.SERVER_ERROR)
+
+        logger.info { "imageAnalysis: $analysis" }
+        return analysis
     }
 }

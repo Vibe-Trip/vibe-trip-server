@@ -30,6 +30,16 @@ spring:
         bucket: ${GCP_BUCKET_NAME}
         project-id: ${GCP_PROJECT_ID}
 
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+        project-id: ${GEMINI_PROJECT_ID}
+        chat:
+          options:
+            model: ${GEMINI_MODEL}
+            response-mime-type: ${GEMINI_RESPONSE_TYPE}
+
 logging:
   level:
     com.vibetrip: debug
@@ -43,3 +53,8 @@ app:
       appleKeys:
         ttl: 24h
         max-size: 10
+
+ai:
+  suno:
+    api-key: ${SUNO_API_KEY}
+    callback-uri: ${SUNO_CALLBACK_URL}

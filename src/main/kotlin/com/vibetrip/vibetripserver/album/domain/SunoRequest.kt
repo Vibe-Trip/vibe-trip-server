@@ -39,11 +39,12 @@ data class SunoRequest(
 
         fun ofCustom(
             genre: GenreType,
+            style: String,
             callBackUrl: String,
             prompt: String,
             title: String,
             vocalGender: VocalGender,
-            model: SunoModel = SunoModel.V4,
+            model: SunoModel = SunoModel.V5,
             styleWeight: Float = 0.65f,
             weirdnessConstraint: Float = 0.65f,
             audioWeight: Float = 0.65f,
@@ -53,7 +54,7 @@ data class SunoRequest(
             model = model.name,
             callBackUrl = callBackUrl,
             prompt = prompt,
-            style = genre.name,
+            style = style,
             title = title,
             vocalGender = vocalGender.name.lowercase(),
             styleWeight = styleWeight,

@@ -46,6 +46,7 @@ class SecurityConfig(
 
             authorizeHttpRequests {
                 authorize(mvc.matcher("/api/v1/auth/login/**"), permitAll)
+                authorize(mvc.matcher("/api/v1/albums/suno/callback"), permitAll)
                 authorize(anyRequest, authenticated)
             }
 

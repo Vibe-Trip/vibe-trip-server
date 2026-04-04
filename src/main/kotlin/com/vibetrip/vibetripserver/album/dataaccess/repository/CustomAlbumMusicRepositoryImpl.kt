@@ -9,6 +9,13 @@ import java.time.LocalDateTime
 class CustomAlbumMusicRepositoryImpl :
     QuerydslRepositorySupport(AlbumMusicEntity::class),
     CustomAlbumMusicRepository {
+    override fun findByTaskId(taskId: String): AlbumMusicEntity? =
+        selectFrom(albumMusicEntity)
+            .where(
+                albumMusicEntity.taskId.eq(taskId),
+                albumMusicEntity.status.eq(EntityStatus.ACTIVE),
+            ).fetchOne()
+
     override fun findByAlbumId(albumId: Long) =
         selectFrom(albumMusicEntity)
             .where(

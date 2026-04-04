@@ -17,4 +17,14 @@ class AsyncConfig {
             setThreadNamePrefix("album-log-image-")
             initialize()
         }
+
+    @Bean("musicGenerationExecutor")
+    fun musicGenerationExecutor() =
+        ThreadPoolTaskExecutor().apply {
+            corePoolSize = 2
+            maxPoolSize = 4
+            queueCapacity = 20
+            setThreadNamePrefix("music-generation-")
+            initialize()
+        }
 }

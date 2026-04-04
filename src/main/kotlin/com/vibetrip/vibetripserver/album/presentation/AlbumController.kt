@@ -2,6 +2,7 @@ package com.vibetrip.vibetripserver.album.presentation
 
 import com.vibetrip.vibetripserver.album.business.AlbumService
 import com.vibetrip.vibetripserver.album.presentation.dto.request.AlbumCreateRequest
+import com.vibetrip.vibetripserver.album.presentation.dto.request.SunoCallbackRequest
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumDetailResponse
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumListResponse
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
@@ -77,6 +79,15 @@ class AlbumController(
         @AuthMember member: Member,
     ): ResponseEntity<ApiResponse<Unit>> {
         albumService.deleteAlbum(albumId, member.memberKey)
+        return ResponseEntity.ok(ApiResponse.success())
+    }
+
+    @PostMapping("/suno/callback")
+    fun sunoCallback(
+        @RequestBody request: SunoCallbackRequest,
+    ): ResponseEntity<ApiResponse<Unit>> {
+        albumService.updateMusic(request.toSunoMusicData())
+
         return ResponseEntity.ok(ApiResponse.success())
     }
 }

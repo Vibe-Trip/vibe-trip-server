@@ -3,11 +3,12 @@ package com.vibetrip.vibetripserver.album.business
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMusicRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
-import com.vibetrip.vibetripserver.album.implement.AiProcessor
-import com.vibetrip.vibetripserver.album.implement.AlbumCoverImageProcessor
+import com.vibetrip.vibetripserver.album.dataaccess.repository.SunoMusicDataRepository
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMusicManager
+import com.vibetrip.vibetripserver.album.implement.ai.ImageAnalyzer
+import com.vibetrip.vibetripserver.album.implement.ai.MusicGenerator
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
@@ -16,9 +17,7 @@ import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
 import io.mockk.clearMocks
 import io.mockk.every
-import io.mockk.justRun
 import io.mockk.mockk
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -27,81 +26,45 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.web.multipart.MultipartFile
 
 class AlbumServiceTest {
-    private val albumMemberRepository = mockk<AlbumMemberRepository>()
     private val albumMusicRepository = mockk<AlbumMusicRepository>()
     private val albumRepository = mockk<AlbumRepository>()
-    private val aiProcessor = mockk<AiProcessor>()
+    private val albumMemberRepository = mockk<AlbumMemberRepository>()
     private val googleImageUploader = mockk<GoogleImageUploader>()
+    private val sunoMusicDataRepository = mockk<SunoMusicDataRepository>()
+    private val musicGenerator = mockk<MusicGenerator>()
+    private val imageAnalyzer = mockk<ImageAnalyzer>()
 
     private lateinit var albumService: AlbumService
 
     @AfterEach
     fun tearDown() {
-        clearMocks(albumRepository, aiProcessor, googleImageUploader, albumMemberRepository, albumMusicRepository)
+        clearMocks(albumRepository, googleImageUploader, albumMemberRepository, albumMusicRepository)
+        clearMocks(
+            albumRepository,
+            googleImageUploader,
+            albumMemberRepository,
+            musicGenerator,
+        )
     }
 
     @BeforeEach
     fun setUp() {
+        val albumMusicManager = AlbumMusicManager(albumMusicRepository, sunoMusicDataRepository)
         albumService =
             AlbumService(
-                albumManager = AlbumManager(albumRepository, albumMemberRepository, emptyList()),
+                albumManager =
+                    AlbumManager(
+                        albumRepository,
+                        albumMemberRepository,
+                        imageAnalyzer,
+                        musicGenerator,
+                        albumMusicManager,
+                        listOf(),
+                    ),
+                googleImageUploader = googleImageUploader,
+                albumMusicManager = albumMusicManager,
                 albumMemberManager = AlbumMemberManager(albumMemberRepository),
-                albumMusicManager = AlbumMusicManager(albumMusicRepository),
-                aiProcessor = aiProcessor,
-                albumCoverImageProcessor = AlbumCoverImageProcessor(googleImageUploader, "test-bucket"),
             )
-    }
-
-    @Test
-    fun `정상 요청이면 생성된 albumId가 반환된다`() {
-        // given
-        val newAlbum = AlbumFixture.newAlbum()
-        val image = mockk<MultipartFile>()
-        val imageKeywords = "도시, 야경, 활기찬"
-
-        every { image.contentType } returns "image/jpeg"
-        every { image.size } returns 1024L
-        every { image.inputStream } returns mockk(relaxed = true)
-        every { image.originalFilename } returns "test.jpg"
-        every { googleImageUploader.uploadImage(any()) } returns "https://storage.googleapis.com/test.jpg"
-        every { albumRepository.save(any()) } returns AlbumFixture.albumEntity(id = 1L)
-        every { albumMemberRepository.save(any()) } returns mockk()
-        every { aiProcessor.analyzeImage(any()) } returns imageKeywords
-        justRun { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
-        justRun { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
-
-        // when
-        val result = albumService.createAlbum(newAlbum, image)
-
-        // then
-        assertThat(result).isEqualTo(1L)
-    }
-
-    @Test
-    fun `정상 요청이면 AI 분석과 제목 및 음악 생성이 호출된다`() {
-        // given
-        val newAlbum = AlbumFixture.newAlbum()
-        val image = mockk<MultipartFile>()
-        val imageKeywords = "도시, 야경, 활기찬"
-
-        every { image.contentType } returns "image/jpeg"
-        every { image.size } returns 1024L
-        every { image.inputStream } returns mockk(relaxed = true)
-        every { image.originalFilename } returns "test.jpg"
-        every { googleImageUploader.uploadImage(any()) } returns "https://storage.googleapis.com/test.jpg"
-        every { albumRepository.save(any()) } returns AlbumFixture.albumEntity(id = 1L)
-        every { albumMemberRepository.save(any()) } returns mockk()
-        every { aiProcessor.analyzeImage(any()) } returns imageKeywords
-        justRun { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
-        justRun { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
-
-        // when
-        albumService.createAlbum(newAlbum, image)
-
-        // then
-        verify(exactly = 1) { aiProcessor.analyzeImage(any()) }
-        verify(exactly = 1) { aiProcessor.generateTitle(1L, newAlbum, imageKeywords) }
-        verify(exactly = 1) { aiProcessor.generateMusic(1L, newAlbum, imageKeywords) }
     }
 
     @Test

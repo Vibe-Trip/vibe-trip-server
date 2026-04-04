@@ -1,7 +1,6 @@
 package com.vibetrip.vibetripserver.album.dataaccess.entity
 
 import com.vibetrip.vibetripserver.album.domain.Album
-import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.common.entity.BaseEntity
 import jakarta.persistence.Column
@@ -68,13 +67,13 @@ class AlbumEntity(
     }
 
     fun updateAlbum(
-        editAlbum: EditAlbum,
-        coverImageUrl: String?,
+        editAlbum: NewAlbum,
+        coverImageUrl: String,
     ) {
         region = editAlbum.region.value
         comment = editAlbum.comment.value
         travelStartDate = editAlbum.travelDate.startDate
         travelEndDate = editAlbum.travelDate.endDate
-        this.coverImageUrl = coverImageUrl ?: this.coverImageUrl
+        this.coverImageUrl = coverImageUrl
     }
 }

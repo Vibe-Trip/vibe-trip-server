@@ -79,6 +79,7 @@ object AlbumFixture {
         genre = GenreType.CLASSICAL,
         withLyrics = false,
         albumId = albumId,
+        taskId = "",
     )
 
     fun generatedMusic(

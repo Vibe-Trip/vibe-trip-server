@@ -15,7 +15,7 @@ data class EditAlbum(
     val travelDate: TravelDate,
     val vocalOption: VocalOption,
     val genre: Genre,
-    val image: MultipartFile?,
+    val image: MultipartFile,
 ) {
     companion object {
         fun of(
@@ -27,7 +27,7 @@ data class EditAlbum(
             withLyrics: Boolean,
             vocalGender: VocalGender,
             genre: GenreType,
-            image: MultipartFile?,
+            image: MultipartFile,
         ) = EditAlbum(
             albumId = albumId,
             region = Region(region),

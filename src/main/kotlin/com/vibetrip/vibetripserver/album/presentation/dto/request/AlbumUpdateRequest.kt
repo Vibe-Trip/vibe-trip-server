@@ -1,12 +1,11 @@
 package com.vibetrip.vibetripserver.album.presentation.dto.request
 
-import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.GenreType
+import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.VocalGender
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
 
 data class AlbumUpdateRequest(
@@ -24,18 +23,15 @@ data class AlbumUpdateRequest(
     @field:Size(max = 500)
     val comment: String = "",
 ) {
-    fun toEditAlbum(
-        album: Long,
-        image: MultipartFile?,
-    ) = EditAlbum.of(
-        albumId = album,
-        region = region,
-        comment = comment,
-        travelStartDate = travelStartDate,
-        travelEndDate = travelEndDate,
-        withLyrics = withLyrics,
-        vocalGender = vocalGender,
-        genre = genre,
-        image = image,
-    )
+    fun toNewAlbum(memberKey: String) =
+        NewAlbum.of(
+            memberKey = memberKey,
+            region = region,
+            comment = comment,
+            travelStartDate = travelStartDate,
+            travelEndDate = travelEndDate,
+            withLyrics = withLyrics,
+            vocalGender = vocalGender,
+            genre = genre,
+        )
 }

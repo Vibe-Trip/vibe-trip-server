@@ -11,9 +11,11 @@ import org.springframework.web.multipart.MultipartFile
 object AlbumLogFixture {
     fun newAlbumLog(
         description: String = "테스트 설명",
+        images: List<MultipartFile>?,
         albumId: Long = 1L,
     ) = NewAlbumLog.of(
         description = description,
+        images = images,
         albumId = albumId,
     )
 

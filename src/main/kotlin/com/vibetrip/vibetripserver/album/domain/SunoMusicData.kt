@@ -1,7 +1,5 @@
 package com.vibetrip.vibetripserver.album.domain
 
-import java.time.LocalDateTime
-
 data class SunoMusicData(
     val taskId: String,
     val id: String,
@@ -15,7 +13,7 @@ data class SunoMusicData(
     val modelName: String,
     val title: String,
     val tags: String,
-    val createTime: LocalDateTime,
+    val createTime: String,
     val duration: Double,
     var sunoMusicDataId: Long? = null,
 )

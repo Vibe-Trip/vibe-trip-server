@@ -15,7 +15,7 @@ data class AlbumLogListResponse(
                 id = albumLog.id,
                 description = albumLog.descriptionValue,
                 postedAt = albumLog.postedAt,
-                images = albumLog.albumLogImages.map { AlbumLogImageResponse(it.imageUrl) },
+                images = albumLog.albumLogImages.map { AlbumLogImageResponse(it.id, it.imageUrl) },
             )
     }
 }

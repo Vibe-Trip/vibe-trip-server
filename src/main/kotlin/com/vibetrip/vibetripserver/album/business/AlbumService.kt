@@ -1,5 +1,6 @@
 package com.vibetrip.vibetripserver.album.business
 
+import com.vibetrip.vibetripserver.album.domain.Album
 import com.vibetrip.vibetripserver.album.domain.AlbumDetail
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.SunoMusicData
@@ -10,6 +11,7 @@ import com.vibetrip.vibetripserver.common.domain.ImageData
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
 import com.vibetrip.vibetripserver.common.util.validateImageContentType
 import com.vibetrip.vibetripserver.support.paging.Cursorable
+import com.vibetrip.vibetripserver.support.paging.Slice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -46,7 +48,7 @@ class AlbumService(
     fun findAlbums(
         memberKey: String,
         cursorable: Cursorable<Long>,
-    ) = albumManager.find(memberKey, cursorable)
+    ): Slice<Album> = albumManager.find(memberKey, cursorable)
 
     fun findAlbum(
         albumId: Long,

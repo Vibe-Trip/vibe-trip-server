@@ -7,6 +7,8 @@ import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateRe
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumDetailResponse
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumListResponse
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumPageResponse
+import com.vibetrip.vibetripserver.album.presentation.dto.response.PreviewLogImage
+import com.vibetrip.vibetripserver.albumlog.business.AlbumLogService
 import com.vibetrip.vibetripserver.member.domain.Member
 import com.vibetrip.vibetripserver.support.paging.CursorDefault
 import com.vibetrip.vibetripserver.support.paging.Cursorable
@@ -32,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/api/v1/albums")
 class AlbumController(
     private val albumService: AlbumService,
+    private val albumLogService: AlbumLogService,
 ) {
     @Operation(summary = "앨범생성", description = "새로운 앨범을 생성합니다.")
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -55,7 +58,16 @@ class AlbumController(
         val slice =
             albumService
                 .findAlbums(member.memberKey, cursorable)
-                .map { AlbumListResponse.from(it) }
+                .map {
+                    AlbumListResponse.from(
+                        album = it,
+                        previewLogImages =
+                            albumLogService
+                                .findAlbumLogImages(it.albumId, 3L)
+                                .map { image -> PreviewLogImage(image.imageUrl) },
+                        logImageCount = albumLogService.findAlbumLogCount(it.albumId),
+                    )
+                }
 
         return ResponseEntity.ok(ApiResponse.success(AlbumPageResponse.of(totalCount, slice)))
     }

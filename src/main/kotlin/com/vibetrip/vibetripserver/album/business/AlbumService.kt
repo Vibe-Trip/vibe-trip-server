@@ -73,10 +73,10 @@ class AlbumService(
     @Transactional
     fun updateAlbum(
         albumId: Long,
-        editAlbum: NewAlbum,
+        newAlbum: NewAlbum,
         coverImage: MultipartFile,
     ) {
-        albumMemberManager.validateMember(albumId, editAlbum.memberKey)
+        albumMemberManager.validateMember(albumId, newAlbum.memberKey)
         val contentType = validateImageContentType(coverImage.contentType)
         val coverImageUrl =
             googleImageUploader.uploadImage(
@@ -86,9 +86,9 @@ class AlbumService(
                     coverImage.originalFilename!!,
                 ),
             )
-        albumManager.update(albumId, editAlbum, coverImageUrl)
+        albumManager.update(albumId, newAlbum, coverImageUrl)
         albumMusicManager.delete(albumId)
-        albumManager.generateMusic(albumId, editAlbum, coverImage)
+        albumManager.generateMusic(albumId, newAlbum, coverImage)
     }
 
     @Transactional

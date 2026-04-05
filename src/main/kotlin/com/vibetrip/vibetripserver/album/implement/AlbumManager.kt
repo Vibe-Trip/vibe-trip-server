@@ -56,10 +56,10 @@ class AlbumManager(
 
     fun update(
         albumId: Long,
-        editAlbum: NewAlbum,
+        newAlbum: NewAlbum,
         coverImageUrl: String,
     ) {
-        albumRepository.find(albumId)?.updateAlbum(editAlbum, coverImageUrl)
+        albumRepository.find(albumId)?.updateAlbum(newAlbum, coverImageUrl)
             ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
     }
 

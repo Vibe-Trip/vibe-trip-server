@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
-data class AlbumCreateRequest(
+data class AlbumUpdateRequest(
     @field:NotBlank
     @field:Size(max = 25)
     val region: String,

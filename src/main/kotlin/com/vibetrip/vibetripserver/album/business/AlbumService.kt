@@ -12,9 +12,13 @@ import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
 import com.vibetrip.vibetripserver.common.util.validateImageContentType
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
+import org.springframework.orm.ObjectOptimisticLockingFailureException
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.RequestPredicates.contentType
 
 @Service
 class AlbumService(
@@ -63,6 +67,33 @@ class AlbumService(
 
     fun countAlbums(memberKey: String): Long = albumManager.count(memberKey)
 
+    @Retryable(
+        retryFor = [ObjectOptimisticLockingFailureException::class],
+        maxAttempts = 3,
+        backoff = Backoff(delay = 100),
+    )
+    @Transactional
+    fun updateAlbum(
+        albumId: Long,
+        newAlbum: NewAlbum,
+        coverImage: MultipartFile,
+    ) {
+        albumMemberManager.validateMember(albumId, newAlbum.memberKey)
+        val contentType = validateImageContentType(coverImage.contentType)
+        val coverImageUrl =
+            googleImageUploader.uploadImage(
+                ImageData(
+                    coverImage.inputStream,
+                    contentType,
+                    coverImage.originalFilename!!,
+                ),
+            )
+        albumManager.update(albumId, newAlbum, coverImageUrl)
+        albumMusicManager.delete(albumId)
+        albumManager.generateMusic(albumId, newAlbum, coverImage)
+    }
+
+    @Transactional
     fun deleteAlbum(
         albumId: Long,
         memberKey: String,

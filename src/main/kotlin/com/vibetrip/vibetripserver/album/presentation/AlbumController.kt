@@ -2,6 +2,7 @@ package com.vibetrip.vibetripserver.album.presentation
 
 import com.vibetrip.vibetripserver.album.business.AlbumService
 import com.vibetrip.vibetripserver.album.presentation.dto.request.AlbumCreateRequest
+import com.vibetrip.vibetripserver.album.presentation.dto.request.AlbumUpdateRequest
 import com.vibetrip.vibetripserver.album.presentation.dto.request.SunoCallbackRequest
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumCreateResponse
 import com.vibetrip.vibetripserver.album.presentation.dto.response.AlbumDetailResponse
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
@@ -70,6 +72,26 @@ class AlbumController(
                 }
 
         return ResponseEntity.ok(ApiResponse.success(AlbumPageResponse.of(totalCount, slice)))
+    }
+
+    @Operation(summary = "앨범 수정", description = "앨범을 수정합니다")
+    @PutMapping(
+        "/{albumId}",
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE],
+        produces = [MediaType.APPLICATION_JSON_VALUE],
+    )
+    fun updateAlbum(
+        @PathVariable albumId: Long,
+        @RequestPart(required = true) coverImage: MultipartFile,
+        @Valid @RequestPart request: AlbumUpdateRequest,
+        @AuthMember member: Member,
+    ): ResponseEntity<ApiResponse<Unit>> {
+        albumService.updateAlbum(
+            albumId,
+            request.toNewAlbum(member.memberKey),
+            coverImage,
+        )
+        return ResponseEntity.ok(ApiResponse.success())
     }
 
     @Operation(summary = "단일 앨범 조회", description = "단일 앨범을 조회합니다")

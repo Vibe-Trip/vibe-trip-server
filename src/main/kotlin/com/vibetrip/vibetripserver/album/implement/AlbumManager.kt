@@ -54,6 +54,15 @@ class AlbumManager(
         cursorable: Cursorable<Long>,
     ): Slice<Album> = albumRepository.findAllByMemberKey(memberKey, cursorable).map(AlbumEntity::toDomain)
 
+    fun update(
+        albumId: Long,
+        newAlbum: NewAlbum,
+        coverImageUrl: String,
+    ) {
+        albumRepository.find(albumId)?.updateAlbum(newAlbum, coverImageUrl)
+            ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
+    }
+
     fun findAlbum(albumId: Long): Album =
         albumRepository.find(albumId)?.toDomain()
             ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)

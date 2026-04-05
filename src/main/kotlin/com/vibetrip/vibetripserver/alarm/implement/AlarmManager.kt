@@ -24,6 +24,7 @@ class AlarmManager(
                 description = alarmData.description,
                 memberKey = memberKey,
                 alarmType = alarmData.type,
+                albumId = alarmData.albumId,
             ),
         )
 

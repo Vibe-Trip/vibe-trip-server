@@ -7,10 +7,12 @@ sealed class AlarmData {
     abstract val title: String
     abstract val description: String
 
+    abstract val albumId: Long?
+
     abstract fun toFcmData(): FcmAlarm<*>
 
     data class Creating(
-        val albumId: Long,
+        override val albumId: Long,
         val taskId: String,
     ) : AlarmData() {
         override val type: AlarmType = AlarmType.CREATING
@@ -26,7 +28,7 @@ sealed class AlarmData {
     }
 
     data class Completed(
-        val albumId: Long,
+        override val albumId: Long,
         val albumTitle: String,
     ) : AlarmData() {
         override val type: AlarmType = AlarmType.COMPLETED
@@ -41,12 +43,17 @@ sealed class AlarmData {
     }
 
     data class Failed(
+        override val albumId: Long,
         val errorType: ErrorType,
     ) : AlarmData() {
         override val type: AlarmType = AlarmType.FAILED
         override val title: String = type.title
         override val description: String = type.description.format(errorType.message)
 
-        override fun toFcmData(): FcmAlarm<Unit> = FcmAlarm.error(errorType)
+        override fun toFcmData(): FcmAlarm<Unit> = FcmAlarm.error(errorType, FailedPayload(albumId))
+
+        data class FailedPayload(
+            val albumId: Long,
+        )
     }
 }

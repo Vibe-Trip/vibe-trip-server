@@ -1,5 +1,7 @@
 package com.vibetrip.vibetripserver.album.implement
 
+import com.vibetrip.vibetripserver.alarm.domain.AlarmData
+import com.vibetrip.vibetripserver.alarm.implement.AlarmManager
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumMemberEntity
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
@@ -29,6 +31,7 @@ class AlbumManager(
     private val musicGenerator: MusicGenerator,
     private val albumMusicManager: AlbumMusicManager,
     private val deletionProcessors: List<AlbumDeletionProcessor>,
+    private val alarmManager: AlarmManager,
 ) {
     fun create(
         newAlbum: NewAlbum,
@@ -87,18 +90,25 @@ class AlbumManager(
                     genre = newAlbum.genre.value,
                     vocalGender = newAlbum.vocalOption.vocalGender,
                 )
-            val musicGenerateResponse =
-                musicGenerator.generate(
-                    genre = newAlbum.genre.value,
-                    vocalGender = newAlbum.vocalOption.vocalGender,
-                    imageAnalysis = imageAnalysis,
-                )
+            val taskId =
+                musicGenerator
+                    .generate(
+                        genre = newAlbum.genre.value,
+                        vocalGender = newAlbum.vocalOption.vocalGender,
+                        imageAnalysis = imageAnalysis,
+                    ).data.taskId
 
             updateTitle(albumId, imageAnalysis.title)
-            albumMusicManager.save(albumId, newAlbum, musicGenerateResponse.data.taskId, AlbumMusic.empty())
+            albumMusicManager.save(albumId, newAlbum, taskId, AlbumMusic.empty())
+            alarmManager.send(newAlbum.memberKey, AlarmData.Creating(albumId, taskId))
             logger.info { "[음악 생성 완료] albumId=$albumId" }
         } catch (e: Exception) {
+            alarmManager.send(newAlbum.memberKey, AlarmData.Failed(albumId, ErrorType.SERVER_ERROR))
             logger.error { "[음악 생성 실패] albumId=$albumId | ${e.message}" }
         }
+    }
+
+    fun completeAlbum(albumId: Long) {
+        findAlbum(albumId).let { alarmManager.send(it.memberKey, AlarmData.Completed(albumId, it.title)) }
     }
 }

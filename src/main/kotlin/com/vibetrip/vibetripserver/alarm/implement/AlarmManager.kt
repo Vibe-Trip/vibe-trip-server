@@ -2,9 +2,7 @@ package com.vibetrip.vibetripserver.alarm.implement
 
 import com.vibetrip.vibetripserver.alarm.dataaccess.entity.AlarmEntity
 import com.vibetrip.vibetripserver.alarm.dataaccess.repository.AlarmRepository
-import com.vibetrip.vibetripserver.alarm.domain.AlarmType
-import com.vibetrip.vibetripserver.common.exception.ErrorType
-import com.vibetrip.vibetripserver.common.notification.FcmSender
+import com.vibetrip.vibetripserver.alarm.domain.AlarmData
 import com.vibetrip.vibetripserver.member.implement.MemberDeviceManager
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -16,45 +14,27 @@ class AlarmManager(
     private val memberDeviceManager: MemberDeviceManager,
     private val fcmSender: FcmSender,
 ) {
-    fun sendCreating(
+    fun send(
         memberKey: String,
-        albumId: Long,
+        alarmData: AlarmData,
     ) {
-        val title = "앨범을 생성하는 중입니다"
-        val body = "나만의 음악이 곧 탄생합니다. 완료되면 바로 알려드릴게요"
-        save(memberKey, title, body, AlarmType.CREATING, albumId)
-        sendFcm(memberKey, title, body, mapOf("alarmType" to AlarmType.CREATING.name))
-    }
-
-    fun sendCompleted(
-        memberKey: String,
-        albumTitle: String,
-        albumId: Long,
-    ) {
-        val title = "앨범 생성 완료!"
-        val body = "세상에 하나뿐인 '$albumTitle'이 완성되었습니다. 지금 바로 완성된 음악을 감상해보세요"
-        save(memberKey, title, body, AlarmType.COMPLETED, albumId)
-        alarmRepository.deleteCreatingByAlbumId(albumId)
-        sendFcm(memberKey, title, body, mapOf("alarmType" to AlarmType.COMPLETED.name, "albumId" to albumId.toString()))
-    }
-
-    fun sendFailed(
-        memberKey: String,
-        errorType: ErrorType,
-    ) {
-        val title = "앨범 생성에 실패했습니다"
-        val body = "${errorType.message}으로 생성이 실패했습니다. 앨범 만들기를 다시 시도해 볼까요?"
-        save(memberKey, title, body, AlarmType.FAILED)
-        sendFcm(
-            memberKey,
-            title,
-            body,
-            mapOf(
-                "alarmType" to AlarmType.FAILED.name,
-                "errorCode" to errorType.errorCode.name,
-                "errorMessage" to errorType.message,
+        alarmRepository.save(
+            AlarmEntity(
+                title = alarmData.title,
+                description = alarmData.description,
+                memberKey = memberKey,
+                alarmType = alarmData.type,
             ),
         )
+
+        memberDeviceManager.findFcmToken(memberKey).forEach {
+            fcmSender.sendFcm(
+                fcmToken = it,
+                title = alarmData.title,
+                body = alarmData.description,
+                data = alarmData.toFcmData(),
+            )
+        }
     }
 
     @Transactional(readOnly = true)
@@ -64,33 +44,4 @@ class AlarmManager(
         alarmId: Long,
         memberKey: String,
     ) = alarmRepository.delete(memberKey, alarmId)
-
-    private fun save(
-        memberKey: String,
-        title: String,
-        body: String,
-        alarmType: AlarmType,
-        albumId: Long? = null,
-    ) {
-        alarmRepository.save(
-            AlarmEntity(
-                title = title,
-                description = body,
-                memberKey = memberKey,
-                alarmType = alarmType,
-                albumId = albumId,
-            ),
-        )
-    }
-
-    private fun sendFcm(
-        memberKey: String,
-        title: String,
-        body: String,
-        data: Map<String, String> = emptyMap(),
-    ) {
-        memberDeviceManager.findFcmToken(memberKey).forEach {
-            fcmSender.sendFcm(fcmToken = it, title = title, body = body, data = data)
-        }
-    }
 }

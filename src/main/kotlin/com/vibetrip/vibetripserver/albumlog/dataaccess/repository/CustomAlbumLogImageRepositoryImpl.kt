@@ -31,6 +31,17 @@ class CustomAlbumLogImageRepositoryImpl :
             ).limit(count)
             .fetch()
 
+    override fun countByAlbumId(albumId: Long): Long =
+        select(albumLogImageEntity.count())
+            .from(albumLogImageEntity)
+            .join(albumLogEntity)
+            .on(albumLogImageEntity.albumLogId.eq(albumLogEntity.id))
+            .where(
+                albumLogEntity.albumId.eq(albumId),
+                albumLogEntity.status.eq(EntityStatus.ACTIVE),
+                albumLogImageEntity.status.eq(EntityStatus.ACTIVE),
+            ).fetchOne() ?: 0L
+
     override fun deleteByIds(ids: List<Long>) {
         if (ids.isEmpty()) return
 

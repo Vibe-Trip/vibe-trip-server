@@ -30,14 +30,6 @@ class CustomAlbumLogRepositoryImpl :
                 albumLogEntity.status.eq(EntityStatus.ACTIVE),
             ).fetchOne() ?: 0L
 
-    override fun countByAlbumId(albumId: Long): Long =
-        select(albumLogEntity.count())
-            .from(albumLogEntity)
-            .where(
-                albumLogEntity.albumId.eq(albumId),
-                albumLogEntity.status.eq(EntityStatus.ACTIVE),
-            ).fetchOne() ?: 0L
-
     override fun findByAlbumId(
         albumId: Long,
         cursorable: Cursorable<Long>,

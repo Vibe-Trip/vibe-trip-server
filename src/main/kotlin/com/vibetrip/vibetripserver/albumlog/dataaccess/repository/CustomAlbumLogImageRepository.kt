@@ -10,6 +10,8 @@ interface CustomAlbumLogImageRepository {
         count: Long,
     ): List<AlbumLogImageEntity>
 
+    fun countByAlbumId(albumId: Long): Long
+
     fun deleteByIds(ids: List<Long>)
 
     fun deleteByAlbumLogId(albumLogId: Long)

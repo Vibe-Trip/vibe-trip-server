@@ -14,6 +14,7 @@ import com.vibetrip.vibetripserver.album.implement.ai.ImageAnalyzer
 import com.vibetrip.vibetripserver.album.implement.ai.MusicGenerator
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
+import com.vibetrip.vibetripserver.alarm.implement.AlarmManager
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
 import com.vibetrip.vibetripserver.fixture.AlbumFixture
 import com.vibetrip.vibetripserver.support.paging.Cursorable
@@ -37,6 +38,7 @@ class AlbumServiceTest {
     private val sunoMusicDataRepository = mockk<SunoMusicDataRepository>()
     private val musicGenerator = mockk<MusicGenerator>()
     private val imageAnalyzer = mockk<ImageAnalyzer>()
+    private val alarmManager = mockk<AlarmManager>(relaxed = true)
 
     private lateinit var albumService: AlbumService
 
@@ -58,6 +60,7 @@ class AlbumServiceTest {
                         musicGenerator,
                         albumMusicManager,
                         listOf(),
+                        alarmManager,
                     ),
                 googleImageUploader = googleImageUploader,
                 albumMusicManager = albumMusicManager,
@@ -66,7 +69,7 @@ class AlbumServiceTest {
     }
 
     @Test
-    fun `유효하지 않은 이미지 타입이면 INVALID_IMAGE_TYPE 예외가 발생한다`() {
+    fun `유효하지 않은 이미지 타입이면 INVALID_IMAGE_TYPE예외가 발생한다`() {
         // given
         val newAlbum = AlbumFixture.newAlbum()
         val image = mockk<MultipartFile>()

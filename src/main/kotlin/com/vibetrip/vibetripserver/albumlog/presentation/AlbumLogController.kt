@@ -39,10 +39,11 @@ class AlbumLogController(
     fun registerAlbumLog(
         @PathVariable albumId: Long,
         @Valid @RequestPart request: AlbumLogRegisterRequest,
-        @Valid @Size(max = 5) @RequestPart(required = false) images: List<MultipartFile>,
+        @Valid @Size(max = 5) @RequestPart(required = false) images: List<MultipartFile>?,
         @AuthMember member: Member,
     ): ResponseEntity<ApiResponse<Unit>> {
-        val albumLogId = albumLogService.registerAlbumLog(request.toNewAlbumLog(albumId), images, member.memberKey)
+        val albumLogId =
+            albumLogService.registerAlbumLog(request.toNewAlbumLog(albumId, images), member.memberKey)
 
         return ResponseEntity
             .created(URI.create("/api/v1/albums/$albumId/album-logs/$albumLogId"))
@@ -74,7 +75,7 @@ class AlbumLogController(
         @PathVariable albumId: Long,
         @PathVariable albumLogId: Long,
         @Valid @RequestPart request: AlbumLogUpdateRequest,
-        @Valid @Size(max = 5) @RequestPart(required = false) newImages: List<MultipartFile>,
+        @Valid @Size(max = 5) @RequestPart(required = false) newImages: List<MultipartFile>?,
         @AuthMember member: Member,
     ): ResponseEntity<ApiResponse<Unit>> {
         albumLogService.updateAlbumLog(

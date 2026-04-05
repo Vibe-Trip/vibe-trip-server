@@ -35,4 +35,6 @@ class AlbumMusicManager(
 
     @Transactional(readOnly = true)
     fun getMusicUrl(albumId: Long): String = albumMusicRepository.findByAlbumId(albumId)?.musicUrl ?: ""
+
+    fun delete(albumId: Long) = albumMusicRepository.deleteByAlbumId(albumId)
 }

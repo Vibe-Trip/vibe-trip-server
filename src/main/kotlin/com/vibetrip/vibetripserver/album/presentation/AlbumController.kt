@@ -67,7 +67,7 @@ class AlbumController(
                             albumLogService
                                 .findAlbumLogImages(it.albumId, 3L)
                                 .map { image -> PreviewLogImage(image.imageUrl) },
-                        logImageCount = albumLogService.findAlbumLogCount(it.albumId),
+                        logImageCount = albumLogService.findAlbumLogImageCount(it.albumId),
                     )
                 }
 

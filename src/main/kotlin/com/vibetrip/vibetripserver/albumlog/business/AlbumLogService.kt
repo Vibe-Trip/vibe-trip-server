@@ -80,7 +80,7 @@ class AlbumLogService(
         albumLogManager.delete(albumLogId)
     }
 
-    fun findAlbumLogCount(albumId: Long) = albumLogManager.count(albumId)
+    fun findAlbumLogImageCount(albumId: Long) = albumLogManager.imageCount(albumId)
 
     fun findAlbumLogImages(
         albumId: Long,

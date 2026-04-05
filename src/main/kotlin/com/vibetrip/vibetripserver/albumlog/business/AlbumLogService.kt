@@ -15,7 +15,6 @@ import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
 
 @Service
 class AlbumLogService(
@@ -27,14 +26,13 @@ class AlbumLogService(
     @Transactional
     fun registerAlbumLog(
         newAlbumLog: NewAlbumLog,
-        images: List<MultipartFile>,
         memberKey: String,
     ): Long {
         albumMemberManager.validateMember(newAlbumLog.albumId, memberKey)
 
         val albumLog = albumLogManager.register(newAlbumLog)
 
-        albumLogImageOutboxProcessor.saveOutbox(images, albumLog.id).also {
+        albumLogImageOutboxProcessor.saveOutbox(newAlbumLog.images, albumLog.id).also {
             eventPublisher.publishEvent(AlbumLogImageEvent(albumLog.id, it))
         }
 

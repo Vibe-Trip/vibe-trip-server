@@ -7,7 +7,7 @@ data class EditAlbumLog(
     val id: Long,
     val description: Description,
     val albumId: Long,
-    val newImages: List<MultipartFile> = emptyList(),
+    val newImages: List<MultipartFile>,
     val removeImageIds: List<Long>,
 ) {
     companion object {
@@ -15,13 +15,13 @@ data class EditAlbumLog(
             id: Long,
             description: String,
             albumId: Long,
-            newImages: List<MultipartFile>,
+            newImages: List<MultipartFile>?,
             removeImageIds: List<Long>,
         ) = EditAlbumLog(
             id = id,
             description = Description(description),
             albumId = albumId,
-            newImages = newImages,
+            newImages = newImages ?: emptyList(),
             removeImageIds = removeImageIds,
         )
     }

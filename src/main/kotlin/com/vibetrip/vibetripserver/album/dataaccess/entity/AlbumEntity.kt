@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.Version
 import java.time.LocalDate
 
 @Entity
@@ -32,6 +33,8 @@ class AlbumEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_id")
     var id: Long? = null,
+    @Version
+    var version: Long = 0,
 ) : BaseEntity() {
     companion object {
         fun from(
@@ -61,5 +64,16 @@ class AlbumEntity(
 
     fun updateTitle(newTitle: String) {
         title = newTitle
+    }
+
+    fun updateAlbum(
+        editAlbum: NewAlbum,
+        coverImageUrl: String,
+    ) {
+        region = editAlbum.region.value
+        comment = editAlbum.comment.value
+        travelStartDate = editAlbum.travelDate.startDate
+        travelEndDate = editAlbum.travelDate.endDate
+        this.coverImageUrl = coverImageUrl
     }
 }

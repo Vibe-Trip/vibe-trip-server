@@ -39,6 +39,13 @@ class AlbumLogManager(
 
     fun count(memberKey: String) = albumLogRepository.countByMemberKey(memberKey)
 
+    fun count(albumId: Long) = albumLogRepository.countByAlbumId(albumId)
+
+    fun albumLogImages(
+        albumId: Long,
+        count: Long,
+    ) = albumLogImageRepository.findByAlbumId(albumId, count)
+
     fun update(
         id: Long,
         description: String,

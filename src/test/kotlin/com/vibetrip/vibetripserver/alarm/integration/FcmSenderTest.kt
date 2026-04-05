@@ -6,6 +6,7 @@ import com.vibetrip.vibetripserver.support.integration.SpringTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 import org.springframework.beans.factory.annotation.Autowired
+
 class FcmSenderTest : SpringTest() {
     @Autowired
     lateinit var fcmSender: FcmSender

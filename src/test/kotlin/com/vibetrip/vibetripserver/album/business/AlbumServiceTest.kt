@@ -1,5 +1,6 @@
 package com.vibetrip.vibetripserver.album.business
 
+import com.vibetrip.vibetripserver.alarm.implement.AlarmManager
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMusicRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
@@ -14,7 +15,6 @@ import com.vibetrip.vibetripserver.album.implement.ai.ImageAnalyzer
 import com.vibetrip.vibetripserver.album.implement.ai.MusicGenerator
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
-import com.vibetrip.vibetripserver.alarm.implement.AlarmManager
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
 import com.vibetrip.vibetripserver.fixture.AlbumFixture
 import com.vibetrip.vibetripserver.support.paging.Cursorable

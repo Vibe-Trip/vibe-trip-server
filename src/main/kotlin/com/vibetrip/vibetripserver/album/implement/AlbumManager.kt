@@ -33,12 +33,11 @@ class AlbumManager(
     fun create(
         newAlbum: NewAlbum,
         coverImageUrl: String,
-    ): Long =
-        albumRepository
-            .save(AlbumEntity.from(newAlbum, coverImageUrl))
-            .also {
-                albumMemberRepository.save(AlbumMemberEntity(memberKey = it.memberKey, albumId = it.id!!))
-            }.id!!
+    ) = albumRepository
+        .save(AlbumEntity.from(newAlbum, coverImageUrl))
+        .also {
+            albumMemberRepository.save(AlbumMemberEntity(memberKey = it.memberKey, albumId = it.id!!))
+        }.id!!
 
     fun updateTitle(
         albumId: Long,

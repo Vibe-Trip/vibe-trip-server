@@ -73,8 +73,8 @@ class AlbumLogServiceTest {
     fun `앨범 멤버이고 유효한 이미지라면 앨범 로그 ID가 반환된다`() {
         // given
         val memberKey = "member-key-123"
-        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L)
         val images = AlbumLogFixture.mockMultipartFiles(2)
+        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L, images = images)
         val savedAlbumLogEntity = AlbumLogFixture.albumLogEntity(id = 1L, albumId = 1L)
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
@@ -91,7 +91,7 @@ class AlbumLogServiceTest {
             )
 
         // when
-        val result = albumLogService.registerAlbumLog(newAlbumLog, images, memberKey)
+        val result = albumLogService.registerAlbumLog(newAlbumLog, memberKey)
 
         // then
         assertThat(result).isEqualTo(1L)
@@ -101,8 +101,8 @@ class AlbumLogServiceTest {
     fun `앨범 멤버이고 유효한 이미지라면 앨범 로그가 저장된다`() {
         // given
         val memberKey = "member-key-123"
-        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L)
         val images = AlbumLogFixture.mockMultipartFiles(2)
+        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L, images = images)
         val savedAlbumLogEntity = AlbumLogFixture.albumLogEntity(id = 1L, albumId = 1L)
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
@@ -119,7 +119,7 @@ class AlbumLogServiceTest {
             )
 
         // when
-        albumLogService.registerAlbumLog(newAlbumLog, images, memberKey)
+        albumLogService.registerAlbumLog(newAlbumLog, memberKey)
 
         // then
         verify { albumLogRepository.save(any()) }
@@ -129,8 +129,8 @@ class AlbumLogServiceTest {
     fun `앨범 멤버이고 유효한 이미지라면 이미지 Outbox가 저장된다`() {
         // given
         val memberKey = "member-key-123"
-        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L)
         val images = AlbumLogFixture.mockMultipartFiles(2)
+        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L, images = images)
         val savedAlbumLogEntity = AlbumLogFixture.albumLogEntity(id = 1L, albumId = 1L)
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
@@ -147,7 +147,7 @@ class AlbumLogServiceTest {
             )
 
         // when
-        albumLogService.registerAlbumLog(newAlbumLog, images, memberKey)
+        albumLogService.registerAlbumLog(newAlbumLog, memberKey)
 
         // then
         verify(exactly = 2) { albumLogImageOutboxRepository.save(any()) }
@@ -157,8 +157,8 @@ class AlbumLogServiceTest {
     fun `앨범 멤버이고 유효한 이미지라면 이벤트가 발행된다`() {
         // given
         val memberKey = "member-key-123"
-        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L)
         val images = AlbumLogFixture.mockMultipartFiles(2)
+        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L, images = images)
         val savedAlbumLogEntity = AlbumLogFixture.albumLogEntity(id = 1L, albumId = 1L)
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
@@ -175,7 +175,7 @@ class AlbumLogServiceTest {
             )
 
         // when
-        albumLogService.registerAlbumLog(newAlbumLog, images, memberKey)
+        albumLogService.registerAlbumLog(newAlbumLog, memberKey)
 
         // then
         val eventSlot = slot<AlbumLogImageEvent>()
@@ -189,15 +189,15 @@ class AlbumLogServiceTest {
     fun `앨범 멤버가 아니라면 NOT_ALBUM_MEMBER 예외가 발생한다`() {
         // given
         val memberKey = "member-key-123"
-        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L)
         val images = AlbumLogFixture.mockMultipartFiles(2)
+        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L, images = images)
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns false
 
         // when & then
         val exception =
             assertThrows<AppException> {
-                albumLogService.registerAlbumLog(newAlbumLog, images, memberKey)
+                albumLogService.registerAlbumLog(newAlbumLog, memberKey)
             }
 
         assertThat(exception.errorType).isEqualTo(ErrorType.NOT_ALBUM_MEMBER)
@@ -207,11 +207,11 @@ class AlbumLogServiceTest {
     fun `유효하지 않은 이미지 타입이라면 INVALID_IMAGE_TYPE 예외가 발생한다`() {
         // given
         val memberKey = "member-key-123"
-        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L)
         val invalidImages =
             listOf(
                 AlbumLogFixture.mockMultipartFile(contentType = "application/pdf"),
             )
+        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L, images = invalidImages)
         val savedAlbumLogEntity = AlbumLogFixture.albumLogEntity(id = 1L, albumId = 1L)
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
@@ -220,7 +220,7 @@ class AlbumLogServiceTest {
         // when & then
         val exception =
             assertThrows<AppException> {
-                albumLogService.registerAlbumLog(newAlbumLog, invalidImages, memberKey)
+                albumLogService.registerAlbumLog(newAlbumLog, memberKey)
             }
 
         assertThat(exception.errorType).isEqualTo(ErrorType.INVALID_IMAGE_TYPE)
@@ -230,15 +230,15 @@ class AlbumLogServiceTest {
     fun `이미지 없이 앨범 로그를 등록하면 앨범 로그 ID가 반환된다`() {
         // given
         val memberKey = "member-key-123"
-        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L)
         val emptyImages = emptyList<MultipartFile>()
+        val newAlbumLog = AlbumLogFixture.newAlbumLog(albumId = 1L, images = emptyImages)
         val savedAlbumLogEntity = AlbumLogFixture.albumLogEntity(id = 1L, albumId = 1L)
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(1L, memberKey) } returns true
         every { albumLogRepository.save(any()) } returns savedAlbumLogEntity
 
         // when
-        val result = albumLogService.registerAlbumLog(newAlbumLog, emptyImages, memberKey)
+        val result = albumLogService.registerAlbumLog(newAlbumLog, memberKey)
 
         // then
         assertThat(result).isEqualTo(1L)

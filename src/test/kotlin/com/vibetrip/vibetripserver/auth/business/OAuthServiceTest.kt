@@ -10,6 +10,8 @@ import com.vibetrip.vibetripserver.auth.implement.RefreshTokenManager
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.fixture.AuthFixture
+import com.vibetrip.vibetripserver.member.domain.MemberDevice
+import com.vibetrip.vibetripserver.member.implement.MemberDeviceManager
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -25,6 +27,7 @@ class OAuthServiceTest {
     private val jwtGenerator = mockk<JwtGenerator>()
     private val jwtValidator = mockk<JwtValidator>()
     private val refreshTokenManager = mockk<RefreshTokenManager>()
+    private val memberDeviceManager = mockk<MemberDeviceManager>()
 
     private lateinit var oAuthService: OAuthService
 
@@ -40,6 +43,7 @@ class OAuthServiceTest {
                 jwtGenerator = jwtGenerator,
                 jwtValidator = jwtValidator,
                 refreshTokenManager = refreshTokenManager,
+                memberDeviceManager = memberDeviceManager,
             )
     }
 
@@ -52,9 +56,12 @@ class OAuthServiceTest {
         val expectedJwt = AuthFixture.jwt()
 
         every { kakaoAuthenticator.authenticate(kakaoLogin) } returns oAuthMember
-        every { oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, kakaoLogin.fcmToken, kakaoLogin.deviceId) } returns memberKey
+        every {
+            oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember)
+        } returns memberKey
         every { jwtGenerator.generateJwt(memberKey) } returns expectedJwt
         every { refreshTokenManager.update(expectedJwt.refreshToken, memberKey) } returns Unit
+        every { memberDeviceManager.saveOrUpdate(MemberDevice(kakaoLogin.deviceId, kakaoLogin.fcmToken, memberKey)) } returns Unit
 
         // when
         val result = oAuthService.login(kakaoLogin)
@@ -62,7 +69,7 @@ class OAuthServiceTest {
         // then
         assertThat(result).isEqualTo(expectedJwt)
         verify { kakaoAuthenticator.authenticate(kakaoLogin) }
-        verify { oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, kakaoLogin.fcmToken, kakaoLogin.deviceId) }
+        verify { oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember) }
         verify { jwtGenerator.generateJwt(memberKey) }
         verify { refreshTokenManager.update(expectedJwt.refreshToken, memberKey) }
     }
@@ -92,9 +99,12 @@ class OAuthServiceTest {
         val expectedJwt = AuthFixture.jwt()
 
         every { appleAuthenticator.authenticate(appleLogin) } returns oAuthMember
-        every { oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, appleLogin.fcmToken, appleLogin.deviceId) } returns memberKey
+        every {
+            oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember)
+        } returns memberKey
         every { jwtGenerator.generateJwt(memberKey) } returns expectedJwt
         every { refreshTokenManager.update(expectedJwt.refreshToken, memberKey) } returns Unit
+        every { memberDeviceManager.saveOrUpdate(MemberDevice(appleLogin.deviceId, appleLogin.fcmToken, memberKey)) } returns Unit
 
         // when
         val result = oAuthService.login(appleLogin)
@@ -206,7 +216,12 @@ class OAuthServiceTest {
         val tokenBody = "valid-refresh-token"
 
         every { jwtValidator.getBearerTokenBody(bearerRefreshToken) } returns tokenBody
-        every { jwtValidator.getSubjectIfValidWithType(tokenBody, TokenType.REFRESH) } throws AppException(ErrorType.EXPIRED_JWT)
+        every {
+            jwtValidator.getSubjectIfValidWithType(
+                tokenBody,
+                TokenType.REFRESH,
+            )
+        } throws AppException(ErrorType.EXPIRED_JWT)
 
         // when & then
         val exception =

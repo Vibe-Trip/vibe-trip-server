@@ -20,7 +20,7 @@ class MemberDeviceManager(
 
     fun saveOrUpdate(memberDevice: MemberDevice) {
         memberDeviceRepository
-            .findByDeviceId(memberDevice.deviceId)
+            .findByDeviceIdAndMemberKey(memberDevice.deviceId, memberDevice.memberKey)
             ?.updateFcmToken(memberDevice.fcmToken)
             ?: memberDeviceRepository.save(MemberDeviceEntity.from(memberDevice))
     }

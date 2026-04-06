@@ -16,10 +16,14 @@ class CustomMemberDeviceRepositoryImpl :
                 memberDeviceEntity.status.eq(EntityStatus.ACTIVE),
             ).fetch()
 
-    override fun findByDeviceId(deviceId: String): MemberDeviceEntity? =
+    override fun findByDeviceIdAndMemberKey(
+        deviceId: String,
+        memberKey: String,
+    ): MemberDeviceEntity? =
         selectFrom(memberDeviceEntity)
             .where(
                 memberDeviceEntity.deviceId.eq(deviceId),
+                memberDeviceEntity.memberKey.eq(memberKey),
                 memberDeviceEntity.status.eq(EntityStatus.ACTIVE),
             ).fetchOne()
 }

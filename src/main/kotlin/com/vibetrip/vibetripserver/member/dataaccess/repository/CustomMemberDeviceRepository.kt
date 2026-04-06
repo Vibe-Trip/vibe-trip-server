@@ -5,5 +5,8 @@ import com.vibetrip.vibetripserver.member.dataaccess.entity.MemberDeviceEntity
 interface CustomMemberDeviceRepository {
     fun findByMemberKey(memberKey: String): List<String>
 
-    fun findByDeviceId(deviceId: String): MemberDeviceEntity?
+    fun findByDeviceIdAndMemberKey(
+        deviceId: String,
+        memberKey: String,
+    ): MemberDeviceEntity?
 }

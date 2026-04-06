@@ -62,3 +62,6 @@ ai:
   suno:
     api-key: ${SUNO_API_KEY}
     callback-uri: ${SUNO_CALLBACK_URL}
+
+firebase:
+  key: ${FIREBASE_KEY}

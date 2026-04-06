@@ -22,7 +22,7 @@ class ApiControllerAdvice {
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ResponseEntity<ApiResponse<Unit>> {
         logException(e)
-        return ResponseEntity(ApiResponse.error(ErrorType.SERVER_ERROR, e), HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(ApiResponse.error(ErrorType.SERVER_ERROR, e.message), HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     private fun logAppException(e: AppException) {

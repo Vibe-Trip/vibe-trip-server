@@ -30,4 +30,8 @@ class MemberDeviceEntity(
                 memberKey = memberDevice.memberKey,
             )
     }
+
+    fun updateFcmToken(newFcmToken: String) {
+        this.fcmToken = newFcmToken
+    }
 }

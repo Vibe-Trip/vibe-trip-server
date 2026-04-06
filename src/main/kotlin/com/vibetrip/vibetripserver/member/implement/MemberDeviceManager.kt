@@ -14,4 +14,14 @@ class MemberDeviceManager(
     fun save(memberDevice: MemberDevice) {
         memberDeviceRepository.save(MemberDeviceEntity.from(memberDevice))
     }
+
+    @Transactional(readOnly = true)
+    fun findFcmToken(memberKey: String) = memberDeviceRepository.findByMemberKey(memberKey)
+
+    fun saveOrUpdate(memberDevice: MemberDevice) {
+        memberDeviceRepository
+            .findByDeviceIdAndMemberKey(memberDevice.deviceId, memberDevice.memberKey)
+            ?.updateFcmToken(memberDevice.fcmToken)
+            ?: memberDeviceRepository.save(MemberDeviceEntity.from(memberDevice))
+    }
 }

@@ -85,6 +85,9 @@ dependencies {
     runtimeOnly("com.google.cloud:spring-cloud-gcp-starter-storage:8.0.1")
     implementation("com.google.cloud:spring-cloud-gcp-storage:8.0.1")
 
+    // FCM
+    implementation("com.google.firebase:firebase-admin:9.4.2")
+
     // AI
     implementation(platform("org.springframework.ai:spring-ai-bom:2.0.0-M4"))
     implementation("org.springframework.ai:spring-ai-starter-model-google-genai")

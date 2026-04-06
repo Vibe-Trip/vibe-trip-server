@@ -12,6 +12,8 @@ import com.vibetrip.vibetripserver.auth.implement.RefreshTokenManager
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.log.logger
+import com.vibetrip.vibetripserver.member.domain.MemberDevice
+import com.vibetrip.vibetripserver.member.implement.MemberDeviceManager
 import org.springframework.stereotype.Service
 
 @Service
@@ -20,6 +22,7 @@ class OAuthService(
     private val oAuthRegistrar: OAuthRegistrar,
     private val jwtGenerator: JwtGenerator,
     private val jwtValidator: JwtValidator,
+    private val memberDeviceManager: MemberDeviceManager,
     private val refreshTokenManager: RefreshTokenManager,
 ) {
     private val oauthAuthenticatorMap: Map<OAuthProvider, OAuthAuthenticator> =
@@ -31,7 +34,9 @@ class OAuthService(
                 ?: throw AppException(ErrorType.SERVER_ERROR)
 
         val memberKey =
-            oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember, newOAuthLogin.fcmToken, newOAuthLogin.deviceId)
+            oAuthRegistrar.registerIfNewAndGetMemberKey(oAuthMember).also {
+                memberDeviceManager.saveOrUpdate(MemberDevice(newOAuthLogin.deviceId, newOAuthLogin.fcmToken, it))
+            }
 
         return jwtGenerator.generateJwt(memberKey).also {
             refreshTokenManager.update(it.refreshToken, memberKey)

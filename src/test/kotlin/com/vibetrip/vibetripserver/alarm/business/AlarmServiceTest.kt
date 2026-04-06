@@ -32,7 +32,7 @@ class AlarmServiceTest : SpringTest() {
     fun `알림 여러 개를 저장하면 전체 조회가 된다`() {
         // given
         alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L, taskId = "task-1"))
-        alarmManager.send(memberKey, AlarmData.Completed(albumId = 1L, albumTitle = "도쿄의 밤"))
+        alarmManager.send(memberKey, AlarmData.Completed(albumId = 1L, taskId = "task-1", albumTitle = "도쿄의 밤"))
         alarmManager.send(memberKey, AlarmData.Failed(albumId = 1L, errorType = ErrorType.MUSIC_GENERATE_FAILED))
 
         // when
@@ -51,7 +51,7 @@ class AlarmServiceTest : SpringTest() {
     fun `다른 멤버의 알림은 조회되지 않는다`() {
         // given
         alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L, taskId = "task-1"))
-        alarmManager.send("other-member-key", AlarmData.Completed(albumId = 2L, albumTitle = "오사카의 낮"))
+        alarmManager.send("other-member-key", AlarmData.Completed(albumId = 2L, taskId = "task-1", albumTitle = "오사카의 낮"))
 
         // when
         val alarms = alarmService.findAlarms(memberKey)
@@ -65,7 +65,7 @@ class AlarmServiceTest : SpringTest() {
     fun `알림을 삭제하면 조회되지 않는다`() {
         // given
         alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L, taskId = "task-1"))
-        alarmManager.send(memberKey, AlarmData.Completed(albumId = 1L, albumTitle = "도쿄의 밤"))
+        alarmManager.send(memberKey, AlarmData.Completed(albumId = 1L, taskId = "task-1", albumTitle = "도쿄의 밤"))
         val alarmId = alarmService.findAlarms(memberKey).first().id!!
 
         // when
@@ -92,7 +92,7 @@ class AlarmServiceTest : SpringTest() {
     fun `albumId가 알림에 저장된다`() {
         // given
         val albumId = 42L
-        alarmManager.send(memberKey, AlarmData.Completed(albumId = albumId, albumTitle = "도쿄의 밤"))
+        alarmManager.send(memberKey, AlarmData.Completed(albumId = albumId, taskId = "task-1", albumTitle = "도쿄의 밤"))
 
         // when
         val alarm = alarmService.findAlarms(memberKey).first()
@@ -104,7 +104,7 @@ class AlarmServiceTest : SpringTest() {
     @Test
     fun `Completed 알림 description에 앨범 제목이 포함된다`() {
         // given
-        alarmManager.send(memberKey, AlarmData.Completed(albumId = 1L, albumTitle = "도쿄의 밤"))
+        alarmManager.send(memberKey, AlarmData.Completed(albumId = 1L, taskId = "task-1", albumTitle = "도쿄의 밤"))
 
         // when
         val alarm = alarmService.findAlarms(memberKey).first()

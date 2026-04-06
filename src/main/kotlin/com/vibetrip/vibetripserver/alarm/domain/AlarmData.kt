@@ -19,7 +19,7 @@ sealed class AlarmData {
         override val title: String = type.title
         override val description: String = type.description
 
-        override fun toFcmData(): FcmAlarm<CreatingPayload> = FcmAlarm.success(CreatingPayload(albumId, taskId))
+        override fun toFcmData(): FcmAlarm<CreatingPayload> = FcmAlarm.success(type, CreatingPayload(albumId, taskId))
 
         data class CreatingPayload(
             val albumId: Long,
@@ -29,16 +29,18 @@ sealed class AlarmData {
 
     data class Completed(
         override val albumId: Long,
+        val taskId: String,
         val albumTitle: String,
     ) : AlarmData() {
         override val type: AlarmType = AlarmType.COMPLETED
         override val title: String = type.title
         override val description: String = type.description.format(albumTitle)
 
-        override fun toFcmData(): FcmAlarm<CompletedPayload> = FcmAlarm.success(CompletedPayload(albumId))
+        override fun toFcmData(): FcmAlarm<CompletedPayload> = FcmAlarm.success(type, CompletedPayload(albumId, taskId))
 
         data class CompletedPayload(
             val albumId: Long,
+            val taskId: String,
         )
     }
 
@@ -50,7 +52,7 @@ sealed class AlarmData {
         override val title: String = type.title
         override val description: String = type.description.format(errorType.message)
 
-        override fun toFcmData(): FcmAlarm<Unit> = FcmAlarm.error(errorType, FailedPayload(albumId))
+        override fun toFcmData(): FcmAlarm<Unit> = FcmAlarm.error(type, errorType, FailedPayload(albumId))
 
         data class FailedPayload(
             val albumId: Long,

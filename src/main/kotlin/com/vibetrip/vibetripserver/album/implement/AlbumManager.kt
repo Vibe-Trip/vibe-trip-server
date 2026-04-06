@@ -108,7 +108,10 @@ class AlbumManager(
         }
     }
 
-    fun completeAlbum(albumId: Long) {
-        findAlbum(albumId).let { alarmManager.send(it.memberKey, AlarmData.Completed(albumId, it.title)) }
+    fun completeAlbum(
+        albumId: Long,
+        taskId: String,
+    ) {
+        findAlbum(albumId).let { alarmManager.send(it.memberKey, AlarmData.Completed(albumId, taskId, it.title)) }
     }
 }

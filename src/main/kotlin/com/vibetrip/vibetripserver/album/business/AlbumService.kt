@@ -110,6 +110,6 @@ class AlbumService(
     }
 
     fun updateMusic(sunoMusicData: SunoMusicData) {
-        albumMusicManager.update(sunoMusicData).also { albumManager.completeAlbum(it) }
+        albumMusicManager.update(sunoMusicData).also { albumManager.completeAlbum(it, sunoMusicData.taskId) }
     }
 }

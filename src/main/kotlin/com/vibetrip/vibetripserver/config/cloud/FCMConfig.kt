@@ -6,11 +6,11 @@ import com.google.firebase.FirebaseOptions
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
-import java.util.Base64
+import kotlin.io.encoding.Base64
 
 @Configuration
 class FCMConfig(
-    @Value("\${firebase.key}")
+    @Value($$"${firebase.key}")
     private val credentialsBase64: String,
 ) {
     @PostConstruct
@@ -19,7 +19,7 @@ class FCMConfig(
 
         val credentials =
             GoogleCredentials.fromStream(
-                Base64.getDecoder().decode(credentialsBase64).inputStream(),
+                Base64.decode(credentialsBase64).inputStream(),
             )
         FirebaseApp.initializeApp(
             FirebaseOptions

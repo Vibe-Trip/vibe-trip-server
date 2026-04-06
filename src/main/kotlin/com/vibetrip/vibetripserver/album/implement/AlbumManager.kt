@@ -101,7 +101,7 @@ class AlbumManager(
             updateTitle(albumId, imageAnalysis.title)
             albumMusicManager.save(albumId, newAlbum, taskId, AlbumMusic.empty())
             alarmManager.send(newAlbum.memberKey, AlarmData.Creating(albumId, taskId))
-            logger.info { "[음악 생성 완료] albumId=$albumId" }
+            logger.info { "[음악 생성 요청] albumId=$albumId" }
         } catch (e: Exception) {
             alarmManager.send(newAlbum.memberKey, AlarmData.Failed(albumId, ErrorType.SERVER_ERROR))
             logger.error { "[음악 생성 실패] albumId=$albumId | ${e.message}" }

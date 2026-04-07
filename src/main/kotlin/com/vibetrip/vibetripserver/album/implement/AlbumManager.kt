@@ -87,13 +87,13 @@ class AlbumManager(
                     image = coverImage,
                     region = newAlbum.region.value,
                     comment = newAlbum.comment.value,
-                    genre = newAlbum.genre.value,
+                    genre = newAlbum.genre,
                     vocalGender = newAlbum.vocalOption.vocalGender,
                 )
             val taskId =
                 musicGenerator
                     .generate(
-                        genre = newAlbum.genre.value,
+                        genre = newAlbum.genre,
                         vocalGender = newAlbum.vocalOption.vocalGender,
                         imageAnalysis = imageAnalysis,
                     ).data.taskId

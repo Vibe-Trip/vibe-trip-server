@@ -50,7 +50,7 @@ class AlbumMusicEntity(
             title = music.title,
             musicUrl = music.musicUrl,
             lyrics = music.lyrics,
-            genre = newAlbum.genre.value,
+            genre = newAlbum.genre,
             withLyrics = newAlbum.vocalOption.withLyrics,
             vocalGender = newAlbum.vocalOption.vocalGender,
             taskId = taskId,

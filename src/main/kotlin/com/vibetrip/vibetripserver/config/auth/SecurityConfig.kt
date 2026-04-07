@@ -5,6 +5,7 @@ import com.vibetrip.vibetripserver.support.security.filter.AuthenticationExcepti
 import com.vibetrip.vibetripserver.support.security.filter.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod.POST
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.annotation.web.invoke
@@ -45,8 +46,9 @@ class SecurityConfig(
             csrf { disable() }
 
             authorizeHttpRequests {
-                authorize(mvc.matcher("/api/v1/auth/login/**"), permitAll)
-                authorize(mvc.matcher("/api/v1/albums/suno/callback"), permitAll)
+                authorize(mvc.matcher(POST, "/api/v1/auth/login/**"), permitAll)
+                authorize(mvc.matcher(POST, "/api/v1/auth/refresh"), permitAll)
+                authorize(mvc.matcher(POST, "/api/v1/albums/suno/callback"), permitAll)
                 authorize(anyRequest, authenticated)
             }
 

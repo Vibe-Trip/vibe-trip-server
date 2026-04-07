@@ -1,7 +1,9 @@
 package com.vibetrip.vibetripserver.config.api
 
 import com.vibetrip.vibetripserver.support.paging.CursorableArgumentResolver
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.util.AntPathMatcher
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -12,4 +14,7 @@ class WebConfig(
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
         resolvers.add(cursorableArgumentResolver)
     }
+
+    @Bean
+    fun antPathMatcher() = AntPathMatcher()
 }

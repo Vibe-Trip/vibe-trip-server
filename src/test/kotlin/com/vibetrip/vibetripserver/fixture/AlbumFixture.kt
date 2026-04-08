@@ -3,6 +3,7 @@ package com.vibetrip.vibetripserver.fixture
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumMusicEntity
 import com.vibetrip.vibetripserver.album.domain.AlbumMusic
+import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.GenreType
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.VocalGender
@@ -15,7 +16,6 @@ object AlbumFixture {
         comment: String = "행복했던 여행",
         travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),
         travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
-        withLyrics: Boolean = false,
         vocalGender: VocalGender = VocalGender.N,
         genre: GenreType = GenreType.CLASSICAL,
     ) = NewAlbum.of(
@@ -24,7 +24,26 @@ object AlbumFixture {
         comment = comment,
         travelStartDate = travelStartDate,
         travelEndDate = travelEndDate,
-        withLyrics = withLyrics,
+        vocalGender = vocalGender,
+        genre = genre,
+    )
+
+    fun editAlbum(
+        title: String = "title",
+        memberKey: String = "member-key-123",
+        region: String = "도쿄",
+        comment: String = "행복했던 여행",
+        travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),
+        travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
+        vocalGender: VocalGender = VocalGender.N,
+        genre: GenreType = GenreType.CLASSICAL,
+    ) = EditAlbum.of(
+        title = title,
+        memberKey = memberKey,
+        region = region,
+        comment = comment,
+        travelStartDate = travelStartDate,
+        travelEndDate = travelEndDate,
         vocalGender = vocalGender,
         genre = genre,
     )

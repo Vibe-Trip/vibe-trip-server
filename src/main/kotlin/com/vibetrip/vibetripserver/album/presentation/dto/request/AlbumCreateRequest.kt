@@ -16,7 +16,6 @@ data class AlbumCreateRequest(
     val travelStartDate: LocalDate,
     @field:NotNull
     val travelEndDate: LocalDate,
-    val withLyrics: Boolean = false,
     val vocalGender: VocalGender = VocalGender.N,
     @field:NotNull
     val genre: GenreType,
@@ -30,7 +29,6 @@ data class AlbumCreateRequest(
             comment = comment,
             travelStartDate = travelStartDate,
             travelEndDate = travelEndDate,
-            withLyrics = withLyrics,
             vocalGender = vocalGender,
             genre = genre,
         )

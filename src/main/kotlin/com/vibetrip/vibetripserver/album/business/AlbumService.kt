@@ -2,12 +2,15 @@ package com.vibetrip.vibetripserver.album.business
 
 import com.vibetrip.vibetripserver.album.domain.Album
 import com.vibetrip.vibetripserver.album.domain.AlbumDetail
+import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.SunoMusicData
 import com.vibetrip.vibetripserver.album.implement.AlbumManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMemberManager
 import com.vibetrip.vibetripserver.album.implement.AlbumMusicManager
 import com.vibetrip.vibetripserver.common.domain.ImageData
+import com.vibetrip.vibetripserver.common.exception.AppException
+import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.storage.GoogleImageUploader
 import com.vibetrip.vibetripserver.common.util.validateImageContentType
 import com.vibetrip.vibetripserver.support.paging.Cursorable
@@ -18,7 +21,6 @@ import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.servlet.function.RequestPredicates.contentType
 
 @Service
 class AlbumService(
@@ -43,7 +45,7 @@ class AlbumService(
             )
 
         return albumManager.create(newAlbum, coverImageUrl).also { albumId ->
-            albumManager.generateMusic(albumId, newAlbum, coverImage)
+            albumMusicManager.generateMusic(albumId, newAlbum.toMusicInfo(), newAlbum.memberKey, coverImage)
         }
     }
 
@@ -82,22 +84,34 @@ class AlbumService(
     @Transactional
     fun updateAlbum(
         albumId: Long,
-        newAlbum: NewAlbum,
-        coverImage: MultipartFile,
+        editAlbum: EditAlbum,
+        coverImage: MultipartFile?,
+        regenerateMusic: Boolean,
     ) {
-        albumMemberManager.validateMember(albumId, newAlbum.memberKey)
-        val contentType = validateImageContentType(coverImage.contentType)
-        val coverImageUrl =
-            googleImageUploader.uploadImage(
-                ImageData(
-                    coverImage.inputStream,
-                    contentType,
-                    coverImage.originalFilename!!,
-                ),
+        albumMemberManager.validateMember(albumId, editAlbum.memberKey)
+
+        if (regenerateMusic) {
+            albumMusicManager.delete(albumId)
+            albumMusicManager.generateMusic(
+                albumId = albumId,
+                musicInfo = editAlbum.toMusicInfo(),
+                coverImage = coverImage ?: throw AppException(ErrorType.IMAGE_NOT_EXISTS),
+                memberKey = editAlbum.memberKey,
+                shouldUpdateTitle = false,
             )
-        albumManager.update(albumId, newAlbum, coverImageUrl)
-        albumMusicManager.delete(albumId)
-        albumManager.generateMusic(albumId, newAlbum, coverImage)
+        }
+
+        val coverImageUrl =
+            coverImage?.let {
+                googleImageUploader.uploadImage(
+                    ImageData(
+                        it.inputStream,
+                        validateImageContentType(it.contentType),
+                        it.originalFilename!!,
+                    ),
+                )
+            }
+        albumManager.update(albumId, editAlbum, coverImageUrl)
     }
 
     @Transactional
@@ -110,6 +124,8 @@ class AlbumService(
     }
 
     fun updateMusic(sunoMusicData: SunoMusicData) {
-        albumMusicManager.update(sunoMusicData).also { albumManager.completeAlbum(it, sunoMusicData.taskId) }
+        albumMusicManager
+            .update(sunoMusicData)
+            .also { albumMusicManager.completeMusicGeneration(it, sunoMusicData.taskId) }
     }
 }

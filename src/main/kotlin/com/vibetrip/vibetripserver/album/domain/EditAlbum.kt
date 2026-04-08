@@ -5,16 +5,18 @@ import com.vibetrip.vibetripserver.album.domain.vo.Region
 import com.vibetrip.vibetripserver.album.domain.vo.TravelDate
 import java.time.LocalDate
 
-data class NewAlbum(
-    val memberKey: String,
+data class EditAlbum(
+    val title: String,
     val region: Region,
     val comment: Comment,
     val travelDate: TravelDate,
     val vocalGender: VocalGender,
     val genre: GenreType,
+    val memberKey: String,
 ) {
     companion object {
         fun of(
+            title: String,
             memberKey: String,
             region: String,
             comment: String,
@@ -22,13 +24,14 @@ data class NewAlbum(
             travelEndDate: LocalDate,
             vocalGender: VocalGender = VocalGender.N,
             genre: GenreType,
-        ) = NewAlbum(
-            memberKey = memberKey,
+        ) = EditAlbum(
+            title = title,
             region = Region(region),
             comment = Comment(comment),
             travelDate = TravelDate(travelStartDate, travelEndDate),
             vocalGender = vocalGender,
             genre = genre,
+            memberKey = memberKey,
         )
     }
 

@@ -47,4 +47,7 @@ enum class ErrorCode {
 
     // AlbumMember
     E6000,
+
+    // Album Music
+    E7000,
 }

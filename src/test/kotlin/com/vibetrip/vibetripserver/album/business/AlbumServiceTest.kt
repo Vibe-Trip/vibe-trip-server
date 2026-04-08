@@ -44,24 +44,36 @@ class AlbumServiceTest {
 
     @AfterEach
     fun tearDown() {
-        clearMocks(albumRepository, googleImageUploader, albumMemberRepository, albumMusicRepository, imageAnalyzer, musicGenerator)
+        clearMocks(
+            albumRepository,
+            googleImageUploader,
+            albumMemberRepository,
+            albumMusicRepository,
+            imageAnalyzer,
+            musicGenerator,
+        )
     }
 
     @BeforeEach
     fun setUp() {
-        val albumMusicManager = AlbumMusicManager(albumMusicRepository, sunoMusicDataRepository)
+        val albumManager =
+            AlbumManager(
+                albumRepository = albumRepository,
+                albumMemberRepository = albumMemberRepository,
+                deletionProcessors = listOf(),
+            )
+        val albumMusicManager =
+            AlbumMusicManager(
+                albumMusicRepository = albumMusicRepository,
+                sunoMusicDataRepository = sunoMusicDataRepository,
+                imageAnalyzer = imageAnalyzer,
+                musicGenerator = musicGenerator,
+                alarmManager = alarmManager,
+                albumManager = albumManager,
+            )
         albumService =
             AlbumService(
-                albumManager =
-                    AlbumManager(
-                        albumRepository,
-                        albumMemberRepository,
-                        imageAnalyzer,
-                        musicGenerator,
-                        albumMusicManager,
-                        listOf(),
-                        alarmManager,
-                    ),
+                albumManager = albumManager,
                 googleImageUploader = googleImageUploader,
                 albumMusicManager = albumMusicManager,
                 albumMemberManager = AlbumMemberManager(albumMemberRepository),
@@ -163,7 +175,7 @@ class AlbumServiceTest {
         // given
         val albumId = 1L
         val memberKey = "member-key-123"
-        val newAlbum = AlbumFixture.newAlbum(memberKey = memberKey, region = "오사카")
+        val editAlbum = AlbumFixture.editAlbum(memberKey = memberKey, region = "오사카")
         val image = mockk<MultipartFile>()
         val entity = AlbumFixture.albumEntity(id = albumId)
 
@@ -182,7 +194,7 @@ class AlbumServiceTest {
         every { albumMusicRepository.save(any()) } returns AlbumFixture.albumMusicEntity(albumId)
 
         // when
-        albumService.updateAlbum(albumId, newAlbum, image)
+        albumService.updateAlbum(albumId, editAlbum, image, false)
 
         // then
         assertThat(entity.region).isEqualTo("오사카")
@@ -194,7 +206,7 @@ class AlbumServiceTest {
         // given
         val albumId = 1L
         val memberKey = "member-key-123"
-        val newAlbum = AlbumFixture.newAlbum(memberKey = memberKey)
+        val editAlbum = AlbumFixture.editAlbum(memberKey = memberKey)
         val image = mockk<MultipartFile>()
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns false
@@ -202,7 +214,7 @@ class AlbumServiceTest {
         // when & then
         val exception =
             assertThrows<AppException> {
-                albumService.updateAlbum(albumId, newAlbum, image)
+                albumService.updateAlbum(albumId, editAlbum, image, false)
             }
 
         assertThat(exception.errorType).isEqualTo(ErrorType.NOT_ALBUM_MEMBER)
@@ -213,7 +225,7 @@ class AlbumServiceTest {
         // given
         val albumId = 1L
         val memberKey = "member-key-123"
-        val newAlbum = AlbumFixture.newAlbum(memberKey = memberKey)
+        val editAlbum = AlbumFixture.editAlbum(memberKey = memberKey)
         val image = mockk<MultipartFile>()
 
         every { albumMemberRepository.existsByAlbumIdAndMemberKey(albumId, memberKey) } returns true
@@ -226,7 +238,7 @@ class AlbumServiceTest {
         // when & then
         val exception =
             assertThrows<AppException> {
-                albumService.updateAlbum(albumId, newAlbum, image)
+                albumService.updateAlbum(albumId, editAlbum, image, false)
             }
 
         assertThat(exception.errorType).isEqualTo(ErrorType.NOT_FOUND_ALBUM)

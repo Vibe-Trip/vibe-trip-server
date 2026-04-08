@@ -82,14 +82,15 @@ class AlbumController(
     )
     fun updateAlbum(
         @PathVariable albumId: Long,
-        @RequestPart(required = true) coverImage: MultipartFile,
+        @RequestPart(required = false) coverImage: MultipartFile?,
         @Valid @RequestPart request: AlbumUpdateRequest,
         @AuthMember member: Member,
     ): ResponseEntity<ApiResponse<Unit>> {
         albumService.updateAlbum(
             albumId,
-            request.toNewAlbum(member.memberKey),
+            request.toEditAlbum(member.memberKey),
             coverImage,
+            request.regenerateMusic,
         )
         return ResponseEntity.ok(ApiResponse.success())
     }

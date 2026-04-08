@@ -1,7 +1,7 @@
 package com.vibetrip.vibetripserver.album.presentation.dto.request
 
+import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.GenreType
-import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.VocalGender
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -9,6 +9,9 @@ import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
 data class AlbumUpdateRequest(
+    val regenerateMusic: Boolean,
+    @field:NotBlank
+    val title: String,
     @field:NotBlank
     @field:Size(max = 25)
     val region: String,
@@ -23,14 +26,14 @@ data class AlbumUpdateRequest(
     @field:Size(max = 500)
     val comment: String = "",
 ) {
-    fun toNewAlbum(memberKey: String) =
-        NewAlbum.of(
+    fun toEditAlbum(memberKey: String) =
+        EditAlbum.of(
+            title = title,
             memberKey = memberKey,
             region = region,
             comment = comment,
             travelStartDate = travelStartDate,
             travelEndDate = travelEndDate,
-            withLyrics = withLyrics,
             vocalGender = vocalGender,
             genre = genre,
         )

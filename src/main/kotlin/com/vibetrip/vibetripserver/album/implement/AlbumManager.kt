@@ -1,37 +1,26 @@
 package com.vibetrip.vibetripserver.album.implement
 
-import com.vibetrip.vibetripserver.alarm.domain.AlarmData
-import com.vibetrip.vibetripserver.alarm.implement.AlarmManager
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumEntity
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumMemberEntity
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
 import com.vibetrip.vibetripserver.album.domain.Album
-import com.vibetrip.vibetripserver.album.domain.AlbumMusic
+import com.vibetrip.vibetripserver.album.domain.EditAlbum
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.vo.Title
-import com.vibetrip.vibetripserver.album.implement.ai.ImageAnalyzer
-import com.vibetrip.vibetripserver.album.implement.ai.MusicGenerator
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
-import com.vibetrip.vibetripserver.common.log.logger
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
 
 @Component
 @Transactional
 class AlbumManager(
     private val albumRepository: AlbumRepository,
     private val albumMemberRepository: AlbumMemberRepository,
-    private val imageAnalyzer: ImageAnalyzer,
-    private val musicGenerator: MusicGenerator,
-    private val albumMusicManager: AlbumMusicManager,
     private val deletionProcessors: List<AlbumDeletionProcessor>,
-    private val alarmManager: AlarmManager,
 ) {
     fun create(
         newAlbum: NewAlbum,
@@ -59,10 +48,10 @@ class AlbumManager(
 
     fun update(
         albumId: Long,
-        newAlbum: NewAlbum,
-        coverImageUrl: String,
+        editAlbum: EditAlbum,
+        coverImageUrl: String?,
     ) {
-        albumRepository.find(albumId)?.updateAlbum(newAlbum, coverImageUrl)
+        albumRepository.find(albumId)?.updateAlbum(editAlbum, coverImageUrl)
             ?: throw AppException(ErrorType.NOT_FOUND_ALBUM)
     }
 
@@ -73,45 +62,5 @@ class AlbumManager(
     fun delete(albumId: Long) {
         deletionProcessors.forEach { it.process(albumId) }
         albumRepository.deleteByAlbumId(albumId)
-    }
-
-    @Async("musicGenerationExecutor")
-    fun generateMusic(
-        albumId: Long,
-        newAlbum: NewAlbum,
-        coverImage: MultipartFile,
-    ) {
-        try {
-            val imageAnalysis =
-                imageAnalyzer.analyze(
-                    image = coverImage,
-                    region = newAlbum.region.value,
-                    comment = newAlbum.comment.value,
-                    genre = newAlbum.genre.value,
-                    vocalGender = newAlbum.vocalOption.vocalGender,
-                )
-            val taskId =
-                musicGenerator
-                    .generate(
-                        genre = newAlbum.genre.value,
-                        vocalGender = newAlbum.vocalOption.vocalGender,
-                        imageAnalysis = imageAnalysis,
-                    ).data.taskId
-
-            updateTitle(albumId, imageAnalysis.title)
-            albumMusicManager.save(albumId, newAlbum, taskId, AlbumMusic.empty())
-            alarmManager.send(newAlbum.memberKey, AlarmData.Creating(albumId, taskId))
-            logger.info { "[음악 생성 요청] albumId=$albumId" }
-        } catch (e: Exception) {
-            alarmManager.send(newAlbum.memberKey, AlarmData.Failed(albumId, ErrorType.SERVER_ERROR))
-            logger.error { "[음악 생성 실패] albumId=$albumId | ${e.message}" }
-        }
-    }
-
-    fun completeAlbum(
-        albumId: Long,
-        taskId: String,
-    ) {
-        findAlbum(albumId).let { alarmManager.send(it.memberKey, AlarmData.Completed(albumId, taskId, it.title)) }
     }
 }

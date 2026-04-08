@@ -66,4 +66,7 @@ enum class ErrorType(
 
     // AlbumMember
     NOT_ALBUM_MEMBER(HttpStatus.BAD_REQUEST, ErrorCode.E6000, "앨범 구성원이 아닙니다.", LogLevel.WARN),
+
+    // Album Music
+    IMAGE_NOT_EXISTS(HttpStatus.BAD_REQUEST, ErrorCode.E7000, "이미지 없이 음악을 생성할 수 없습니다.", LogLevel.WARN),
 }

@@ -23,7 +23,7 @@ class AlbumManager(
     private val albumRepository: AlbumRepository,
     private val albumMemberRepository: AlbumMemberRepository,
     private val deletionProcessors: List<AlbumDeletionProcessor>,
-    private val eventPublisher: ApplicationEventPublisher
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
     fun create(
         newAlbum: NewAlbum,

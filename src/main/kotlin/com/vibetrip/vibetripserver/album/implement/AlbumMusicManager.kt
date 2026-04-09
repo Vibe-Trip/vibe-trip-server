@@ -6,7 +6,6 @@ import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMusicReposit
 import com.vibetrip.vibetripserver.album.dataaccess.repository.SunoMusicDataRepository
 import com.vibetrip.vibetripserver.album.domain.AlbumMusic
 import com.vibetrip.vibetripserver.album.domain.MusicCompletedEvent
-import com.vibetrip.vibetripserver.album.domain.MusicCreatingEvent
 import com.vibetrip.vibetripserver.album.domain.MusicGenerationFailedEvent
 import com.vibetrip.vibetripserver.album.domain.MusicInfo
 import com.vibetrip.vibetripserver.album.domain.NewAlbum

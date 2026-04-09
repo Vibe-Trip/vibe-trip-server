@@ -114,7 +114,6 @@ class AlbumService(
         albumManager.update(albumId, editAlbum, coverImageUrl)
     }
 
-    @Transactional
     fun deleteAlbum(
         albumId: Long,
         memberKey: String,

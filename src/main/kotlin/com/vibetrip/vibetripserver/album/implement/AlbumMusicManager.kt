@@ -1,12 +1,13 @@
 package com.vibetrip.vibetripserver.album.implement
 
-import com.vibetrip.vibetripserver.alarm.domain.AlarmData
-import com.vibetrip.vibetripserver.alarm.implement.AlarmManager
 import com.vibetrip.vibetripserver.album.dataaccess.entity.AlbumMusicEntity
 import com.vibetrip.vibetripserver.album.dataaccess.entity.SunoMusicDataEntity
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMusicRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.SunoMusicDataRepository
 import com.vibetrip.vibetripserver.album.domain.AlbumMusic
+import com.vibetrip.vibetripserver.album.domain.MusicCompletedEvent
+import com.vibetrip.vibetripserver.album.domain.MusicCreatingEvent
+import com.vibetrip.vibetripserver.album.domain.MusicGenerationFailedEvent
 import com.vibetrip.vibetripserver.album.domain.MusicInfo
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.SunoMusicData
@@ -15,6 +16,7 @@ import com.vibetrip.vibetripserver.album.implement.ai.MusicGenerator
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.common.log.logger
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -27,8 +29,8 @@ class AlbumMusicManager(
     private val sunoMusicDataRepository: SunoMusicDataRepository,
     private val imageAnalyzer: ImageAnalyzer,
     private val musicGenerator: MusicGenerator,
-    private val alarmManager: AlarmManager,
     private val albumManager: AlbumManager,
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
     @Async("musicGenerationExecutor")
     fun generateMusic(
@@ -69,10 +71,10 @@ class AlbumMusicManager(
                     genre = musicInfo.genre,
                 )
             albumMusicRepository.save(AlbumMusicEntity.from(albumId, newAlbum, taskId, AlbumMusic.empty()))
-            alarmManager.send(memberKey, AlarmData.Creating(albumId, taskId))
+            eventPublisher.publishEvent(MusicCreatingEvent(albumId, taskId, memberKey))
             logger.info { "[음악 생성 요청] albumId=$albumId" }
         } catch (e: Exception) {
-            alarmManager.send(memberKey, AlarmData.Failed(albumId, ErrorType.SERVER_ERROR))
+            eventPublisher.publishEvent(MusicGenerationFailedEvent(albumId, memberKey))
             logger.error { "[음악 생성 실패] albumId=$albumId | ${e.message}" }
         }
     }
@@ -97,6 +99,6 @@ class AlbumMusicManager(
     ) {
         albumManager
             .findAlbum(albumId)
-            .let { alarmManager.send(it.memberKey, AlarmData.Completed(albumId, taskId, it.title)) }
+            .let { eventPublisher.publishEvent(MusicCompletedEvent(albumId, taskId, it.memberKey, it.title)) }
     }
 }

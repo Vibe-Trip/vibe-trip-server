@@ -1,6 +1,5 @@
 package com.vibetrip.vibetripserver.album.business
 
-import com.vibetrip.vibetripserver.alarm.implement.AlarmManager
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMusicRepository
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
@@ -28,6 +27,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.web.multipart.MultipartFile
 
 class AlbumServiceTest {
@@ -38,7 +38,7 @@ class AlbumServiceTest {
     private val sunoMusicDataRepository = mockk<SunoMusicDataRepository>()
     private val musicGenerator = mockk<MusicGenerator>()
     private val imageAnalyzer = mockk<ImageAnalyzer>()
-    private val alarmManager = mockk<AlarmManager>(relaxed = true)
+    private val eventPublisher = mockk<ApplicationEventPublisher>()
 
     private lateinit var albumService: AlbumService
 
@@ -68,8 +68,8 @@ class AlbumServiceTest {
                 sunoMusicDataRepository = sunoMusicDataRepository,
                 imageAnalyzer = imageAnalyzer,
                 musicGenerator = musicGenerator,
-                alarmManager = alarmManager,
                 albumManager = albumManager,
+                eventPublisher = eventPublisher,
             )
         albumService =
             AlbumService(

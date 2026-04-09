@@ -13,17 +13,15 @@ sealed class AlarmData {
 
     data class Creating(
         override val albumId: Long,
-        val taskId: String,
     ) : AlarmData() {
         override val type: AlarmType = AlarmType.CREATING
         override val title: String = type.title
         override val description: String = type.description
 
-        override fun toFcmData(): FcmAlarm<CreatingPayload> = FcmAlarm.success(type, CreatingPayload(albumId, taskId))
+        override fun toFcmData(): FcmAlarm<CreatingPayload> = FcmAlarm.success(type, CreatingPayload(albumId))
 
         data class CreatingPayload(
             val albumId: Long,
-            val taskId: String,
         )
     }
 

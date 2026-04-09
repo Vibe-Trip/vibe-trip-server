@@ -6,12 +6,14 @@ import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMemberReposi
 import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumRepository
 import com.vibetrip.vibetripserver.album.domain.Album
 import com.vibetrip.vibetripserver.album.domain.EditAlbum
+import com.vibetrip.vibetripserver.album.domain.MusicCreatingEvent
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
 import com.vibetrip.vibetripserver.album.domain.vo.Title
 import com.vibetrip.vibetripserver.common.exception.AppException
 import com.vibetrip.vibetripserver.common.exception.ErrorType
 import com.vibetrip.vibetripserver.support.paging.Cursorable
 import com.vibetrip.vibetripserver.support.paging.Slice
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,6 +23,7 @@ class AlbumManager(
     private val albumRepository: AlbumRepository,
     private val albumMemberRepository: AlbumMemberRepository,
     private val deletionProcessors: List<AlbumDeletionProcessor>,
+    private val eventPublisher: ApplicationEventPublisher
 ) {
     fun create(
         newAlbum: NewAlbum,
@@ -29,6 +32,7 @@ class AlbumManager(
         .save(AlbumEntity.from(newAlbum, coverImageUrl))
         .also {
             albumMemberRepository.save(AlbumMemberEntity(memberKey = it.memberKey, albumId = it.id!!))
+            eventPublisher.publishEvent(MusicCreatingEvent(albumId = it.id!!, memberKey = newAlbum.memberKey))
         }.id!!
 
     fun updateTitle(

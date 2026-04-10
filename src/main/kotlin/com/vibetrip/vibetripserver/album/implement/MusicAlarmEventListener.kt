@@ -18,7 +18,7 @@ class MusicAlarmEventListener(
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun handleCreating(event: MusicCreatingEvent) {
-        alarmManager.send(event.memberKey, AlarmData.Creating(event.albumId, event.taskId))
+        alarmManager.send(event.memberKey, AlarmData.Creating(event.albumId))
     }
 
     @Async

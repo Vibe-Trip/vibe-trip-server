@@ -41,6 +41,7 @@ class AlbumMusicManager(
         shouldUpdateTitle: Boolean = true,
     ) {
         try {
+            eventPublisher.publishEvent(MusicCreatingEvent(albumId, memberKey))
             val imageAnalysis =
                 imageAnalyzer.analyze(
                     image = coverImage,
@@ -71,7 +72,6 @@ class AlbumMusicManager(
                     genre = musicInfo.genre,
                 )
             albumMusicRepository.save(AlbumMusicEntity.from(albumId, newAlbum, taskId, AlbumMusic.empty()))
-            eventPublisher.publishEvent(MusicCreatingEvent(albumId, taskId, memberKey))
             logger.info { "[음악 생성 요청] albumId=$albumId" }
         } catch (e: Exception) {
             eventPublisher.publishEvent(MusicGenerationFailedEvent(albumId, memberKey))

@@ -31,7 +31,7 @@ class AlarmServiceTest : SpringTest() {
     @Test
     fun `알림 여러 개를 저장하면 전체 조회가 된다`() {
         // given
-        alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L, taskId = "task-1"))
+        alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L))
         alarmManager.send(memberKey, AlarmData.Completed(albumId = 1L, taskId = "task-1", albumTitle = "도쿄의 밤"))
         alarmManager.send(memberKey, AlarmData.Failed(albumId = 1L, errorType = ErrorType.MUSIC_GENERATE_FAILED))
 
@@ -50,7 +50,7 @@ class AlarmServiceTest : SpringTest() {
     @Test
     fun `다른 멤버의 알림은 조회되지 않는다`() {
         // given
-        alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L, taskId = "task-1"))
+        alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L))
         alarmManager.send("other-member-key", AlarmData.Completed(albumId = 2L, taskId = "task-1", albumTitle = "오사카의 낮"))
 
         // when
@@ -64,7 +64,7 @@ class AlarmServiceTest : SpringTest() {
     @Test
     fun `알림을 삭제하면 조회되지 않는다`() {
         // given
-        alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L, taskId = "task-1"))
+        alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L))
         alarmManager.send(memberKey, AlarmData.Completed(albumId = 1L, taskId = "task-1", albumTitle = "도쿄의 밤"))
         val alarmId = alarmService.findAlarms(memberKey).first().id!!
 
@@ -78,7 +78,7 @@ class AlarmServiceTest : SpringTest() {
     @Test
     fun `다른 멤버의 알림은 삭제되지 않는다`() {
         // given
-        alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L, taskId = "task-1"))
+        alarmManager.send(memberKey, AlarmData.Creating(albumId = 1L))
         val alarmId = alarmService.findAlarms(memberKey).first().id!!
 
         // when

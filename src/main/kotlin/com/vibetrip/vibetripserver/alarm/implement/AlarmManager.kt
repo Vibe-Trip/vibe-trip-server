@@ -45,4 +45,6 @@ class AlarmManager(
         alarmId: Long,
         memberKey: String,
     ) = alarmRepository.delete(memberKey, alarmId)
+
+    fun deleteCreatingAlarm(albumId: Long) = alarmRepository.deleteCreatingByAlbumId(albumId)
 }

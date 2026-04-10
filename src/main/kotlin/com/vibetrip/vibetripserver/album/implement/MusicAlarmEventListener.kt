@@ -24,12 +24,14 @@ class MusicAlarmEventListener(
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
     fun handleFailed(event: MusicGenerationFailedEvent) {
+        alarmManager.deleteCreatingAlarm(event.albumId)
         alarmManager.send(event.memberKey, AlarmData.Failed(event.albumId, ErrorType.SERVER_ERROR))
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun handleCompleted(event: MusicCompletedEvent) {
+        alarmManager.deleteCreatingAlarm(event.albumId)
         alarmManager.send(event.memberKey, AlarmData.Completed(event.albumId, event.taskId, event.title))
     }
 }

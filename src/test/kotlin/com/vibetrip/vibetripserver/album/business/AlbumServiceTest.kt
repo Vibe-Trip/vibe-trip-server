@@ -61,7 +61,6 @@ class AlbumServiceTest {
                 albumRepository = albumRepository,
                 albumMemberRepository = albumMemberRepository,
                 deletionProcessors = listOf(),
-                eventPublisher = eventPublisher,
             )
         val albumMusicManager =
             AlbumMusicManager(

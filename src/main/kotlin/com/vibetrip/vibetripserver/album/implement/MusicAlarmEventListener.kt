@@ -6,6 +6,7 @@ import com.vibetrip.vibetripserver.album.domain.MusicCompletedEvent
 import com.vibetrip.vibetripserver.album.domain.MusicCreatingEvent
 import com.vibetrip.vibetripserver.album.domain.MusicGenerationFailedEvent
 import com.vibetrip.vibetripserver.common.exception.ErrorType
+import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
@@ -16,7 +17,7 @@ class MusicAlarmEventListener(
     private val alarmManager: AlarmManager,
 ) {
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @EventListener
     fun handleCreating(event: MusicCreatingEvent) {
         alarmManager.send(event.memberKey, AlarmData.Creating(event.albumId))
     }

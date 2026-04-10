@@ -45,7 +45,7 @@ class AlbumService(
             )
 
         return albumManager.create(newAlbum, coverImageUrl).also { albumId ->
-            albumMusicManager.generateMusic(albumId, newAlbum.toMusicInfo(), newAlbum.memberKey, coverImage)
+            albumMusicManager.generateMusic(albumId, newAlbum.toMusicInfo(), newAlbum.memberKey, coverImage.bytes)
         }
     }
 
@@ -95,7 +95,7 @@ class AlbumService(
             albumMusicManager.generateMusic(
                 albumId = albumId,
                 musicInfo = editAlbum.toMusicInfo(),
-                coverImage = coverImage ?: throw AppException(ErrorType.IMAGE_NOT_EXISTS),
+                coverImageBytes = coverImage?.bytes ?: throw AppException(ErrorType.IMAGE_NOT_EXISTS),
                 memberKey = editAlbum.memberKey,
                 shouldUpdateTitle = false,
             )

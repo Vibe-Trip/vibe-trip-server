@@ -25,11 +25,11 @@ class ImageAnalyzerTest : SpringTest() {
         // when
         val imageAnalysis =
             imageAnalyzer.analyze(
-                image = image,
                 region = region,
                 genre = GenreType.ROCK,
                 vocalGender = VocalGender.F,
                 comment = comment,
+                imageBytes = image.bytes,
             )
 
         // then

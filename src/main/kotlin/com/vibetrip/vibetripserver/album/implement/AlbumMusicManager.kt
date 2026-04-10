@@ -6,6 +6,7 @@ import com.vibetrip.vibetripserver.album.dataaccess.repository.AlbumMusicReposit
 import com.vibetrip.vibetripserver.album.dataaccess.repository.SunoMusicDataRepository
 import com.vibetrip.vibetripserver.album.domain.AlbumMusic
 import com.vibetrip.vibetripserver.album.domain.MusicCompletedEvent
+import com.vibetrip.vibetripserver.album.domain.MusicCreatingEvent
 import com.vibetrip.vibetripserver.album.domain.MusicGenerationFailedEvent
 import com.vibetrip.vibetripserver.album.domain.MusicInfo
 import com.vibetrip.vibetripserver.album.domain.NewAlbum
@@ -40,6 +41,7 @@ class AlbumMusicManager(
         shouldUpdateTitle: Boolean = true,
     ) {
         try {
+            eventPublisher.publishEvent(MusicCreatingEvent(albumId, memberKey))
             val imageAnalysis =
                 imageAnalyzer.analyze(
                     image = coverImage,

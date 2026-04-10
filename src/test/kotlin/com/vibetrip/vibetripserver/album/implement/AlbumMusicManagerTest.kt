@@ -11,7 +11,6 @@ import com.vibetrip.vibetripserver.member.domain.MemberDevice
 import com.vibetrip.vibetripserver.member.implement.MemberDeviceManager
 import com.vibetrip.vibetripserver.support.integration.SpringTest
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.mock.web.MockMultipartFile
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.time.LocalDate
@@ -76,13 +75,13 @@ class AlbumMusicManagerTest : SpringTest() {
             albumId = albumId,
             musicInfo = musicInfo,
             memberKey = memberKey,
-            coverImage = image,
+            coverImageBytes = image,
         )
 
         // then
     }
 
-    private fun createTestImage(): MockMultipartFile {
+    private fun createTestImage(): ByteArray {
         val image = BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)
         val graphics = image.createGraphics()
         graphics.fillRect(0, 0, 100, 100)
@@ -91,11 +90,6 @@ class AlbumMusicManagerTest : SpringTest() {
         val outputStream = ByteArrayOutputStream()
         ImageIO.write(image, "jpg", outputStream)
 
-        return MockMultipartFile(
-            "image",
-            "test-image.jpg",
-            "image/jpeg",
-            outputStream.toByteArray(),
-        )
+        return outputStream.toByteArray()
     }
 }

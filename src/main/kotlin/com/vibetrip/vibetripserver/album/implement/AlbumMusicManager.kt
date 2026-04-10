@@ -20,7 +20,6 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
 
 @Component
 @Transactional
@@ -37,14 +36,14 @@ class AlbumMusicManager(
         albumId: Long,
         musicInfo: MusicInfo,
         memberKey: String,
-        coverImage: MultipartFile,
+        coverImageBytes: ByteArray,
         shouldUpdateTitle: Boolean = true,
     ) {
         try {
             eventPublisher.publishEvent(MusicCreatingEvent(albumId, memberKey))
             val imageAnalysis =
                 imageAnalyzer.analyze(
-                    image = coverImage,
+                    imageBytes = coverImageBytes,
                     region = musicInfo.regionValue,
                     comment = musicInfo.commentValue,
                     genre = musicInfo.genre,

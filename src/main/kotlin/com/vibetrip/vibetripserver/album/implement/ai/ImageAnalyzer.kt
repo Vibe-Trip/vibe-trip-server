@@ -11,10 +11,10 @@ import org.springframework.ai.chat.messages.UserMessage
 import org.springframework.ai.chat.prompt.PromptTemplate
 import org.springframework.ai.content.Media
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Component
 import org.springframework.util.MimeTypeUtils
-import org.springframework.web.multipart.MultipartFile
 
 private const val REGION = "region"
 private const val GENRE = "genre"
@@ -28,13 +28,13 @@ class ImageAnalyzer(
     private val imageAnalysisPromptTemplate: Resource,
 ) {
     fun analyze(
-        image: MultipartFile,
+        imageBytes: ByteArray,
         region: String,
         genre: GenreType,
         vocalGender: VocalGender,
         comment: String,
     ): ImageAnalysis {
-        val imageMedia = Media(MimeTypeUtils.IMAGE_JPEG, image.resource)
+        val imageMedia = Media(MimeTypeUtils.IMAGE_JPEG, ByteArrayResource(imageBytes))
         val prompt =
             PromptTemplate(imageAnalysisPromptTemplate).render(
                 mapOf(

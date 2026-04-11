@@ -1,6 +1,9 @@
 package com.vibetrip.vibetripserver.album.domain
 
+private const val COMPLETE = "complete"
+
 data class SunoMusicData(
+    val callbackType: String,
     val taskId: String,
     val id: String,
     val audioUrl: String,
@@ -16,4 +19,7 @@ data class SunoMusicData(
     val createTime: String,
     val duration: Double,
     var sunoMusicDataId: Long? = null,
-)
+) {
+    val isCompleted: Boolean
+        get() = callbackType == COMPLETE
+}

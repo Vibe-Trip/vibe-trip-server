@@ -81,9 +81,11 @@ class AlbumMusicManager(
     fun update(sunoMusicData: SunoMusicData): Long {
         sunoMusicDataRepository.save(SunoMusicDataEntity.from(sunoMusicData))
 
-        return albumMusicRepository.findByTaskId(sunoMusicData.taskId)?.also {
-            it.update(sunoMusicData.audioUrl, sunoMusicData.prompt)
-        }?.albumId ?: throw AppException(ErrorType.NOT_FOUND_DATA)
+        return albumMusicRepository
+            .findByTaskId(sunoMusicData.taskId)
+            ?.also {
+                it.update(sunoMusicData.audioUrl, sunoMusicData.prompt)
+            }?.albumId ?: throw AppException(ErrorType.NOT_FOUND_DATA)
     }
 
     @Transactional(readOnly = true)

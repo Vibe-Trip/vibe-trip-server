@@ -80,12 +80,16 @@ class AlbumMusicManager(
 
     fun update(sunoMusicData: SunoMusicData): Long {
         sunoMusicDataRepository.save(SunoMusicDataEntity.from(sunoMusicData))
-        val entity =
-            albumMusicRepository.findByTaskId(sunoMusicData.taskId)
-                ?: throw AppException(ErrorType.NOT_FOUND_DATA)
-        entity.update(sunoMusicData.audioUrl, sunoMusicData.prompt)
-        return entity.albumId
+
+        return albumMusicRepository
+            .findByTaskId(sunoMusicData.taskId)
+            ?.also {
+                it.update(sunoMusicData.audioUrl, sunoMusicData.prompt)
+            }?.albumId ?: throw AppException(ErrorType.NOT_FOUND_DATA)
     }
+
+    @Transactional(readOnly = true)
+    fun existsTask(taskId: String) = sunoMusicDataRepository.existsByTaskId(taskId)
 
     fun delete(albumId: Long) = albumMusicRepository.deleteByAlbumId(albumId)
 

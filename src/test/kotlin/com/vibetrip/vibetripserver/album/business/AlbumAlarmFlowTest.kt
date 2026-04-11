@@ -81,5 +81,6 @@ class AlbumAlarmFlowTest : SpringTest() {
             tags = "pop",
             createTime = "2026-04-01",
             duration = 180.0,
+            callbackType = "complete",
         )
 }

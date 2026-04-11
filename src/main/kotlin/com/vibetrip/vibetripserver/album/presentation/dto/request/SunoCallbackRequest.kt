@@ -10,6 +10,7 @@ data class SunoCallbackRequest(
 ) {
     fun toSunoMusicData() =
         SunoMusicData(
+            callbackType = data.callbackType,
             taskId = data.taskId,
             id = data.data[0].id,
             audioUrl = data.data[0].audioUrl,

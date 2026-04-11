@@ -123,6 +123,10 @@ class AlbumService(
     }
 
     fun updateMusic(sunoMusicData: SunoMusicData) {
+        if (!sunoMusicData.isCompleted || albumMusicManager.existsTask(sunoMusicData.taskId)) {
+            return
+        }
+
         albumMusicManager
             .update(sunoMusicData)
             .also { albumMusicManager.completeMusicGeneration(it, sunoMusicData.taskId) }

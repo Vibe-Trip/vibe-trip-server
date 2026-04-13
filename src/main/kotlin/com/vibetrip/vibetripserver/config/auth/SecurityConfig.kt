@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher.withDefaults
 
 @Configuration
 class SecurityConfig(
@@ -37,8 +36,6 @@ class SecurityConfig(
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        val mvc = withDefaults()
-
         http {
             httpBasic { disable() }
             formLogin { disable() }
@@ -46,9 +43,11 @@ class SecurityConfig(
             csrf { disable() }
 
             authorizeHttpRequests {
-                authorize(mvc.matcher(POST, "/api/v1/auth/login/**"), permitAll)
-                authorize(mvc.matcher(POST, "/api/v1/auth/refresh"), permitAll)
-                authorize(mvc.matcher(POST, "/api/v1/albums/suno/callback"), permitAll)
+                authorize(POST, "/api/v1/auth/login/**", permitAll)
+                authorize(POST, "/api/v1/auth/refresh", permitAll)
+                authorize(POST, "/api/v1/albums/suno/callback", permitAll)
+                authorize("/actuator", permitAll)
+                authorize("/actuator/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
 

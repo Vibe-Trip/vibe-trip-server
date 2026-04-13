@@ -1,0 +1,95 @@
+package com.vibetrip.vibetripserver.album.implement
+
+import com.vibetrip.vibetripserver.album.domain.GenreType
+import com.vibetrip.vibetripserver.album.domain.MusicInfo
+import com.vibetrip.vibetripserver.album.domain.NewAlbum
+import com.vibetrip.vibetripserver.album.domain.VocalGender
+import com.vibetrip.vibetripserver.album.domain.vo.Comment
+import com.vibetrip.vibetripserver.album.domain.vo.Region
+import com.vibetrip.vibetripserver.album.domain.vo.TravelDate
+import com.vibetrip.vibetripserver.member.domain.MemberDevice
+import com.vibetrip.vibetripserver.member.implement.MemberDeviceManager
+import com.vibetrip.vibetripserver.support.integration.SpringTest
+import org.springframework.beans.factory.annotation.Autowired
+import java.awt.image.BufferedImage
+import java.io.ByteArrayOutputStream
+import java.time.LocalDate
+import javax.imageio.ImageIO
+import kotlin.test.Test
+
+class AlbumMusicManagerTest : SpringTest() {
+    @Autowired
+    lateinit var albumMusicManager: AlbumMusicManager
+
+    @Autowired
+    lateinit var albumManager: AlbumManager
+
+    @Autowired
+    lateinit var memberDeviceManager: MemberDeviceManager
+
+    @Test
+    fun `정보를 기반으로 음악을 생성한다`() {
+        // given
+        val fcmToken = "your-fcm-token"
+        val memberKey = "test-member-key"
+        val deviceId = "test-device-id"
+
+        memberDeviceManager.save(
+            MemberDevice(
+                deviceId = deviceId,
+                fcmToken = fcmToken,
+                memberKey = memberKey,
+            ),
+        )
+
+        val region = "서울 남산타워"
+        val comment = "야경이 아름다운 밤"
+        val image = createTestImage()
+        val genre = GenreType.ROCK
+        val vocalGender = VocalGender.F
+        val musicInfo =
+            MusicInfo(
+                region = Region(region),
+                comment = Comment(comment),
+                travelDate = TravelDate(LocalDate.now(), LocalDate.now()),
+                vocalGender = vocalGender,
+                genre = genre,
+            )
+
+        val albumId =
+            albumManager.create(
+                newAlbum =
+                    NewAlbum(
+                        memberKey = memberKey,
+                        region = Region(region),
+                        comment = Comment(comment),
+                        travelDate = TravelDate(LocalDate.now(), LocalDate.now()),
+                        vocalGender = vocalGender,
+                        genre = genre,
+                    ),
+                coverImageUrl = "https://example.com/image.jpg",
+            )
+
+        // when
+        albumMusicManager.generateMusic(
+            albumId = albumId,
+            musicInfo = musicInfo,
+            memberKey = memberKey,
+            coverImageBytes = image,
+        )
+
+        // then
+    }
+
+    private fun createTestImage(): ByteArray {
+        val image = BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)
+        val graphics = image.createGraphics()
+        graphics.fillRect(0, 0, 100, 100)
+        graphics.dispose()
+
+        val outputStream = ByteArrayOutputStream()
+        ImageIO.write(image, "jpg", outputStream)
+
+        return outputStream.toByteArray()
+    }
+}

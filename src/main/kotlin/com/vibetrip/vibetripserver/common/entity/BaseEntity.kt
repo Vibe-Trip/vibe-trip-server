@@ -1,7 +1,10 @@
 package com.vibetrip.vibetripserver.common.entity
 
+import com.vibetrip.vibetripserver.common.enums.EntityStatus
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.MappedSuperclass
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -11,18 +14,23 @@ import java.time.LocalDateTime
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
 abstract class BaseEntity {
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
     @Column(nullable = false)
-    var modifiedAt: LocalDateTime = LocalDateTime.now()
+    var lastModifiedAt: LocalDateTime = LocalDateTime.now()
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var deleted: Boolean = false
+    var status: EntityStatus = EntityStatus.ACTIVE
 
     @Column
     var deletedAt: LocalDateTime? = null
+
+    fun delete() {
+        status = EntityStatus.DELETED
+        deletedAt = LocalDateTime.now()
+    }
 }

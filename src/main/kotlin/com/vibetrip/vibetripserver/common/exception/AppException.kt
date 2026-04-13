@@ -1,5 +1,6 @@
-package com.didim.common.exception
+package com.vibetrip.vibetripserver.common.exception
 
 class AppException(
-    val errorType: ErrorType
+    val errorType: ErrorType,
+    val errorData: Any? = null,
 ) : RuntimeException()

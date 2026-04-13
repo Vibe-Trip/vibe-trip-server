@@ -1,0 +1,63 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import: aws-secretsmanager:prod/retrip
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+  datasource:
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: ${DB_URL}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        hbm2ddl:
+          auto: validate
+
+  cloud:
+    gcp:
+      storage:
+        bucket: ${GCP_BUCKET_NAME}
+        project-id: ${GCP_PROJECT_ID}
+
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+        project-id: ${GEMINI_PROJECT_ID}
+        chat:
+          options:
+            model: ${GEMINI_MODEL}
+            response-mime-type: ${GEMINI_RESPONSE_TYPE}
+
+logging:
+  level:
+    com.vibetrip: info
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+
+app:
+  cache:
+    configs:
+      appleKeys:
+        ttl: 24h
+        max-size: 10
+
+ai:
+  suno:
+    api-key: ${SUNO_API_KEY}
+    callback-uri: ${SUNO_CALLBACK_URL}
+
+firebase:
+  key: ${FIREBASE_KEY}

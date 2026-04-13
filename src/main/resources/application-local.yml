@@ -2,14 +2,17 @@ spring:
   config:
     activate:
       on-profile: local
+    import: aws-secretsmanager:local/retrip
 
   servlet:
     multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
+      max-file-size: 10MB
+      max-request-size: 50MB
 
   datasource:
     hikari:
+      jdbc-url: jdbc:h2:mem:retripdb;DB_CLOSE_DELAY=-1
+      username: sa
       password:
 
   jpa:
@@ -17,30 +20,48 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
         hbm2ddl:
           auto: create
-        dialect: org.hibernate.dialect.H2Dialect
 
   h2:
     console:
       enabled: true
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, prometheus
-  metrics:
-    distribution:
-      percentiles-histogram:
-        http.server.requests: true
+  cloud:
+    gcp:
+      storage:
+        bucket: bucket
+        project-id: project
 
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    disable-swagger-default-url: true
-  api-docs:
-    path: /v3/api-docs
-    enabled: true
-  default-produces-media-type: application/json
-  default-consumes-media-type: application/json
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+        project-id: ${GEMINI_PROJECT_ID}
+        chat:
+          options:
+            model: ${GEMINI_MODEL}
+            response-mime-type: ${GEMINI_RESPONSE_TYPE}
+
+logging:
+  level:
+    com.vibetrip: debug
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+
+app:
+  cache:
+    configs:
+      appleKeys:
+        ttl: 24h
+        max-size: 10
+
+ai:
+  suno:
+    api-key: ${SUNO_API_KEY}
+    callback-uri: ${SUNO_CALLBACK_URL}
+
+firebase:
+  key: ${FIREBASE_KEY}

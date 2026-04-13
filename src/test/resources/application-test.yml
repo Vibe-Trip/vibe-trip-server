@@ -1,0 +1,70 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+    import: aws-secretsmanager:local/retrip
+  autoconfigure:
+    exclude:
+      - com.google.cloud.spring.autoconfigure.firestore.GcpFirestoreAutoConfiguration
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:mem:retripdb;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+        hbm2ddl:
+          auto: create
+
+  h2:
+    console:
+      enabled: true
+
+  cloud:
+    gcp:
+      storage:
+        bucket: ${GCP_BUCKET_NAME}
+        project-id: ${GCP_PROJECT_ID}
+
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+        project-id: ${GEMINI_PROJECT_ID}
+        chat:
+          options:
+            model: ${GEMINI_MODEL}
+            response-mime-type: ${GEMINI_RESPONSE_TYPE}
+
+logging:
+  level:
+    com.vibetrip: debug
+
+jwt:
+  secret-key: dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdHRlc3R0ZXN0dGVzdA==
+
+app:
+  cache:
+    configs:
+      appleKeys:
+        ttl: 24h
+        max-size: 10
+
+ai:
+  suno:
+    api-key: ${SUNO_API_KEY}
+    callback-uri: ${SUNO_CALLBACK_URL}
+
+firebase:
+  key: ${FIREBASE_KEY}

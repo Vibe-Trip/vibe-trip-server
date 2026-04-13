@@ -1,4 +1,4 @@
-name: Retrip Dev Deploy
+name: Retrip Prod Deploy
 
 on:
   workflow_dispatch:

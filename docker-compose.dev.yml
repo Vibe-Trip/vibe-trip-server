@@ -12,7 +12,6 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     depends_on:
       - certbot
     networks:
@@ -25,11 +24,12 @@ services:
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    entrypoint: >
+      /bin/sh -c 'trap exit TERM; while :; do certbot renew --deploy-hook "nginx -s reload"; sleep 12h & wait $${!}; done;'
 
-  spring:
+  spring_blue:
     image: rt3310/retrip:latest
-    container_name: retrip-api-server
+    container_name: spring_blue
     restart: on-failure:3
     environment:
       SPRING_PROFILES_ACTIVE: dev
@@ -37,28 +37,22 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
       AWS_REGION: ${AWS_REGION}
-      JAVA_TOOL_OPTIONS: >-
-        -Dcom.sun.management.jmxremote
-        -Dcom.sun.management.jmxremote.port=9010
-        -Dcom.sun.management.jmxremote.rmi.port=9011
-        -Dcom.sun.management.jmxremote.local.only=false
-        -Dcom.sun.management.jmxremote.authenticate=false
-        -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=${JMX_HOST}
-    command: >
-      java
-      -Dcom.sun.management.jmxremote
-      -Dcom.sun.management.jmxremote.port=9010
-      -Dcom.sun.management.jmxremote.rmi.port=9011
-      -Dcom.sun.management.jmxremote.local.only=false
-      -Dcom.sun.management.jmxremote.authenticate=false
-      -Dcom.sun.management.jmxremote.ssl=false
-      -Djava.rmi.server.hostname=${JMX_HOST}
-      -jar app.jar
-    ports:
-      - "8080:8080"
-      - "9010:9010"
-      - "9011:9011"
+    networks:
+      - retrip
+    volumes:
+      - ./:/app/local
+      - /var/log/retrip:/var/log/retrip
+
+  spring_green:
+    image: rt3310/retrip:latest
+    container_name: spring_green
+    restart: on-failure:3
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      TZ: Asia/Seoul
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
+      AWS_REGION: ${AWS_REGION}
     networks:
       - retrip
     volumes:
@@ -73,28 +67,6 @@ services:
       - /var/log/retrip:/var/log/app
       - /var/lib/promtail:/var/lib/promtail
     command: -config.file=/etc/promtail/config.yml
-    networks:
-      - retrip
-
-  mysql:
-    image: mysql:8.0.44-debian
-    container_name: mysql
-    restart: always
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./db/mysql/data:/var/lib/mysql
-      - ./db/mysql/init:/docker-entrypoint-initdb.d
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      TZ: Asia/Seoul
-    command: [
-      "--character-set-server=utf8mb4",
-      "--collation-server=utf8mb4_unicode_ci"
-    ]
     networks:
       - retrip
 

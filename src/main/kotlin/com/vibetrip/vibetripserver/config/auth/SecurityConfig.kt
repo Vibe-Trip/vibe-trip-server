@@ -37,8 +37,6 @@ class SecurityConfig(
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        val mvc = withDefaults()
-
         http {
             httpBasic { disable() }
             formLogin { disable() }
@@ -46,9 +44,11 @@ class SecurityConfig(
             csrf { disable() }
 
             authorizeHttpRequests {
-                authorize(mvc.matcher(POST, "/api/v1/auth/login/**"), permitAll)
-                authorize(mvc.matcher(POST, "/api/v1/auth/refresh"), permitAll)
-                authorize(mvc.matcher(POST, "/api/v1/albums/suno/callback"), permitAll)
+                authorize(POST, "/api/v1/auth/login/**", permitAll)
+                authorize(POST, "/api/v1/auth/refresh", permitAll)
+                authorize(POST, "/api/v1/albums/suno/callback", permitAll)
+                authorize("/actuator", permitAll)
+                authorize("/actuator/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
 

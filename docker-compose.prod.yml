@@ -32,7 +32,7 @@ services:
     container_name: spring_blue
     restart: on-failure:3
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
       TZ: Asia/Seoul
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
@@ -48,7 +48,7 @@ services:
     container_name: spring_green
     restart: on-failure:3
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
       TZ: Asia/Seoul
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}

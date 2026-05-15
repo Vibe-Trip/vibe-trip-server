@@ -185,7 +185,7 @@ class AlbumDeleteTest : SpringTest() {
         AlbumMusicEntity(
             title = "테스트 음악",
             musicUrl = "https://example.com/music.mp3",
-            genre = GenreType.CLASSICAL,
+            genre = GenreType.LO_FI,
             withLyrics = false,
             albumId = albumId,
             taskId = "",

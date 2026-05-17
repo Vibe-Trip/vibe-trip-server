@@ -46,7 +46,7 @@ class AlbumAlarmFlowTest : SpringTest() {
             AlbumMusicEntity(
                 title = "도쿄의 밤",
                 musicUrl = "",
-                genre = GenreType.CLASSICAL,
+                genre = GenreType.LO_FI,
                 withLyrics = false,
                 vocalGender = VocalGender.N,
                 albumId = album.id!!,

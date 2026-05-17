@@ -17,7 +17,7 @@ object AlbumFixture {
         travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),
         travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
         vocalGender: VocalGender = VocalGender.N,
-        genre: GenreType = GenreType.CLASSICAL,
+        genre: GenreType = GenreType.LO_FI,
     ) = NewAlbum.of(
         memberKey = memberKey,
         region = region,
@@ -36,7 +36,7 @@ object AlbumFixture {
         travelStartDate: LocalDate = LocalDate.of(2026, 1, 1),
         travelEndDate: LocalDate = LocalDate.of(2026, 2, 1),
         vocalGender: VocalGender = VocalGender.N,
-        genre: GenreType = GenreType.CLASSICAL,
+        genre: GenreType = GenreType.LO_FI,
     ) = EditAlbum.of(
         title = title,
         memberKey = memberKey,
@@ -71,7 +71,7 @@ object AlbumFixture {
     ) = AlbumMusicEntity(
         title = "도쿄의 밤",
         musicUrl = musicUrl,
-        genre = GenreType.CLASSICAL,
+        genre = GenreType.LO_FI,
         withLyrics = false,
         albumId = albumId,
         taskId = "",

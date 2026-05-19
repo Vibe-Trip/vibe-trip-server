@@ -41,7 +41,7 @@ services:
       - retrip
     volumes:
       - ./:/app/local
-      - /var/log/retrip:/var/log/retrip
+      - /var/log/retrip-log:/var/log/retrip-log
 
   spring_green:
     image: rt3310/retrip:latest

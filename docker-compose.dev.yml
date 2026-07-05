@@ -66,14 +66,14 @@ services:
       - retrip
     volumes:
       - ./:/app/local
-      - /var/log/retrip:/var/log/retrip
+      - /var/log/retrip-log:/var/log/retrip-log
 
   promtail:
     image: grafana/promtail:latest
     container_name: promtail
     volumes:
       - ./promtail-config.dev.yml:/etc/promtail/config.yml
-      - /var/log/retrip:/var/log/app
+      - /var/log/retrip-log:/var/log/app
       - /var/lib/promtail:/var/lib/promtail
     command: -config.file=/etc/promtail/config.yml
     networks:

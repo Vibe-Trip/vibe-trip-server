@@ -43,6 +43,7 @@ spring:
 logging:
   level:
     com.vibetrip: info
+  config: classpath:logback-prod.xml
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}

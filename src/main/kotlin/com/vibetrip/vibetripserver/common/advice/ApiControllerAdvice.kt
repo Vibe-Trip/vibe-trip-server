@@ -43,6 +43,7 @@ class ApiControllerAdvice {
 
     private fun logException(e: Exception) {
         val stackTrace = e.stackTrace.first()
+        e.printStackTrace()
         logger.error {
             "[Exception]: class=${stackTrace.className} | method=${stackTrace.methodName} | line=${stackTrace.lineNumber} | message=${e.message}"
         }

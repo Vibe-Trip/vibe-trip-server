@@ -73,6 +73,7 @@ class AlbumMusicManager(
             albumMusicRepository.save(AlbumMusicEntity.from(albumId, newAlbum, taskId, AlbumMusic.empty()))
             logger.info { "[음악 생성 요청] albumId=$albumId" }
         } catch (e: Exception) {
+            e.printStackTrace()
             eventPublisher.publishEvent(MusicGenerationFailedEvent(albumId, memberKey))
             logger.error { "[음악 생성 실패] albumId=$albumId | ${e.message}" }
         }
